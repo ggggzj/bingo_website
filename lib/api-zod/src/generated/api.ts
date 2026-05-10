@@ -14,3 +14,11 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Submit an email address to join the waitlist
+ * @summary Join the waitlist
+ */
+export const JoinWaitlistBody = zod.object({
+  email: zod.string().email(),
+});
