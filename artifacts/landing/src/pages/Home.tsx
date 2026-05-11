@@ -63,7 +63,11 @@ export default function Home() {
               <div className="pt-4">
                 <a 
 <<<<<<< HEAD
+<<<<<<< HEAD
                   href="https://github.com/ggggzj/H1B_Checker/releases/latest/download/h1b-checker-extension.zip" 
+=======
+                  href="https://github.com/ggggzj/H1B_Checker" 
+>>>>>>> f69db7a2f04dd3cecba36fbf09a395bfae991418
 =======
                   href="https://github.com/ggggzj/H1B_Checker" 
 >>>>>>> f69db7a2f04dd3cecba36fbf09a395bfae991418
