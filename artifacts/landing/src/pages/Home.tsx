@@ -62,7 +62,11 @@ export default function Home() {
 
               <div className="pt-4">
                 <a 
+<<<<<<< HEAD
                   href="https://github.com/ggggzj/H1B_Checker/releases/latest/download/h1b-checker-extension.zip" 
+=======
+                  href="https://github.com/ggggzj/H1B_Checker" 
+>>>>>>> f69db7a2f04dd3cecba36fbf09a395bfae991418
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-3 h-14 px-8 rounded-xl bg-[#24292f] hover:bg-[#24292f]/90 text-white font-semibold text-lg transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24292f] focus-visible:ring-offset-2"
