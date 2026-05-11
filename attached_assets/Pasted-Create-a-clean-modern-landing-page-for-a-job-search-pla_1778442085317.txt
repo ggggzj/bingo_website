@@ -1,0 +1,146 @@
+Create a clean, modern landing page for a job search platform serving international tech students. The site should be minimalist and focused.
+
+Content Structure:
+
+
+
+
+
+Hero Section:
+
+
+
+
+
+Headline: "Tech Job Search Platform for International Students"
+
+
+
+Subheading: Brief explanation that this platform helps international students navigate tech job hunting with visa considerations
+
+
+
+Current Feature Section - H1B Checker:
+
+
+
+
+
+Feature name: "H1B Checker Chrome Extension"
+
+
+
+Description: "Instantly verify H1B sponsorship history while browsing job listings. Powered by official USCIS data, updated in real-time. See which companies actually sponsor visas—no more guessing, no more wasted applications. Check sponsorship stats, approval rates, and historical data with one click as you browse LinkedIn, Indeed, or any job board."
+
+
+
+Download button: A GitHub-style badge/button with text "Download Extension" that links to: [https://github.com/ggggzj/H1B_Checker]. Style it like a prominent CTA button with GitHub icon.
+
+
+
+Key highlights to display as bullet points or icons:
+
+
+
+
+
+✓ Official DOL data
+
+
+
+✓ Real-time updates
+
+
+
+✓ One-click verification
+
+
+
+✓ Historical approval rates
+
+
+
+Coming Soon Section:
+
+
+
+
+
+"More features in development"
+
+
+
+Simple waitlist signup form (email input + submit button)
+
+
+
+Store emails in a simple database or JSON file
+
+Design Requirements:
+
+
+
+
+
+Clean, professional aesthetic
+
+
+
+Mobile responsive
+
+
+
+Color scheme: Use blues/teals for trust, with accent colors
+
+
+
+Modern sans-serif fonts
+
+
+
+Smooth animations on scroll
+
+
+
+Clear CTAs (call-to-action buttons)
+
+
+
+The "Download Extension" button should be large, prominent, and use GitHub branding colors (dark background with white text and GitHub logo icon)
+
+Tech Stack:
+
+
+
+
+
+Use Next.js or vanilla HTML/CSS/JS (your choice)
+
+
+
+For waitlist: simple form submission (can use Formspree or store in a JSON file for now)
+
+
+
+Deploy-ready on Replit
+
+Key Points:
+
+
+
+
+
+Keep it simple and focused - don't overcomplicate
+
+
+
+Emphasize the international student angle and the pain point (wasting time applying to non-sponsoring companies)
+
+
+
+Make the GitHub download button prominent and easy to find
+
+
+
+Waitlist form should be easy to spot
+
