@@ -61,9 +61,9 @@ export default function Home() {
               </ul>
 
               <div className="pt-4">
-                <a 
-                  href="https://github.com/ggggzj/H1B_Checker/releases/latest/download/h1b-checker-extension.zip" 
-                  target="_blank" 
+                <a
+                  href="https://github.com/ggggzj/H1B_Checker"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-3 h-14 px-8 rounded-xl bg-[#24292f] hover:bg-[#24292f]/90 text-white font-semibold text-lg transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24292f] focus-visible:ring-offset-2"
                   data-testid="link-download-extension"
@@ -71,7 +71,11 @@ export default function Home() {
                   <SiGithub className="w-6 h-6" />
                   Download Extension
                 </a>
+
                 <p className="mt-3 text-sm text-muted-foreground">Free and open source on GitHub</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  If you find it useful, consider starring the repo on GitHub — it helps a lot.
+                </p>
               </div>
             </div>
 
