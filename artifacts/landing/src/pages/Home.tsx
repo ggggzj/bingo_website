@@ -1,4 +1,4 @@
-import { SiGithub } from "react-icons/si";
+import { SiGooglechrome } from "react-icons/si";
 import { CheckCircle2, Search, ArrowRight, ShieldCheck, MapPin } from "lucide-react";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -62,20 +62,15 @@ export default function Home() {
 
               <div className="pt-4">
                 <a
-                  href="https://github.com/ggggzj/H1B_Checker"
+                  href="https://chromewebstore.google.com/detail/h1b-checker-for-linkedin/fjlefpeahmeahjbadnnogdnailahdafe"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-3 h-14 px-8 rounded-xl bg-[#24292f] hover:bg-[#24292f]/90 text-white font-semibold text-lg transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24292f] focus-visible:ring-offset-2"
+                  className="inline-flex items-center justify-center gap-3 h-14 px-8 rounded-xl border-2 border-border bg-card text-foreground hover:bg-muted/50 font-semibold text-lg transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   data-testid="link-download-extension"
                 >
-                  <SiGithub className="w-6 h-6" />
+                  <SiGooglechrome className="w-7 h-7 shrink-0" aria-hidden />
                   Download Extension
                 </a>
-
-                <p className="mt-3 text-sm text-muted-foreground">Free and open source on GitHub</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  If you find it useful, consider starring the repo on GitHub — it helps a lot.
-                </p>
               </div>
             </div>
 
