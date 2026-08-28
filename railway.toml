@@ -1,0 +1,17 @@
+# Deploys @workspace/api-server only. This is a pnpm workspace, so the root `build`
+# script would also typecheck and build the landing page — work Vercel already does,
+# and a failure there would block an API deploy for an unrelated reason.
+#
+# Nixpacks installs dependencies itself: it reads `packageManager` (pnpm@9.15.9) and
+# `engines.node` from the root package.json, so no corepack step is needed here.
+
+[build]
+builder = "nixpacks"
+buildCommand = "pnpm --filter @workspace/api-server run build"
+
+[deploy]
+# The server mounts every route under /api, health check included.
+startCommand = "pnpm --filter @workspace/api-server run start"
+healthcheckPath = "/api/healthz"
+healthcheckTimeout = 120
+restartPolicyType = "on_failure"
