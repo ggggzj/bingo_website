@@ -40,7 +40,7 @@ export function WaitlistForm() {
       <div className="flex flex-col items-center justify-center p-6 bg-primary/5 rounded-2xl border border-primary/10" data-testid="status-waitlist-success">
         <CheckCircle2 className="w-10 h-10 text-primary mb-3" />
         <h3 className="text-lg font-semibold text-foreground">You're on the list</h3>
-        <p className="text-sm text-muted-foreground mt-1 text-center">We'll let you know when the next features are ready.</p>
+        <p className="text-sm text-muted-foreground mt-1 text-center">We'll email you when there's something new. The extension itself is ready now — add it to Chrome whenever you like.</p>
       </div>
     );
   }
@@ -56,8 +56,8 @@ export function WaitlistForm() {
               <div className="flex gap-2">
                 <FormControl>
                   <Input 
-                    placeholder="Enter your email" 
-                    className="h-12 bg-white" 
+                    placeholder="you@example.com" 
+                    className="h-12 bg-card" 
                     data-testid="input-waitlist-email"
                     disabled={joinWaitlist.isPending}
                     {...field} 
@@ -72,14 +72,14 @@ export function WaitlistForm() {
                   {joinWaitlist.isPending ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    "Join Waitlist"
+                    "Keep me posted"
                   )}
                 </Button>
               </div>
               <FormMessage />
               {joinWaitlist.isError && (
                 <p className="text-[0.8rem] font-medium text-destructive mt-2" data-testid="error-waitlist-submit">
-                  {joinWaitlist.error?.error || "Failed to join waitlist. Please try again."}
+                  {joinWaitlist.error?.data?.error || "Couldn't add you just now. Please try again."}
                 </p>
               )}
             </FormItem>
