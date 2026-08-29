@@ -6,8 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface WaitlistEntry {
-  id: number;
-  email: string;
-  createdAt: string;
-}
+export type GetStatsDailyParams = {
+  /**
+   * @minimum 1
+   * @maximum 365
+   */
+  days?: number;
+};

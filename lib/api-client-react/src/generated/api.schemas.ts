@@ -19,6 +19,91 @@ export interface WaitlistEntry {
   createdAt: string;
 }
 
+export interface Credentials {
+  email: string;
+  /** @minLength 10 */
+  password: string;
+}
+
+export interface Account {
+  email: string;
+  /** Whether this account may see the growth dashboard. Read from the server's OWNER_EMAIL setting, never stored on the account. */
+  isOwner: boolean;
+}
+
+export interface Ok {
+  ok: boolean;
+}
+
+export type StatsTotalsReferralSources = { [key: string]: number };
+
+export interface StatsTotals {
+  daily_active: number;
+  weekly_active: number;
+  checks_today: number;
+  checks_7d: number;
+  total_clients: number;
+  total_registrations: number;
+  total_followers: number;
+  total_follows: number;
+  referral_sources: StatsTotalsReferralSources;
+  referrals_answered: number;
+}
+
+export interface StatsDailyPoint {
+  date: string;
+  new_installs: number;
+  active_installs: number;
+  checks: number;
+  new_registrations: number;
+}
+
+export interface StatsDaily {
+  days: number;
+  series: StatsDailyPoint[];
+}
+
+export interface StatsProfile {
+  display_name?: string | null;
+  us_state?: string | null;
+  school?: string | null;
+  field?: string | null;
+  job_search_stage?: string | null;
+  visa_status?: string | null;
+  graduation?: string | null;
+}
+
+export interface StatsRegistrationRow {
+  email: string;
+  created_at: string;
+  installed_at?: string | null;
+  verified_at?: string | null;
+  referral_source?: string | null;
+  subscriptions: number;
+  profile?: StatsProfile | null;
+}
+
+export interface StatsRegistrations {
+  total: number;
+  rows: StatsRegistrationRow[];
+}
+
 export interface ErrorResponse {
   error: string;
 }
+
+export type GetStatsDailyParams = {
+  /**
+   * @minimum 1
+   * @maximum 365
+   */
+  days?: number;
+};
+
+export type GetStatsRegistrationsParams = {
+  /**
+   * @minimum 1
+   * @maximum 1000
+   */
+  limit?: number;
+};
