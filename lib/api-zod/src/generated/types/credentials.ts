@@ -6,8 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface WaitlistEntry {
-  id: number;
+export interface Credentials {
   email: string;
-  createdAt: string;
+  /** @minLength 10 */
+  password: string;
 }

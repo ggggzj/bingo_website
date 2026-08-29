@@ -17,8 +17,16 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  Account,
+  Credentials,
   ErrorResponse,
+  GetStatsDailyParams,
+  GetStatsRegistrationsParams,
   HealthStatus,
+  Ok,
+  StatsDaily,
+  StatsRegistrations,
+  StatsTotals,
   WaitlistEntry,
   WaitlistInput,
 } from "./api.schemas";
@@ -194,3 +202,590 @@ export const useJoinWaitlist = <
 > => {
   return useMutation(getJoinWaitlistMutationOptions(options));
 };
+
+/**
+ * Creates an account and signs the browser in.
+ * @summary Create an account
+ */
+export const getRegisterUrl = () => {
+  return `/api/auth/register`;
+};
+
+export const register = async (
+  credentials: Credentials,
+  options?: RequestInit,
+): Promise<Account> => {
+  return customFetch<Account>(getRegisterUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(credentials),
+  });
+};
+
+export const getRegisterMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof register>>,
+    TError,
+    { data: BodyType<Credentials> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof register>>,
+  TError,
+  { data: BodyType<Credentials> },
+  TContext
+> => {
+  const mutationKey = ["register"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof register>>,
+    { data: BodyType<Credentials> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return register(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RegisterMutationResult = NonNullable<
+  Awaited<ReturnType<typeof register>>
+>;
+export type RegisterMutationBody = BodyType<Credentials>;
+export type RegisterMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Create an account
+ */
+export const useRegister = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof register>>,
+    TError,
+    { data: BodyType<Credentials> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof register>>,
+  TError,
+  { data: BodyType<Credentials> },
+  TContext
+> => {
+  return useMutation(getRegisterMutationOptions(options));
+};
+
+/**
+ * Signs the browser in. A wrong password and an address with no account get the same answer, so this cannot be used to find out who has an account.
+ * @summary Sign in
+ */
+export const getLogInUrl = () => {
+  return `/api/auth/login`;
+};
+
+export const logIn = async (
+  credentials: Credentials,
+  options?: RequestInit,
+): Promise<Account> => {
+  return customFetch<Account>(getLogInUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(credentials),
+  });
+};
+
+export const getLogInMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof logIn>>,
+    TError,
+    { data: BodyType<Credentials> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof logIn>>,
+  TError,
+  { data: BodyType<Credentials> },
+  TContext
+> => {
+  const mutationKey = ["logIn"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof logIn>>,
+    { data: BodyType<Credentials> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return logIn(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LogInMutationResult = NonNullable<
+  Awaited<ReturnType<typeof logIn>>
+>;
+export type LogInMutationBody = BodyType<Credentials>;
+export type LogInMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Sign in
+ */
+export const useLogIn = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof logIn>>,
+    TError,
+    { data: BodyType<Credentials> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof logIn>>,
+  TError,
+  { data: BodyType<Credentials> },
+  TContext
+> => {
+  return useMutation(getLogInMutationOptions(options));
+};
+
+/**
+ * Ends the session. Answers the same whether or not there was one.
+ * @summary Sign out
+ */
+export const getLogOutUrl = () => {
+  return `/api/auth/logout`;
+};
+
+export const logOut = async (options?: RequestInit): Promise<Ok> => {
+  return customFetch<Ok>(getLogOutUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getLogOutMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof logOut>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof logOut>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["logOut"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof logOut>>,
+    void
+  > = () => {
+    return logOut(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LogOutMutationResult = NonNullable<
+  Awaited<ReturnType<typeof logOut>>
+>;
+
+export type LogOutMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Sign out
+ */
+export const useLogOut = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof logOut>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof logOut>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getLogOutMutationOptions(options));
+};
+
+/**
+ * @summary Who this browser is signed in as
+ */
+export const getGetMeUrl = () => {
+  return `/api/auth/me`;
+};
+
+export const getMe = async (options?: RequestInit): Promise<Account> => {
+  return customFetch<Account>(getGetMeUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetMeQueryKey = () => {
+  return [`/api/auth/me`] as const;
+};
+
+export const getGetMeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMe>>> = ({
+    signal,
+  }) => getMe({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMe>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMe>>>;
+export type GetMeQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Who this browser is signed in as
+ */
+
+export function useGetMe<
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMeQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
+ * @summary Growth totals (owner only)
+ */
+export const getGetStatsTotalsUrl = () => {
+  return `/api/stats`;
+};
+
+export const getStatsTotals = async (
+  options?: RequestInit,
+): Promise<StatsTotals> => {
+  return customFetch<StatsTotals>(getGetStatsTotalsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetStatsTotalsQueryKey = () => {
+  return [`/api/stats`] as const;
+};
+
+export const getGetStatsTotalsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getStatsTotals>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getStatsTotals>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetStatsTotalsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getStatsTotals>>> = ({
+    signal,
+  }) => getStatsTotals({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getStatsTotals>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetStatsTotalsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getStatsTotals>>
+>;
+export type GetStatsTotalsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Growth totals (owner only)
+ */
+
+export function useGetStatsTotals<
+  TData = Awaited<ReturnType<typeof getStatsTotals>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getStatsTotals>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetStatsTotalsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Day-by-day growth (owner only)
+ */
+export const getGetStatsDailyUrl = (params?: GetStatsDailyParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/stats/daily?${stringifiedParams}`
+    : `/api/stats/daily`;
+};
+
+export const getStatsDaily = async (
+  params?: GetStatsDailyParams,
+  options?: RequestInit,
+): Promise<StatsDaily> => {
+  return customFetch<StatsDaily>(getGetStatsDailyUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetStatsDailyQueryKey = (params?: GetStatsDailyParams) => {
+  return [`/api/stats/daily`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetStatsDailyQueryOptions = <
+  TData = Awaited<ReturnType<typeof getStatsDaily>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetStatsDailyParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStatsDaily>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetStatsDailyQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getStatsDaily>>> = ({
+    signal,
+  }) => getStatsDaily(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getStatsDaily>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetStatsDailyQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getStatsDaily>>
+>;
+export type GetStatsDailyQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Day-by-day growth (owner only)
+ */
+
+export function useGetStatsDaily<
+  TData = Awaited<ReturnType<typeof getStatsDaily>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetStatsDailyParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStatsDaily>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetStatsDailyQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Registered emails (owner only)
+ */
+export const getGetStatsRegistrationsUrl = (
+  params?: GetStatsRegistrationsParams,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/stats/registrations?${stringifiedParams}`
+    : `/api/stats/registrations`;
+};
+
+export const getStatsRegistrations = async (
+  params?: GetStatsRegistrationsParams,
+  options?: RequestInit,
+): Promise<StatsRegistrations> => {
+  return customFetch<StatsRegistrations>(getGetStatsRegistrationsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetStatsRegistrationsQueryKey = (
+  params?: GetStatsRegistrationsParams,
+) => {
+  return [`/api/stats/registrations`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetStatsRegistrationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getStatsRegistrations>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetStatsRegistrationsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStatsRegistrations>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetStatsRegistrationsQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getStatsRegistrations>>
+  > = ({ signal }) =>
+    getStatsRegistrations(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getStatsRegistrations>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetStatsRegistrationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getStatsRegistrations>>
+>;
+export type GetStatsRegistrationsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Registered emails (owner only)
+ */
+
+export function useGetStatsRegistrations<
+  TData = Awaited<ReturnType<typeof getStatsRegistrations>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetStatsRegistrationsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getStatsRegistrations>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetStatsRegistrationsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

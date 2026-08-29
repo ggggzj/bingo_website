@@ -6,8 +6,4 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface WaitlistEntry {
-  id: number;
-  email: string;
-  createdAt: string;
-}
+export type StatsTotalsReferralSources = { [key: string]: number };

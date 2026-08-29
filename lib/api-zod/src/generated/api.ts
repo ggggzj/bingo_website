@@ -22,3 +22,134 @@ export const HealthCheckResponse = zod.object({
 export const JoinWaitlistBody = zod.object({
   email: zod.string().email(),
 });
+
+/**
+ * Creates an account and signs the browser in.
+ * @summary Create an account
+ */
+export const registerBodyPasswordMin = 10;
+
+export const RegisterBody = zod.object({
+  email: zod.string().email(),
+  password: zod.string().min(registerBodyPasswordMin),
+});
+
+/**
+ * Signs the browser in. A wrong password and an address with no account get the same answer, so this cannot be used to find out who has an account.
+ * @summary Sign in
+ */
+export const logInBodyPasswordMin = 10;
+
+export const LogInBody = zod.object({
+  email: zod.string().email(),
+  password: zod.string().min(logInBodyPasswordMin),
+});
+
+export const LogInResponse = zod.object({
+  email: zod.string(),
+  isOwner: zod
+    .boolean()
+    .describe(
+      "Whether this account may see the growth dashboard. Read from the server's OWNER_EMAIL setting, never stored on the account.",
+    ),
+});
+
+/**
+ * Ends the session. Answers the same whether or not there was one.
+ * @summary Sign out
+ */
+export const LogOutResponse = zod.object({
+  ok: zod.boolean(),
+});
+
+/**
+ * @summary Who this browser is signed in as
+ */
+export const GetMeResponse = zod.object({
+  email: zod.string(),
+  isOwner: zod
+    .boolean()
+    .describe(
+      "Whether this account may see the growth dashboard. Read from the server's OWNER_EMAIL setting, never stored on the account.",
+    ),
+});
+
+/**
+ * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
+ * @summary Growth totals (owner only)
+ */
+export const GetStatsTotalsResponse = zod.object({
+  daily_active: zod.number(),
+  weekly_active: zod.number(),
+  checks_today: zod.number(),
+  checks_7d: zod.number(),
+  total_clients: zod.number(),
+  total_registrations: zod.number(),
+  total_followers: zod.number(),
+  total_follows: zod.number(),
+  referral_sources: zod.record(zod.string(), zod.number()),
+  referrals_answered: zod.number(),
+});
+
+/**
+ * @summary Day-by-day growth (owner only)
+ */
+export const getStatsDailyQueryDaysMax = 365;
+
+export const GetStatsDailyQueryParams = zod.object({
+  days: zod.coerce.number().min(1).max(getStatsDailyQueryDaysMax).optional(),
+});
+
+export const GetStatsDailyResponse = zod.object({
+  days: zod.number(),
+  series: zod.array(
+    zod.object({
+      date: zod.string(),
+      new_installs: zod.number(),
+      active_installs: zod.number(),
+      checks: zod.number(),
+      new_registrations: zod.number(),
+    }),
+  ),
+});
+
+/**
+ * @summary Registered emails (owner only)
+ */
+export const getStatsRegistrationsQueryLimitMax = 1000;
+
+export const GetStatsRegistrationsQueryParams = zod.object({
+  limit: zod.coerce
+    .number()
+    .min(1)
+    .max(getStatsRegistrationsQueryLimitMax)
+    .optional(),
+});
+
+export const GetStatsRegistrationsResponse = zod.object({
+  total: zod.number(),
+  rows: zod.array(
+    zod.object({
+      email: zod.string(),
+      created_at: zod.string(),
+      installed_at: zod.string().nullish(),
+      verified_at: zod.string().nullish(),
+      referral_source: zod.string().nullish(),
+      subscriptions: zod.number(),
+      profile: zod
+        .union([
+          zod.object({
+            display_name: zod.string().nullish(),
+            us_state: zod.string().nullish(),
+            school: zod.string().nullish(),
+            field: zod.string().nullish(),
+            job_search_stage: zod.string().nullish(),
+            visa_status: zod.string().nullish(),
+            graduation: zod.string().nullish(),
+          }),
+          zod.null(),
+        ])
+        .optional(),
+    }),
+  ),
+});

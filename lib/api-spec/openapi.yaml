@@ -12,6 +12,10 @@ tags:
     description: Health operations
   - name: waitlist
     description: Waitlist operations
+  - name: auth
+    description: Sign-up and sign-in
+  - name: stats
+    description: Growth dashboard, owner only
 paths:
   /healthz:
     get:
@@ -57,6 +61,198 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Create an account
+      description: Creates an account and signs the browser in.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Credentials"
+      responses:
+        "201":
+          description: Account created and signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "409":
+          description: That email already has an account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Invalid email or password too short
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/login:
+    post:
+      operationId: logIn
+      tags: [auth]
+      summary: Sign in
+      description: >-
+        Signs the browser in. A wrong password and an address with no account get
+        the same answer, so this cannot be used to find out who has an account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Credentials"
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "401":
+          description: Wrong email or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/logout:
+    post:
+      operationId: logOut
+      tags: [auth]
+      summary: Sign out
+      description: Ends the session. Answers the same whether or not there was one.
+      responses:
+        "200":
+          description: Signed out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ok"
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Who this browser is signed in as
+      responses:
+        "200":
+          description: The signed-in account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /stats:
+    get:
+      operationId: getStatsTotals
+      tags: [stats]
+      summary: Growth totals (owner only)
+      description: >-
+        Proxied from the extension's API. Anyone who is not the owner gets 404,
+        the same answer as a path that does not exist.
+      responses:
+        "200":
+          description: The totals
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsTotals"
+        "404":
+          description: Not the owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: The extension's API could not be reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /stats/daily:
+    get:
+      operationId: getStatsDaily
+      tags: [stats]
+      summary: Day-by-day growth (owner only)
+      parameters:
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 365
+      responses:
+        "200":
+          description: One point per calendar day, oldest first
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsDaily"
+        "404":
+          description: Not the owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: The extension's API could not be reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /stats/registrations:
+    get:
+      operationId: getStatsRegistrations
+      tags: [stats]
+      summary: Registered emails (owner only)
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+      responses:
+        "200":
+          description: One row per registered email, newest first
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsRegistrations"
+        "404":
+          description: Not the owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: The extension's API could not be reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -87,6 +283,113 @@ components:
           type: string
         createdAt:
           type: string
+    Credentials:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 10
+    Account:
+      type: object
+      required: [email, isOwner]
+      properties:
+        email:
+          type: string
+        isOwner:
+          type: boolean
+          description: >-
+            Whether this account may see the growth dashboard. Read from the
+            server's OWNER_EMAIL setting, never stored on the account.
+    Ok:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+    # The three schemas below are owned by the extension's API; this server only
+    # forwards them. Keep them in step with the FastAPI response models in that
+    # project (main.py: StatsResponse, DailyResponse, RegistrationsResponse).
+    StatsTotals:
+      type: object
+      required:
+        - daily_active
+        - weekly_active
+        - checks_today
+        - checks_7d
+        - total_clients
+        - total_registrations
+        - total_followers
+        - total_follows
+        - referral_sources
+        - referrals_answered
+      properties:
+        daily_active: { type: integer }
+        weekly_active: { type: integer }
+        checks_today: { type: integer }
+        checks_7d: { type: integer }
+        total_clients: { type: integer }
+        total_registrations: { type: integer }
+        total_followers: { type: integer }
+        total_follows: { type: integer }
+        referral_sources:
+          type: object
+          additionalProperties: { type: integer }
+        referrals_answered: { type: integer }
+    StatsDailyPoint:
+      type: object
+      required: [date, new_installs, active_installs, checks, new_registrations]
+      properties:
+        date: { type: string }
+        new_installs: { type: integer }
+        active_installs: { type: integer }
+        checks: { type: integer }
+        new_registrations: { type: integer }
+    StatsDaily:
+      type: object
+      required: [days, series]
+      properties:
+        days: { type: integer }
+        series:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatsDailyPoint"
+    StatsProfile:
+      type: object
+      properties:
+        display_name: { type: string, nullable: true }
+        us_state: { type: string, nullable: true }
+        school: { type: string, nullable: true }
+        field: { type: string, nullable: true }
+        job_search_stage: { type: string, nullable: true }
+        visa_status: { type: string, nullable: true }
+        graduation: { type: string, nullable: true }
+    StatsRegistrationRow:
+      type: object
+      required: [email, created_at, subscriptions]
+      properties:
+        email: { type: string }
+        created_at: { type: string }
+        installed_at: { type: string, nullable: true }
+        verified_at: { type: string, nullable: true }
+        referral_source: { type: string, nullable: true }
+        subscriptions: { type: integer }
+        profile:
+          oneOf:
+            - $ref: "#/components/schemas/StatsProfile"
+            - type: "null"
+    StatsRegistrations:
+      type: object
+      required: [total, rows]
+      properties:
+        total: { type: integer }
+        rows:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatsRegistrationRow"
     ErrorResponse:
       type: object
       required:
