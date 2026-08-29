@@ -48,3 +48,9 @@ Thumbs.db
 .cache/
 .local/
 project.zip
+
+# Per-machine Claude Code settings. launch.json names a local dev-server command
+# and port, which is a per-checkout choice; anything shared in .claude/ can still
+# be committed by naming it explicitly.
+.claude/launch.json
+.claude/settings.local.json
