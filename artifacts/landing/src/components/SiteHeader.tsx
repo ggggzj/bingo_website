@@ -7,13 +7,12 @@ import { Button } from "@/components/ui/button";
 import { CHROME_STORE_URL } from "@/lib/links";
 
 /**
- * The home page is one long document, so the nav is anchors into it plus the one
- * thing that leaves: the store listing.
+ * The home page is one long document, so the nav is anchors into it plus the two
+ * things that leave: the store listing and the login.
  *
- * There is deliberately no "Log in" entry. `/login` exists in this repo but the
- * deployed site is static — `vercel.json` rewrites every path to `index.html` and
- * there is no API behind it — so the page would load and then fail every request.
- * Add the link back in the same change that puts an API behind `/api`.
+ * Log in is hidden below `sm` and appears in the hamburger sheet instead. Three
+ * items plus the hamburger do not fit a 320px bar — the same reason the store
+ * button shortens its label there.
  */
 const SECTIONS = [
   { href: "#badges", label: "Badges" },
@@ -56,6 +55,14 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Link
+            href="/login"
+            className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2"
+            data-testid="link-login"
+          >
+            Log in
+          </Link>
+
           <Button asChild size="sm" className="h-9 px-4">
             <a
               href={CHROME_STORE_URL}
@@ -101,6 +108,14 @@ export function SiteHeader() {
                 {section.label}
               </a>
             ))}
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="py-2 text-sm font-medium text-foreground"
+              data-testid="link-mobile-login"
+            >
+              Log in
+            </Link>
           </nav>
         </div>
       )}
