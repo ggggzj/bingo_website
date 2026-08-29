@@ -1,13 +1,16 @@
 # Deploys @workspace/api-server only. This is a pnpm workspace, so the root `build`
 # script would also typecheck and build the landing page — work Vercel already does,
 # and a failure there would block an API deploy for an unrelated reason.
-#
-# Nixpacks installs dependencies itself: it reads `packageManager` (pnpm@9.15.9) and
-# `engines.node` from the root package.json, so no corepack step is needed here.
 
 [build]
-builder = "nixpacks"
-buildCommand = "pnpm --filter @workspace/api-server run build"
+# The install has to ask for dev dependencies explicitly. NODE_ENV=production is set
+# on this service so the session cookie gets its Secure flag, and pnpm reads that as
+# --prod and skips devDependencies — which is where esbuild lives. Without this the
+# build dies on "Cannot find package 'esbuild' imported from build.mjs".
+#
+# No `builder` key: Railway moved this service to Railpack on its own, so naming the
+# deprecated Nixpacks here only described something that was no longer true.
+buildCommand = "pnpm install --frozen-lockfile --prod=false && pnpm --filter @workspace/api-server run build"
 
 [deploy]
 # The server mounts every route under /api, health check included.
