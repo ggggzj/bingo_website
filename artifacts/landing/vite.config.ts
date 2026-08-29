@@ -53,6 +53,15 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    // Dev only — never part of a build. In production the platform serves this app
+    // and the API from one origin under /api; locally they are two processes, and
+    // without this the session cookie would be set on the wrong one.
+    proxy: {
+      "/api": {
+        target: process.env.API_PROXY_TARGET ?? "http://127.0.0.1:8080",
+        changeOrigin: false,
+      },
+    },
   },
   preview: {
     port,
