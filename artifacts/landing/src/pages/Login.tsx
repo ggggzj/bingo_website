@@ -82,7 +82,7 @@ export default function Login() {
     <div className="min-h-[100dvh] bg-background flex flex-col items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-bold text-foreground text-center mb-1">
-          H1B Checker
+          BingoCareer
         </h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
           Sign in to your account.
