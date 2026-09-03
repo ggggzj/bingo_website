@@ -1,0 +1,4610 @@
+{
+ "_copied_from": "AceLeetcode/data/problems.json",
+ "_copied_on": "2026-09-03",
+ "version": 1,
+ "source": "NeetCode 150",
+ "note": "company_freq values are heuristic priors (0.0-1.0) estimating how often each problem appears in that company's interviews. Refine over time.",
+ "problems": [
+  {
+   "id": "lc-0217",
+   "num": 217,
+   "title": "Contains Duplicate",
+   "slug": "contains-duplicate",
+   "difficulty": "easy",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.6,
+    "apple": 0.5,
+    "bloomberg": 0.6,
+    "tiktok": 0.4,
+    "openai": 0.2
+   },
+   "followups": [
+    "Can you solve it without extra space, and what do you trade away?",
+    "The array is a stream of 10 billion integers that does not fit in memory - how do you detect duplicates?",
+    "What if you only need to know whether a duplicate exists within a window of k indices?"
+   ],
+   "siblings": [
+    "lc-0242",
+    "lc-0001"
+   ]
+  },
+  {
+   "id": "lc-0242",
+   "num": 242,
+   "title": "Valid Anagram",
+   "slug": "valid-anagram",
+   "difficulty": "easy",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.55,
+    "meta": 0.55,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.25
+   },
+   "followups": [
+    "How does your solution change for full Unicode input rather than lowercase ASCII?",
+    "Can you decide it in O(1) extra space if sorting in place is allowed?",
+    "Given a stream of words, how would you group anagrams as they arrive?"
+   ],
+   "siblings": [
+    "lc-0049",
+    "lc-0567"
+   ]
+  },
+  {
+   "id": "lc-0001",
+   "num": 1,
+   "title": "Two Sum",
+   "slug": "two-sum",
+   "difficulty": "easy",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.92,
+    "google": 0.8,
+    "meta": 0.85,
+    "microsoft": 0.8,
+    "apple": 0.75,
+    "bloomberg": 0.8,
+    "tiktok": 0.7,
+    "openai": 0.45
+   },
+   "followups": [
+    "What changes if the array is already sorted and you must use O(1) extra space?",
+    "Return every distinct pair that sums to the target instead of just one - how do you avoid duplicates?",
+    "How would you answer many target queries on the same fixed array efficiently?"
+   ],
+   "siblings": [
+    "lc-0167",
+    "lc-0015"
+   ]
+  },
+  {
+   "id": "lc-0049",
+   "num": 49,
+   "title": "Group Anagrams",
+   "slug": "group-anagrams",
+   "difficulty": "medium",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.75,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.7,
+    "bloomberg": 0.75,
+    "tiktok": 0.6,
+    "openai": 0.35
+   },
+   "followups": [
+    "Compare sorting each word versus a 26-slot count key - when does each win?",
+    "Could a hash of the character counts collide, and how would you make the key collision-proof?",
+    "How would you shard this across machines when the word list is a terabyte?"
+   ],
+   "siblings": [
+    "lc-0242",
+    "lc-0347"
+   ]
+  },
+  {
+   "id": "lc-0347",
+   "num": 347,
+   "title": "Top K Frequent Elements",
+   "slug": "top-k-frequent-elements",
+   "difficulty": "medium",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map",
+    "heap",
+    "quickselect"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.8,
+    "meta": 0.75,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.8,
+    "tiktok": 0.65,
+    "openai": 0.4
+   },
+   "followups": [
+    "Your solution must beat O(n log n) - how do bucket sort and quickselect each get there?",
+    "Now the numbers arrive as an infinite stream and you must report top k at any moment.",
+    "What if exact counts are impossible to store - would you accept Count-Min Sketch and what error does it introduce?"
+   ],
+   "siblings": [
+    "lc-0215",
+    "lc-0973"
+   ]
+  },
+  {
+   "id": "lc-0271",
+   "num": 271,
+   "title": "Encode and Decode Strings",
+   "slug": "encode-and-decode-strings",
+   "difficulty": "medium",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.55,
+    "meta": 0.6,
+    "microsoft": 0.4,
+    "apple": 0.35,
+    "bloomberg": 0.4,
+    "tiktok": 0.3,
+    "openai": 0.25
+   },
+   "followups": [
+    "Why does a length-prefix scheme survive arbitrary payloads when a delimiter scheme does not?",
+    "How do you decode from a socket where the buffer may cut a string in half?",
+    "How would you support strings longer than 2^32 bytes or non-UTF-8 binary payloads?"
+   ],
+   "siblings": [
+    "lc-0208"
+   ]
+  },
+  {
+   "id": "lc-0238",
+   "num": 238,
+   "title": "Product of Array Except Self",
+   "slug": "product-of-array-except-self",
+   "difficulty": "medium",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "prefix-sum"
+   ],
+   "company_freq": {
+    "amazon": 0.88,
+    "google": 0.8,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.8,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Division is banned - explain why, then handle the case where it were allowed and zeros exist.",
+    "Can you do it with O(1) extra space beyond the output array?",
+    "Products overflow 64 bits for large inputs - how do you handle that?"
+   ],
+   "siblings": [
+    "lc-0152",
+    "lc-0053"
+   ]
+  },
+  {
+   "id": "lc-0036",
+   "num": 36,
+   "title": "Valid Sudoku",
+   "slug": "valid-sudoku",
+   "difficulty": "medium",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.65,
+    "google": 0.55,
+    "meta": 0.5,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.45,
+    "tiktok": 0.35,
+    "openai": 0.2
+   },
+   "followups": [
+    "Can you validate all rows, columns, and boxes in a single pass?",
+    "How would you use bitmasks instead of hash sets, and what does that buy you?",
+    "Extend to an n^2 x n^2 board - what breaks first?"
+   ],
+   "siblings": [
+    "lc-0073",
+    "lc-0054"
+   ]
+  },
+  {
+   "id": "lc-0128",
+   "num": 128,
+   "title": "Longest Consecutive Sequence",
+   "slug": "longest-consecutive-sequence",
+   "difficulty": "medium",
+   "neetcode_group": "Arrays & Hashing",
+   "patterns": [
+    "hash-map",
+    "union-find"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.8,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.7,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "Prove your set-based scan is O(n) and not O(n^2) despite the inner while loop.",
+    "Solve it with union-find instead - what is the complexity then?",
+    "Numbers now stream in one at a time and you must report the longest run after each insert."
+   ],
+   "siblings": [
+    "lc-0200",
+    "lc-0300"
+   ]
+  },
+  {
+   "id": "lc-0125",
+   "num": 125,
+   "title": "Valid Palindrome",
+   "slug": "valid-palindrome",
+   "difficulty": "easy",
+   "neetcode_group": "Two Pointers",
+   "patterns": [
+    "two-pointers"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Do it without building a cleaned copy of the string.",
+    "What if you may delete at most one character - does your two-pointer loop still work?",
+    "How do you define alphanumeric for Unicode input, and does that change correctness?"
+   ],
+   "siblings": [
+    "lc-0005",
+    "lc-0647"
+   ]
+  },
+  {
+   "id": "lc-0167",
+   "num": 167,
+   "title": "Two Sum II - Input Array Is Sorted",
+   "slug": "two-sum-ii-input-array-is-sorted",
+   "difficulty": "medium",
+   "neetcode_group": "Two Pointers",
+   "patterns": [
+    "two-pointers",
+    "binary-search"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Prove the two-pointer scan never skips the answer.",
+    "When would binary searching the complement beat the two-pointer sweep?",
+    "Extend to counting all pairs below a target sum."
+   ],
+   "siblings": [
+    "lc-0001",
+    "lc-0015"
+   ]
+  },
+  {
+   "id": "lc-0015",
+   "num": 15,
+   "title": "3Sum",
+   "slug": "3sum",
+   "difficulty": "medium",
+   "neetcode_group": "Two Pointers",
+   "patterns": [
+    "two-pointers"
+   ],
+   "company_freq": {
+    "amazon": 0.88,
+    "google": 0.82,
+    "meta": 0.85,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.8,
+    "tiktok": 0.7,
+    "openai": 0.45
+   },
+   "followups": [
+    "How do you suppress duplicate triplets without a hash set of results?",
+    "Generalize to k-Sum - what is the recurrence and its complexity?",
+    "Find the triplet closest to the target instead of exactly equal."
+   ],
+   "siblings": [
+    "lc-0167",
+    "lc-0011"
+   ]
+  },
+  {
+   "id": "lc-0011",
+   "num": 11,
+   "title": "Container With Most Water",
+   "slug": "container-with-most-water",
+   "difficulty": "medium",
+   "neetcode_group": "Two Pointers",
+   "patterns": [
+    "two-pointers",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.78,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Prove that moving the shorter wall inward can never discard the optimum.",
+    "How is this different from Trapping Rain Water in what the bars represent?",
+    "What if the container must have at least width w?"
+   ],
+   "siblings": [
+    "lc-0042",
+    "lc-0084"
+   ]
+  },
+  {
+   "id": "lc-0042",
+   "num": 42,
+   "title": "Trapping Rain Water",
+   "slug": "trapping-rain-water",
+   "difficulty": "hard",
+   "neetcode_group": "Two Pointers",
+   "patterns": [
+    "two-pointers",
+    "monotonic-stack",
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.8,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.75,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Give three solutions - prefix max arrays, monotonic stack, two pointers - and their space costs.",
+    "Extend to a 2D elevation map: what data structure do you reach for?",
+    "Bars can be updated at runtime - how do you answer trapped-water queries fast?"
+   ],
+   "siblings": [
+    "lc-0011",
+    "lc-0084"
+   ]
+  },
+  {
+   "id": "lc-0121",
+   "num": 121,
+   "title": "Best Time to Buy and Sell Stock",
+   "slug": "best-time-to-buy-and-sell-stock",
+   "difficulty": "easy",
+   "neetcode_group": "Sliding Window",
+   "patterns": [
+    "sliding-window",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.7,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.7,
+    "bloomberg": 0.85,
+    "tiktok": 0.6,
+    "openai": 0.35
+   },
+   "followups": [
+    "Adapt it to unlimited transactions, then to at most two transactions.",
+    "Prices arrive as a live stream - what state do you keep?",
+    "Add a per-transaction fee or a cooldown day and redo the recurrence."
+   ],
+   "siblings": [
+    "lc-0309",
+    "lc-0053"
+   ]
+  },
+  {
+   "id": "lc-0003",
+   "num": 3,
+   "title": "Longest Substring Without Repeating Characters",
+   "slug": "longest-substring-without-repeating-characters",
+   "difficulty": "medium",
+   "neetcode_group": "Sliding Window",
+   "patterns": [
+    "sliding-window",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.9,
+    "google": 0.85,
+    "meta": 0.85,
+    "microsoft": 0.8,
+    "apple": 0.75,
+    "bloomberg": 0.8,
+    "tiktok": 0.75,
+    "openai": 0.5
+   },
+   "followups": [
+    "Why can the left pointer jump instead of crawling, and when is that wrong?",
+    "Allow at most k repeats of any character - how does the window condition change?",
+    "Return the substring itself over a streaming input where you cannot re-read earlier characters."
+   ],
+   "siblings": [
+    "lc-0424",
+    "lc-0076"
+   ]
+  },
+  {
+   "id": "lc-0424",
+   "num": 424,
+   "title": "Longest Repeating Character Replacement",
+   "slug": "longest-repeating-character-replacement",
+   "difficulty": "medium",
+   "neetcode_group": "Sliding Window",
+   "patterns": [
+    "sliding-window"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.7,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why is it safe never to decrease the running max-count when the window shrinks?",
+    "Redo it for an alphabet of a million symbols instead of 26.",
+    "What if replacements have per-character costs and you have a budget?"
+   ],
+   "siblings": [
+    "lc-0003",
+    "lc-0567"
+   ]
+  },
+  {
+   "id": "lc-0567",
+   "num": 567,
+   "title": "Permutation in String",
+   "slug": "permutation-in-string",
+   "difficulty": "medium",
+   "neetcode_group": "Sliding Window",
+   "patterns": [
+    "sliding-window",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.65,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "How do you compare two frequency maps in O(1) per step rather than O(26)?",
+    "Return all start indices instead of a boolean - see Find All Anagrams.",
+    "Scale to a pattern of length 10^6 against a streaming text."
+   ],
+   "siblings": [
+    "lc-0242",
+    "lc-0076"
+   ]
+  },
+  {
+   "id": "lc-0076",
+   "num": 76,
+   "title": "Minimum Window Substring",
+   "slug": "minimum-window-substring",
+   "difficulty": "hard",
+   "neetcode_group": "Sliding Window",
+   "patterns": [
+    "sliding-window",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.8,
+    "meta": 0.8,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Explain the 'have vs need' counter - why does it let you shrink greedily?",
+    "What if t contains duplicate characters, and what if it is longer than s?",
+    "Now the text is a stream you can only read once - what changes?"
+   ],
+   "siblings": [
+    "lc-0003",
+    "lc-0424"
+   ]
+  },
+  {
+   "id": "lc-0239",
+   "num": 239,
+   "title": "Sliding Window Maximum",
+   "slug": "sliding-window-maximum",
+   "difficulty": "hard",
+   "neetcode_group": "Sliding Window",
+   "patterns": [
+    "sliding-window",
+    "monotonic-stack"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.8,
+    "meta": 0.72,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.75,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Why is the deque solution O(n) amortized when each element can be pushed and popped?",
+    "Compare against a heap with lazy deletion - what is the worst-case memory?",
+    "Support a window whose size changes at runtime, or the sliding median instead."
+   ],
+   "siblings": [
+    "lc-0295",
+    "lc-0739"
+   ]
+  },
+  {
+   "id": "lc-0020",
+   "num": 20,
+   "title": "Valid Parentheses",
+   "slug": "valid-parentheses",
+   "difficulty": "easy",
+   "neetcode_group": "Stack",
+   "patterns": [
+    "monotonic-stack"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.7,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.75,
+    "tiktok": 0.65,
+    "openai": 0.4
+   },
+   "followups": [
+    "Add wildcard '*' that can be either bracket or empty - how does the stack argument break?",
+    "Return the index of the first offending character instead of a boolean.",
+    "How do you validate a 10GB file of brackets that cannot be held in memory?"
+   ],
+   "siblings": [
+    "lc-0022",
+    "lc-0678"
+   ]
+  },
+  {
+   "id": "lc-0155",
+   "num": 155,
+   "title": "Min Stack",
+   "slug": "min-stack",
+   "difficulty": "medium",
+   "neetcode_group": "Stack",
+   "patterns": [
+    "monotonic-stack"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.65,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Can you get O(1) min with only one stack and constant extra space per element?",
+    "Add a getMax and a getMedian in the same structure - what still holds?",
+    "Make it thread-safe for many concurrent push/pop callers."
+   ],
+   "siblings": [
+    "lc-0020",
+    "lc-0150"
+   ]
+  },
+  {
+   "id": "lc-0150",
+   "num": 150,
+   "title": "Evaluate Reverse Polish Notation",
+   "slug": "evaluate-reverse-polish-notation",
+   "difficulty": "medium",
+   "neetcode_group": "Stack",
+   "patterns": [
+    "monotonic-stack"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.6,
+    "bloomberg": 0.7,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "How do you convert an infix expression to RPN, and what precedence rules apply?",
+    "Handle division by zero, overflow, and unary minus.",
+    "Extend to a calculator that also supports parentheses and variables."
+   ],
+   "siblings": [
+    "lc-0155",
+    "lc-0020"
+   ]
+  },
+  {
+   "id": "lc-0022",
+   "num": 22,
+   "title": "Generate Parentheses",
+   "slug": "generate-parentheses",
+   "difficulty": "medium",
+   "neetcode_group": "Stack",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.75,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Why does the open<n, close<open pruning generate each string exactly once?",
+    "How many strings are produced, and can you emit them lazily as an iterator?",
+    "Generate only the k-th valid string in lexicographic order without listing all of them."
+   ],
+   "siblings": [
+    "lc-0020",
+    "lc-0078"
+   ]
+  },
+  {
+   "id": "lc-0739",
+   "num": 739,
+   "title": "Daily Temperatures",
+   "slug": "daily-temperatures",
+   "difficulty": "medium",
+   "neetcode_group": "Stack",
+   "patterns": [
+    "monotonic-stack"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.65,
+    "apple": 0.6,
+    "bloomberg": 0.7,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Prove the monotonic stack does O(n) total work.",
+    "Answer the mirrored question - previous warmer day - in the same pass.",
+    "Temperatures stream in live and you must emit answers as soon as they are known."
+   ],
+   "siblings": [
+    "lc-0084",
+    "lc-0239"
+   ]
+  },
+  {
+   "id": "lc-0853",
+   "num": 853,
+   "title": "Car Fleet",
+   "slug": "car-fleet",
+   "difficulty": "medium",
+   "neetcode_group": "Stack",
+   "patterns": [
+    "monotonic-stack",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.55,
+    "google": 0.5,
+    "meta": 0.45,
+    "microsoft": 0.4,
+    "apple": 0.35,
+    "bloomberg": 0.35,
+    "tiktok": 0.3,
+    "openai": 0.2
+   },
+   "followups": [
+    "Why does sorting by start position and scanning backwards find fleets correctly?",
+    "What if two cars start at the same position, or the target is behind a car?",
+    "Report the arrival time of each fleet, not just the count."
+   ],
+   "siblings": [
+    "lc-0739",
+    "lc-0056"
+   ]
+  },
+  {
+   "id": "lc-0084",
+   "num": 84,
+   "title": "Largest Rectangle in Histogram",
+   "slug": "largest-rectangle-in-histogram",
+   "difficulty": "hard",
+   "neetcode_group": "Stack",
+   "patterns": [
+    "monotonic-stack"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Walk through what the stack holds and why popping yields a maximal rectangle.",
+    "Use it to solve Maximal Rectangle in a binary matrix - what is the added cost?",
+    "Bar heights can be updated - what structure gives sublinear requeries?"
+   ],
+   "siblings": [
+    "lc-0042",
+    "lc-0739"
+   ]
+  },
+  {
+   "id": "lc-0704",
+   "num": 704,
+   "title": "Binary Search",
+   "slug": "binary-search",
+   "difficulty": "easy",
+   "neetcode_group": "Binary Search",
+   "patterns": [
+    "binary-search"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.55,
+    "tiktok": 0.4,
+    "openai": 0.25
+   },
+   "followups": [
+    "Write the loop so it cannot overflow or spin forever - which invariant guarantees termination?",
+    "Return the insertion point when the target is absent, and the first/last occurrence with duplicates.",
+    "How would you search a sorted array stored on disk with expensive random reads?"
+   ],
+   "siblings": [
+    "lc-0033",
+    "lc-0074"
+   ]
+  },
+  {
+   "id": "lc-0074",
+   "num": 74,
+   "title": "Search a 2D Matrix",
+   "slug": "search-a-2d-matrix",
+   "difficulty": "medium",
+   "neetcode_group": "Binary Search",
+   "patterns": [
+    "binary-search",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why can you treat the matrix as one flat sorted array here but not in Search a 2D Matrix II?",
+    "Solve the version where rows are sorted but row starts are not - what is the complexity?",
+    "How would you count elements smaller than the target instead of just finding it?"
+   ],
+   "siblings": [
+    "lc-0704",
+    "lc-0033"
+   ]
+  },
+  {
+   "id": "lc-0875",
+   "num": 875,
+   "title": "Koko Eating Bananas",
+   "slug": "koko-eating-bananas",
+   "difficulty": "medium",
+   "neetcode_group": "Binary Search",
+   "patterns": [
+    "binary-search",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.7,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "What exactly is the monotone predicate you binary search on, and why is it monotone?",
+    "How do you choose the upper bound, and what happens with 10^9-sized piles?",
+    "Variant: minimize hours given a fixed rate, or add a per-pile setup cost."
+   ],
+   "siblings": [
+    "lc-0704",
+    "lc-0153"
+   ]
+  },
+  {
+   "id": "lc-0153",
+   "num": 153,
+   "title": "Find Minimum in Rotated Sorted Array",
+   "slug": "find-minimum-in-rotated-sorted-array",
+   "difficulty": "medium",
+   "neetcode_group": "Binary Search",
+   "patterns": [
+    "binary-search"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.72,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.7,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why compare mid against the right end rather than the left?",
+    "Now duplicates are allowed - what is the worst-case complexity and why?",
+    "Recover the rotation count, then answer arbitrary index queries in O(1)."
+   ],
+   "siblings": [
+    "lc-0033",
+    "lc-0704"
+   ]
+  },
+  {
+   "id": "lc-0033",
+   "num": 33,
+   "title": "Search in Rotated Sorted Array",
+   "slug": "search-in-rotated-sorted-array",
+   "difficulty": "medium",
+   "neetcode_group": "Binary Search",
+   "patterns": [
+    "binary-search"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.78,
+    "meta": 0.78,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.75,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "How do you decide which half is sorted, and what breaks with duplicate values?",
+    "Could you instead find the pivot first - compare the two approaches.",
+    "Support an array that is rotated and then has one element modified."
+   ],
+   "siblings": [
+    "lc-0153",
+    "lc-0704"
+   ]
+  },
+  {
+   "id": "lc-0981",
+   "num": 981,
+   "title": "Time Based Key-Value Store",
+   "slug": "time-based-key-value-store",
+   "difficulty": "medium",
+   "neetcode_group": "Binary Search",
+   "patterns": [
+    "binary-search",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.55,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "What if sets arrive out of timestamp order - does your binary search still hold?",
+    "How would you evict old versions under a memory budget?",
+    "Make it safe for concurrent readers and a single writer."
+   ],
+   "siblings": [
+    "lc-0146",
+    "lc-0704"
+   ]
+  },
+  {
+   "id": "lc-0004",
+   "num": 4,
+   "title": "Median of Two Sorted Arrays",
+   "slug": "median-of-two-sorted-arrays",
+   "difficulty": "hard",
+   "neetcode_group": "Binary Search",
+   "patterns": [
+    "binary-search",
+    "divide-and-conquer"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.7,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.4
+   },
+   "followups": [
+    "Explain the partition invariant and why you binary search the shorter array.",
+    "Generalize from median to the k-th smallest across the two arrays.",
+    "Extend to m sorted arrays - what is the best you can do?"
+   ],
+   "siblings": [
+    "lc-0295",
+    "lc-0023"
+   ]
+  },
+  {
+   "id": "lc-0206",
+   "num": 206,
+   "title": "Reverse Linked List",
+   "slug": "reverse-linked-list",
+   "difficulty": "easy",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.7,
+    "meta": 0.8,
+    "microsoft": 0.8,
+    "apple": 0.75,
+    "bloomberg": 0.7,
+    "tiktok": 0.65,
+    "openai": 0.4
+   },
+   "followups": [
+    "Give both the iterative and recursive versions and compare stack usage.",
+    "Reverse only the sublist between positions m and n in one pass.",
+    "Reverse in groups of k - what changes about the pointer bookkeeping?"
+   ],
+   "siblings": [
+    "lc-0025",
+    "lc-0143"
+   ]
+  },
+  {
+   "id": "lc-0021",
+   "num": 21,
+   "title": "Merge Two Sorted Lists",
+   "slug": "merge-two-sorted-lists",
+   "difficulty": "easy",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "merge-sort"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.7,
+    "meta": 0.75,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.35
+   },
+   "followups": [
+    "Do it in place with O(1) extra space and no dummy node.",
+    "Extend to k lists - heap versus pairwise merge, which do you pick and why?",
+    "Merge two sorted lists that live on separate machines with limited bandwidth."
+   ],
+   "siblings": [
+    "lc-0023",
+    "lc-0206"
+   ]
+  },
+  {
+   "id": "lc-0143",
+   "num": 143,
+   "title": "Reorder List",
+   "slug": "reorder-list",
+   "difficulty": "medium",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "fast-slow-pointers"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.6,
+    "meta": 0.7,
+    "microsoft": 0.6,
+    "apple": 0.6,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why does the slow/fast split land correctly for both odd and even lengths?",
+    "Can you do it without reversing, using O(n) extra space - and is that a fair trade?",
+    "Undo the reorder to recover the original list."
+   ],
+   "siblings": [
+    "lc-0206",
+    "lc-0141"
+   ]
+  },
+  {
+   "id": "lc-0019",
+   "num": 19,
+   "title": "Remove Nth Node From End of List",
+   "slug": "remove-nth-node-from-end-of-list",
+   "difficulty": "medium",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "two-pointers"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.65,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Do it in one pass - what makes the dummy node necessary?",
+    "What if n exceeds the list length, or the list is being mutated concurrently?",
+    "Remove every n-th node from the end instead of only one."
+   ],
+   "siblings": [
+    "lc-0206",
+    "lc-0141"
+   ]
+  },
+  {
+   "id": "lc-0138",
+   "num": 138,
+   "title": "Copy List with Random Pointer",
+   "slug": "copy-list-with-random-pointer",
+   "difficulty": "medium",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.7,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.7,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Solve it with O(1) extra space using the interleaving trick.",
+    "Generalize to deep-copying an arbitrary object graph with cycles.",
+    "How would you serialize this list to disk and rebuild it later?"
+   ],
+   "siblings": [
+    "lc-0133",
+    "lc-0206"
+   ]
+  },
+  {
+   "id": "lc-0002",
+   "num": 2,
+   "title": "Add Two Numbers",
+   "slug": "add-two-numbers",
+   "difficulty": "medium",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "math"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.7,
+    "meta": 0.75,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.75,
+    "tiktok": 0.6,
+    "openai": 0.35
+   },
+   "followups": [
+    "What changes if the digits are stored most-significant-first?",
+    "Handle a final carry and lists of very different lengths.",
+    "Multiply the two numbers instead of adding them."
+   ],
+   "siblings": [
+    "lc-0043",
+    "lc-0021"
+   ]
+  },
+  {
+   "id": "lc-0141",
+   "num": 141,
+   "title": "Linked List Cycle",
+   "slug": "linked-list-cycle",
+   "difficulty": "easy",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "fast-slow-pointers"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.65,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.3
+   },
+   "followups": [
+    "Prove the fast pointer must meet the slow one inside a cycle.",
+    "Return the node where the cycle begins, and the cycle length.",
+    "Detect a cycle when you may not modify nodes and memory is O(1)."
+   ],
+   "siblings": [
+    "lc-0287",
+    "lc-0143"
+   ]
+  },
+  {
+   "id": "lc-0287",
+   "num": 287,
+   "title": "Find the Duplicate Number",
+   "slug": "find-the-duplicate-number",
+   "difficulty": "medium",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "fast-slow-pointers",
+    "binary-search"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.75,
+    "meta": 0.7,
+    "microsoft": 0.65,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.4
+   },
+   "followups": [
+    "Explain why the array can be viewed as a linked list with a cycle.",
+    "Give the binary-search-on-value solution and compare complexities.",
+    "What if there are two duplicates instead of one?"
+   ],
+   "siblings": [
+    "lc-0141",
+    "lc-0268"
+   ]
+  },
+  {
+   "id": "lc-0146",
+   "num": 146,
+   "title": "LRU Cache",
+   "slug": "lru-cache",
+   "difficulty": "medium",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.95,
+    "google": 0.85,
+    "meta": 0.9,
+    "microsoft": 0.85,
+    "apple": 0.8,
+    "bloomberg": 0.85,
+    "tiktok": 0.8,
+    "openai": 0.55
+   },
+   "followups": [
+    "Why a doubly linked list plus a hash map - what fails with a singly linked list?",
+    "Turn it into LFU, then into a TTL-aware cache.",
+    "Make it thread-safe and then shard it - where does the lock contention move?"
+   ],
+   "siblings": [
+    "lc-0155",
+    "lc-0981"
+   ]
+  },
+  {
+   "id": "lc-0023",
+   "num": 23,
+   "title": "Merge k Sorted Lists",
+   "slug": "merge-k-sorted-lists",
+   "difficulty": "hard",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list",
+    "heap",
+    "divide-and-conquer"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.8,
+    "meta": 0.78,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.8,
+    "tiktok": 0.6,
+    "openai": 0.45
+   },
+   "followups": [
+    "Compare the heap solution with divide-and-conquer merging - complexity and constants.",
+    "The k lists are streams on k machines and cannot fit in memory - what changes?",
+    "What if k is huge but each list is tiny?"
+   ],
+   "siblings": [
+    "lc-0021",
+    "lc-0295"
+   ]
+  },
+  {
+   "id": "lc-0025",
+   "num": 25,
+   "title": "Reverse Nodes in k-Group",
+   "slug": "reverse-nodes-in-k-group",
+   "difficulty": "hard",
+   "neetcode_group": "Linked List",
+   "patterns": [
+    "linked-list"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.65,
+    "meta": 0.68,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Handle the trailing group of fewer than k nodes - both leave-as-is and reverse-anyway.",
+    "Do it iteratively with O(1) space, then argue the recursion depth of the recursive version.",
+    "Reverse alternate groups only."
+   ],
+   "siblings": [
+    "lc-0206",
+    "lc-0143"
+   ]
+  },
+  {
+   "id": "lc-0226",
+   "num": 226,
+   "title": "Invert Binary Tree",
+   "slug": "invert-binary-tree",
+   "difficulty": "easy",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs",
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Give the iterative version - which traversal order works and why.",
+    "How deep can the recursion go before you blow the stack, and how do you avoid it?",
+    "Invert only the nodes below a given depth."
+   ],
+   "siblings": [
+    "lc-0104",
+    "lc-0100"
+   ]
+  },
+  {
+   "id": "lc-0104",
+   "num": 104,
+   "title": "Maximum Depth of Binary Tree",
+   "slug": "maximum-depth-of-binary-tree",
+   "difficulty": "easy",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs",
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Do it iteratively both DFS and BFS - which one gives you level information for free?",
+    "Return the minimum depth instead - why is the naive change wrong?",
+    "How would you compute depth for a tree stored on disk with millions of nodes?"
+   ],
+   "siblings": [
+    "lc-0110",
+    "lc-0543"
+   ]
+  },
+  {
+   "id": "lc-0543",
+   "num": 543,
+   "title": "Diameter of Binary Tree",
+   "slug": "diameter-of-binary-tree",
+   "difficulty": "easy",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.72,
+    "meta": 0.72,
+    "microsoft": 0.65,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why does a single post-order pass suffice instead of recomputing heights?",
+    "Return the actual path, not just its length.",
+    "Extend to an n-ary tree, then to a general tree with weighted edges."
+   ],
+   "siblings": [
+    "lc-0124",
+    "lc-0104"
+   ]
+  },
+  {
+   "id": "lc-0110",
+   "num": 110,
+   "title": "Balanced Binary Tree",
+   "slug": "balanced-binary-tree",
+   "difficulty": "easy",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.6,
+    "bloomberg": 0.55,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "How do you avoid the O(n^2) recomputation of heights?",
+    "Define balanced as height difference at most k and redo it.",
+    "How would you rebalance an unbalanced BST in place?"
+   ],
+   "siblings": [
+    "lc-0104",
+    "lc-0098"
+   ]
+  },
+  {
+   "id": "lc-0100",
+   "num": 100,
+   "title": "Same Tree",
+   "slug": "same-tree",
+   "difficulty": "easy",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.65,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.25
+   },
+   "followups": [
+    "Give an iterative version and say what the queue must hold.",
+    "Compare structural equality against value-multiset equality.",
+    "How would you diff two large trees and report the changed subtrees?"
+   ],
+   "siblings": [
+    "lc-0572",
+    "lc-0226"
+   ]
+  },
+  {
+   "id": "lc-0572",
+   "num": 572,
+   "title": "Subtree of Another Tree",
+   "slug": "subtree-of-another-tree",
+   "difficulty": "easy",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.68,
+    "google": 0.62,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "What is the naive complexity, and how does serializing plus KMP beat it?",
+    "Why must the serialization include null markers?",
+    "Find all occurrences instead of just checking existence."
+   ],
+   "siblings": [
+    "lc-0100",
+    "lc-0297"
+   ]
+  },
+  {
+   "id": "lc-0235",
+   "num": 235,
+   "title": "Lowest Common Ancestor of a Binary Search Tree",
+   "slug": "lowest-common-ancestor-of-a-binary-search-tree",
+   "difficulty": "medium",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "binary-search-tree",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.72,
+    "meta": 0.72,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "How does the solution change for a plain binary tree with no BST property?",
+    "What if nodes carry parent pointers - can you do it in O(1) space?",
+    "Answer many LCA queries on a static tree efficiently."
+   ],
+   "siblings": [
+    "lc-0098",
+    "lc-0230"
+   ]
+  },
+  {
+   "id": "lc-0102",
+   "num": 102,
+   "title": "Binary Tree Level Order Traversal",
+   "slug": "binary-tree-level-order-traversal",
+   "difficulty": "medium",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.75,
+    "meta": 0.78,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.35
+   },
+   "followups": [
+    "How do you know where one level ends inside a single queue?",
+    "Produce zigzag order, then bottom-up order, without a second pass.",
+    "Do a level order traversal of a tree too wide to hold one full level in memory."
+   ],
+   "siblings": [
+    "lc-0199",
+    "lc-0104"
+   ]
+  },
+  {
+   "id": "lc-0199",
+   "num": 199,
+   "title": "Binary Tree Right Side View",
+   "slug": "binary-tree-right-side-view",
+   "difficulty": "medium",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "bfs",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.72,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Solve it with DFS instead of BFS - what ordering makes it work?",
+    "Give the left side view and the view from directly above (vertical order).",
+    "What if the tree is n-ary?"
+   ],
+   "siblings": [
+    "lc-0102",
+    "lc-0104"
+   ]
+  },
+  {
+   "id": "lc-1448",
+   "num": 1448,
+   "title": "Count Good Nodes in Binary Tree",
+   "slug": "count-good-nodes-in-binary-tree",
+   "difficulty": "medium",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.55,
+    "google": 0.55,
+    "meta": 0.5,
+    "microsoft": 0.45,
+    "apple": 0.4,
+    "bloomberg": 0.4,
+    "tiktok": 0.35,
+    "openai": 0.25
+   },
+   "followups": [
+    "What state must the recursion carry down, and why is it not returnable upward?",
+    "Count nodes that are minima along their path instead.",
+    "Report the good nodes themselves in path order."
+   ],
+   "siblings": [
+    "lc-0104",
+    "lc-0124"
+   ]
+  },
+  {
+   "id": "lc-0098",
+   "num": 98,
+   "title": "Validate Binary Search Tree",
+   "slug": "validate-binary-search-tree",
+   "difficulty": "medium",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "binary-search-tree",
+    "in-order-traversal",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.8,
+    "meta": 0.8,
+    "microsoft": 0.78,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Why does checking only node-versus-children fail? Give a counterexample.",
+    "Solve it with in-order traversal and O(1) extra space using Morris traversal.",
+    "Two nodes were swapped by mistake - recover the BST."
+   ],
+   "siblings": [
+    "lc-0230",
+    "lc-0235"
+   ]
+  },
+  {
+   "id": "lc-0230",
+   "num": 230,
+   "title": "Kth Smallest Element in a BST",
+   "slug": "kth-smallest-element-in-a-bst",
+   "difficulty": "medium",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "binary-search-tree",
+    "in-order-traversal"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.75,
+    "meta": 0.72,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Stop early with an iterative in-order walk - what is the space cost?",
+    "The BST is modified often and k-th queries are frequent - what do you augment nodes with?",
+    "Find the k-th largest without reversing the traversal."
+   ],
+   "siblings": [
+    "lc-0098",
+    "lc-0215"
+   ]
+  },
+  {
+   "id": "lc-0105",
+   "num": 105,
+   "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+   "slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+   "difficulty": "medium",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs",
+    "divide-and-conquer"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.75,
+    "meta": 0.72,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "How does a hash map of in-order indices cut the complexity to O(n)?",
+    "Can you rebuild from preorder plus postorder - is it unique?",
+    "What if the values contain duplicates?"
+   ],
+   "siblings": [
+    "lc-0297",
+    "lc-0124"
+   ]
+  },
+  {
+   "id": "lc-0124",
+   "num": 124,
+   "title": "Binary Tree Maximum Path Sum",
+   "slug": "binary-tree-maximum-path-sum",
+   "difficulty": "hard",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs",
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.78,
+    "meta": 0.78,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Distinguish what you return upward from what you record globally.",
+    "Return the path itself, not just its sum.",
+    "Extend to a graph instead of a tree - what changes about the problem?"
+   ],
+   "siblings": [
+    "lc-0543",
+    "lc-0104"
+   ]
+  },
+  {
+   "id": "lc-0297",
+   "num": 297,
+   "title": "Serialize and Deserialize Binary Tree",
+   "slug": "serialize-and-deserialize-binary-tree",
+   "difficulty": "hard",
+   "neetcode_group": "Trees",
+   "patterns": [
+    "dfs",
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.8,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.45
+   },
+   "followups": [
+    "Which traversal makes deserialization unambiguous, and why do null markers matter?",
+    "Make the encoding compact - how few bits per node can you get away with?",
+    "Serialize a BST specially, and handle a tree that does not fit in memory."
+   ],
+   "siblings": [
+    "lc-0105",
+    "lc-0572"
+   ]
+  },
+  {
+   "id": "lc-0208",
+   "num": 208,
+   "title": "Implement Trie (Prefix Tree)",
+   "slug": "implement-trie-prefix-tree",
+   "difficulty": "medium",
+   "neetcode_group": "Tries",
+   "patterns": [
+    "trie"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.8,
+    "meta": 0.78,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Compare a 26-slot array per node against a hash map - memory versus speed.",
+    "Add delete, and add a count of words under each prefix.",
+    "How would you build an autocomplete returning the top k completions by frequency?"
+   ],
+   "siblings": [
+    "lc-0211",
+    "lc-0212"
+   ]
+  },
+  {
+   "id": "lc-0211",
+   "num": 211,
+   "title": "Design Add and Search Words Data Structure",
+   "slug": "design-add-and-search-words-data-structure",
+   "difficulty": "medium",
+   "neetcode_group": "Tries",
+   "patterns": [
+    "trie",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.72,
+    "meta": 0.7,
+    "microsoft": 0.65,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "What is the worst-case cost of a query that is all wildcards?",
+    "Support '*' matching any number of characters, not just one.",
+    "How do you keep this fast when there are millions of words and mostly-wildcard queries?"
+   ],
+   "siblings": [
+    "lc-0208",
+    "lc-0212"
+   ]
+  },
+  {
+   "id": "lc-0212",
+   "num": 212,
+   "title": "Word Search II",
+   "slug": "word-search-ii",
+   "difficulty": "hard",
+   "neetcode_group": "Tries",
+   "patterns": [
+    "trie",
+    "backtracking",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.78,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "Why is a trie decisively better than running Word Search once per word?",
+    "How do you prune trie branches once a word has been found?",
+    "The board is 10^4 x 10^4 - what changes in your approach?"
+   ],
+   "siblings": [
+    "lc-0079",
+    "lc-0208"
+   ]
+  },
+  {
+   "id": "lc-0703",
+   "num": 703,
+   "title": "Kth Largest Element in a Stream",
+   "slug": "kth-largest-element-in-a-stream",
+   "difficulty": "easy",
+   "neetcode_group": "Heap / Priority Queue",
+   "patterns": [
+    "heap"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.65,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why a min-heap of size k rather than a max-heap of everything?",
+    "Support removing values from the stream as well as adding them.",
+    "Now you need the k-th largest over a sliding time window."
+   ],
+   "siblings": [
+    "lc-0215",
+    "lc-0295"
+   ]
+  },
+  {
+   "id": "lc-1046",
+   "num": 1046,
+   "title": "Last Stone Weight",
+   "slug": "last-stone-weight",
+   "difficulty": "easy",
+   "neetcode_group": "Heap / Priority Queue",
+   "patterns": [
+    "heap"
+   ],
+   "company_freq": {
+    "amazon": 0.5,
+    "google": 0.45,
+    "meta": 0.4,
+    "microsoft": 0.45,
+    "apple": 0.4,
+    "bloomberg": 0.45,
+    "tiktok": 0.3,
+    "openai": 0.2
+   },
+   "followups": [
+    "Can you beat the heap using counting sort when weights are bounded?",
+    "Solve the variant where you may choose which two stones to smash to minimize the remainder.",
+    "Extend to smashing k stones at a time."
+   ],
+   "siblings": [
+    "lc-0703",
+    "lc-0215"
+   ]
+  },
+  {
+   "id": "lc-0973",
+   "num": 973,
+   "title": "K Closest Points to Origin",
+   "slug": "k-closest-points-to-origin",
+   "difficulty": "medium",
+   "neetcode_group": "Heap / Priority Queue",
+   "patterns": [
+    "heap",
+    "quickselect"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.75,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Heap versus quickselect - expected and worst-case complexity for each.",
+    "Points stream in forever - what state do you keep?",
+    "Distribute this over 100 machines each holding a shard of the points."
+   ],
+   "siblings": [
+    "lc-0215",
+    "lc-0347"
+   ]
+  },
+  {
+   "id": "lc-0215",
+   "num": 215,
+   "title": "Kth Largest Element in an Array",
+   "slug": "kth-largest-element-in-an-array",
+   "difficulty": "medium",
+   "neetcode_group": "Heap / Priority Queue",
+   "patterns": [
+    "heap",
+    "quickselect"
+   ],
+   "company_freq": {
+    "amazon": 0.88,
+    "google": 0.8,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.8,
+    "tiktok": 0.65,
+    "openai": 0.45
+   },
+   "followups": [
+    "Walk through quickselect and explain how to avoid the O(n^2) worst case.",
+    "Do it in O(1) extra space, and then without modifying the input.",
+    "The data is on disk and 100x larger than RAM - how do you find the k-th largest?"
+   ],
+   "siblings": [
+    "lc-0973",
+    "lc-0347"
+   ]
+  },
+  {
+   "id": "lc-0621",
+   "num": 621,
+   "title": "Task Scheduler",
+   "slug": "task-scheduler",
+   "difficulty": "medium",
+   "neetcode_group": "Heap / Priority Queue",
+   "patterns": [
+    "heap",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Derive the closed-form formula and prove it matches the greedy simulation.",
+    "Output an actual valid schedule, not just its length.",
+    "Different tasks now have different cooldowns - does greedy still work?"
+   ],
+   "siblings": [
+    "lc-0846",
+    "lc-0763"
+   ]
+  },
+  {
+   "id": "lc-0355",
+   "num": 355,
+   "title": "Design Twitter",
+   "slug": "design-twitter",
+   "difficulty": "medium",
+   "neetcode_group": "Heap / Priority Queue",
+   "patterns": [
+    "heap",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.65,
+    "meta": 0.75,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Fan-out on write versus fan-out on read - which do you pick for a celebrity with 100M followers?",
+    "How would you paginate the feed beyond the first 10 tweets?",
+    "Where do you shard, and how do you keep the timeline consistent?"
+   ],
+   "siblings": [
+    "lc-0146",
+    "lc-0023"
+   ]
+  },
+  {
+   "id": "lc-0295",
+   "num": 295,
+   "title": "Find Median from Data Stream",
+   "slug": "find-median-from-data-stream",
+   "difficulty": "hard",
+   "neetcode_group": "Heap / Priority Queue",
+   "patterns": [
+    "heap"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.8,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.8,
+    "tiktok": 0.65,
+    "openai": 0.45
+   },
+   "followups": [
+    "Explain the two-heap invariant and how you rebalance after each insert.",
+    "All values are integers in [0,100] - can you do better than heaps?",
+    "Support removals, and then a sliding-window median."
+   ],
+   "siblings": [
+    "lc-0239",
+    "lc-0215"
+   ]
+  },
+  {
+   "id": "lc-0078",
+   "num": 78,
+   "title": "Subsets",
+   "slug": "subsets",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.72,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Give the bitmask iterative version and compare it to recursion.",
+    "Handle duplicates in the input without producing duplicate subsets.",
+    "Emit subsets lazily so you never hold 2^n of them in memory."
+   ],
+   "siblings": [
+    "lc-0090",
+    "lc-0046"
+   ]
+  },
+  {
+   "id": "lc-0039",
+   "num": 39,
+   "title": "Combination Sum",
+   "slug": "combination-sum",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.72,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "Why does passing a start index prevent permutations of the same combination?",
+    "Count the combinations instead of listing them - is DP better then?",
+    "Add a limit on how many numbers a combination may contain."
+   ],
+   "siblings": [
+    "lc-0040",
+    "lc-0322"
+   ]
+  },
+  {
+   "id": "lc-0046",
+   "num": 46,
+   "title": "Permutations",
+   "slug": "permutations",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.72,
+    "meta": 0.72,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "Do it by swapping in place - what is the space cost versus a used[] array?",
+    "Handle duplicate elements so each permutation appears once.",
+    "Generate the next permutation in lexicographic order in O(n)."
+   ],
+   "siblings": [
+    "lc-0078",
+    "lc-0090"
+   ]
+  },
+  {
+   "id": "lc-0090",
+   "num": 90,
+   "title": "Subsets II",
+   "slug": "subsets-ii",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.68,
+    "google": 0.6,
+    "meta": 0.62,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why does sorting plus the skip-equal-sibling rule remove exactly the duplicates?",
+    "Solve it by counting occurrences instead of sorting - compare.",
+    "Return only the subsets whose sum equals a target."
+   ],
+   "siblings": [
+    "lc-0078",
+    "lc-0040"
+   ]
+  },
+  {
+   "id": "lc-0040",
+   "num": 40,
+   "title": "Combination Sum II",
+   "slug": "combination-sum-ii",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.68,
+    "google": 0.6,
+    "meta": 0.62,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Contrast the dedup rule here with the reuse rule in Combination Sum.",
+    "What pruning lets you cut branches early once the sum exceeds the target?",
+    "Negative numbers are now allowed - what breaks?"
+   ],
+   "siblings": [
+    "lc-0039",
+    "lc-0090"
+   ]
+  },
+  {
+   "id": "lc-0079",
+   "num": 79,
+   "title": "Word Search",
+   "slug": "word-search",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking",
+    "dfs",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.75,
+    "meta": 0.78,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.65,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "How do you mark visited cells without extra space, and is that safe with recursion?",
+    "What is the worst-case complexity, and which pruning helps most?",
+    "Now you must search 10^5 words on the same board."
+   ],
+   "siblings": [
+    "lc-0212",
+    "lc-0200"
+   ]
+  },
+  {
+   "id": "lc-0131",
+   "num": 131,
+   "title": "Palindrome Partitioning",
+   "slug": "palindrome-partitioning",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking",
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.65,
+    "google": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.35
+   },
+   "followups": [
+    "Precompute a palindrome table - how much does it cut off the runtime?",
+    "Find the minimum number of cuts instead of all partitions.",
+    "How many partitions are there in the worst case, and does that bound your approach?"
+   ],
+   "siblings": [
+    "lc-0005",
+    "lc-0647"
+   ]
+  },
+  {
+   "id": "lc-0017",
+   "num": 17,
+   "title": "Letter Combinations of a Phone Number",
+   "slug": "letter-combinations-of-a-phone-number",
+   "difficulty": "medium",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.7,
+    "meta": 0.72,
+    "microsoft": 0.68,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Give the iterative BFS-style build and compare memory with recursion.",
+    "Return them in a fixed order and stream them out one at a time.",
+    "Rank the outputs by dictionary likelihood - what structure do you add?"
+   ],
+   "siblings": [
+    "lc-0022",
+    "lc-0078"
+   ]
+  },
+  {
+   "id": "lc-0051",
+   "num": 51,
+   "title": "N-Queens",
+   "slug": "n-queens",
+   "difficulty": "hard",
+   "neetcode_group": "Backtracking",
+   "patterns": [
+    "backtracking"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.4,
+    "openai": 0.35
+   },
+   "followups": [
+    "Which O(1) checks let you test a diagonal conflict - derive the index formulas.",
+    "Return only the count (N-Queens II) - can you exploit symmetry?",
+    "Use bitmasks to speed it up and estimate the gain for n=15."
+   ],
+   "siblings": [
+    "lc-0079",
+    "lc-0046"
+   ]
+  },
+  {
+   "id": "lc-0200",
+   "num": 200,
+   "title": "Number of Islands",
+   "slug": "number-of-islands",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "dfs",
+    "bfs",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.95,
+    "google": 0.9,
+    "meta": 0.9,
+    "microsoft": 0.85,
+    "apple": 0.8,
+    "bloomberg": 0.8,
+    "tiktok": 0.8,
+    "openai": 0.5
+   },
+   "followups": [
+    "DFS, BFS, and union-find all work - which do you choose for a 10^6 x 10^6 grid and why?",
+    "Islands are added one at a time - report the count after each addition.",
+    "The grid is too large for memory and is streamed row by row - what do you keep?"
+   ],
+   "siblings": [
+    "lc-0695",
+    "lc-0130"
+   ]
+  },
+  {
+   "id": "lc-0133",
+   "num": 133,
+   "title": "Clone Graph",
+   "slug": "clone-graph",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "dfs",
+    "bfs",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.75,
+    "meta": 0.78,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "How does the visited map prevent infinite recursion on cycles?",
+    "Do it iteratively - what does the queue hold?",
+    "Deep-copy a graph with 10^7 nodes without blowing the stack."
+   ],
+   "siblings": [
+    "lc-0138",
+    "lc-0200"
+   ]
+  },
+  {
+   "id": "lc-0695",
+   "num": 695,
+   "title": "Max Area of Island",
+   "slug": "max-area-of-island",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "dfs",
+    "bfs",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.7,
+    "meta": 0.72,
+    "microsoft": 0.65,
+    "apple": 0.6,
+    "bloomberg": 0.55,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why does mutating the grid to mark visited work, and when is it unacceptable?",
+    "You may flip one 0 to 1 - find the largest island then.",
+    "Return the island's perimeter as well in the same traversal."
+   ],
+   "siblings": [
+    "lc-0200",
+    "lc-0130"
+   ]
+  },
+  {
+   "id": "lc-0417",
+   "num": 417,
+   "title": "Pacific Atlantic Water Flow",
+   "slug": "pacific-atlantic-water-flow",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "dfs",
+    "bfs",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.7,
+    "meta": 0.68,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why search from the oceans inward instead of from each cell outward?",
+    "What is the complexity of the naive per-cell search, and why is it wrong at scale?",
+    "Handle equal heights and plateaus - does the reachability rule still hold?"
+   ],
+   "siblings": [
+    "lc-0200",
+    "lc-0130"
+   ]
+  },
+  {
+   "id": "lc-0130",
+   "num": 130,
+   "title": "Surrounded Regions",
+   "slug": "surrounded-regions",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "dfs",
+    "union-find",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.65,
+    "meta": 0.68,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Explain the border-first trick and why it avoids checking enclosure directly.",
+    "Solve it with union-find and a virtual outside node.",
+    "Do it iteratively to survive a 10^6-cell region."
+   ],
+   "siblings": [
+    "lc-0200",
+    "lc-0695"
+   ]
+  },
+  {
+   "id": "lc-0994",
+   "num": 994,
+   "title": "Rotting Oranges",
+   "slug": "rotting-oranges",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "bfs",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.75,
+    "meta": 0.72,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Why must this be multi-source BFS rather than a DFS?",
+    "Report which orange is the last to rot, not just the time.",
+    "Different oranges rot at different rates - what algorithm do you switch to?"
+   ],
+   "siblings": [
+    "lc-0200",
+    "lc-0286"
+   ]
+  },
+  {
+   "id": "lc-0286",
+   "num": 286,
+   "title": "Walls and Gates",
+   "slug": "walls-and-gates",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "bfs",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.65,
+    "google": 0.6,
+    "meta": 0.65,
+    "microsoft": 0.5,
+    "apple": 0.45,
+    "bloomberg": 0.4,
+    "tiktok": 0.4,
+    "openai": 0.25
+   },
+   "followups": [
+    "Why does one multi-source BFS beat running BFS from every gate?",
+    "Gates are added over time - how do you update distances incrementally?",
+    "Rooms now have traversal costs - which algorithm replaces BFS?"
+   ],
+   "siblings": [
+    "lc-0994",
+    "lc-0200"
+   ]
+  },
+  {
+   "id": "lc-0207",
+   "num": 207,
+   "title": "Course Schedule",
+   "slug": "course-schedule",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "topological-sort",
+    "dfs",
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.9,
+    "google": 0.85,
+    "meta": 0.85,
+    "microsoft": 0.8,
+    "apple": 0.75,
+    "bloomberg": 0.75,
+    "tiktok": 0.7,
+    "openai": 0.5
+   },
+   "followups": [
+    "Contrast Kahn's algorithm with DFS coloring - which reports the actual cycle more easily?",
+    "Return the cycle of courses that makes it impossible.",
+    "Prerequisites are added incrementally - detect the first edge that creates a cycle."
+   ],
+   "siblings": [
+    "lc-0210",
+    "lc-0261"
+   ]
+  },
+  {
+   "id": "lc-0210",
+   "num": 210,
+   "title": "Course Schedule II",
+   "slug": "course-schedule-ii",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "topological-sort",
+    "bfs",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.88,
+    "google": 0.82,
+    "meta": 0.82,
+    "microsoft": 0.78,
+    "apple": 0.72,
+    "bloomberg": 0.72,
+    "tiktok": 0.68,
+    "openai": 0.45
+   },
+   "followups": [
+    "Return the lexicographically smallest valid order - what changes?",
+    "Courses can run in parallel - compute the minimum number of semesters.",
+    "Is the topological order unique, and how do you detect that?"
+   ],
+   "siblings": [
+    "lc-0207",
+    "lc-0269"
+   ]
+  },
+  {
+   "id": "lc-0684",
+   "num": 684,
+   "title": "Redundant Connection",
+   "slug": "redundant-connection",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "union-find"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.68,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Explain union by rank and path compression, and give the amortized complexity.",
+    "Solve the directed version (Redundant Connection II) - what extra cases appear?",
+    "Support deleting edges too - what breaks in union-find?"
+   ],
+   "siblings": [
+    "lc-0261",
+    "lc-0323"
+   ]
+  },
+  {
+   "id": "lc-0323",
+   "num": 323,
+   "title": "Number of Connected Components in an Undirected Graph",
+   "slug": "number-of-connected-components-in-an-undirected-graph",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "union-find",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Union-find versus DFS here - compare complexity and when each is preferable.",
+    "Edges stream in - report the component count after each edge.",
+    "Now edges can also be removed - what structure handles that?"
+   ],
+   "siblings": [
+    "lc-0684",
+    "lc-0261"
+   ]
+  },
+  {
+   "id": "lc-0261",
+   "num": 261,
+   "title": "Graph Valid Tree",
+   "slug": "graph-valid-tree",
+   "difficulty": "medium",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "union-find",
+    "dfs"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.68,
+    "meta": 0.7,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "What two conditions together make a graph a tree, and why is one alone not enough?",
+    "How would you detect a cycle in a directed graph instead?",
+    "The graph is distributed across machines - how do you validate it?"
+   ],
+   "siblings": [
+    "lc-0323",
+    "lc-0684"
+   ]
+  },
+  {
+   "id": "lc-0127",
+   "num": 127,
+   "title": "Word Ladder",
+   "slug": "word-ladder",
+   "difficulty": "hard",
+   "neetcode_group": "Graphs",
+   "patterns": [
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.75,
+    "meta": 0.72,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "How does bidirectional BFS change the complexity, and when does it not help?",
+    "Return all shortest transformation sequences, not just the length.",
+    "The word list has 10^6 words - how do you build neighbors without an O(n^2) scan?"
+   ],
+   "siblings": [
+    "lc-0207",
+    "lc-0200"
+   ]
+  },
+  {
+   "id": "lc-0743",
+   "num": 743,
+   "title": "Network Delay Time",
+   "slug": "network-delay-time",
+   "difficulty": "medium",
+   "neetcode_group": "Advanced Graphs",
+   "patterns": [
+    "dijkstra",
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.72,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why Dijkstra and not BFS, and what happens with a negative edge?",
+    "Compare against Bellman-Ford and SPFA on this input size.",
+    "The graph updates constantly - do you recompute or maintain incrementally?"
+   ],
+   "siblings": [
+    "lc-0787",
+    "lc-1584"
+   ]
+  },
+  {
+   "id": "lc-0332",
+   "num": 332,
+   "title": "Reconstruct Itinerary",
+   "slug": "reconstruct-itinerary",
+   "difficulty": "hard",
+   "neetcode_group": "Advanced Graphs",
+   "patterns": [
+    "dfs",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.65,
+    "google": 0.65,
+    "meta": 0.6,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.4,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why does naive greedy DFS get stuck, and how does Hierholzer's algorithm fix it?",
+    "What conditions guarantee an Eulerian path exists at all?",
+    "Return all valid itineraries in lexicographic order."
+   ],
+   "siblings": [
+    "lc-0207",
+    "lc-0210"
+   ]
+  },
+  {
+   "id": "lc-1584",
+   "num": 1584,
+   "title": "Min Cost to Connect All Points",
+   "slug": "min-cost-to-connect-all-points",
+   "difficulty": "medium",
+   "neetcode_group": "Advanced Graphs",
+   "patterns": [
+    "mst",
+    "union-find",
+    "heap"
+   ],
+   "company_freq": {
+    "amazon": 0.68,
+    "google": 0.68,
+    "meta": 0.6,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.35
+   },
+   "followups": [
+    "Prim versus Kruskal on a dense complete graph - which wins and why?",
+    "Some edges are already built for free - how does that change the MST?",
+    "Can you exploit the Manhattan-distance geometry to avoid all n^2 edges?"
+   ],
+   "siblings": [
+    "lc-0684",
+    "lc-0743"
+   ]
+  },
+  {
+   "id": "lc-0778",
+   "num": 778,
+   "title": "Swim in Rising Water",
+   "slug": "swim-in-rising-water",
+   "difficulty": "hard",
+   "neetcode_group": "Advanced Graphs",
+   "patterns": [
+    "dijkstra",
+    "binary-search",
+    "union-find"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.62,
+    "meta": 0.55,
+    "microsoft": 0.5,
+    "apple": 0.45,
+    "bloomberg": 0.45,
+    "tiktok": 0.4,
+    "openai": 0.3
+   },
+   "followups": [
+    "Frame it as minimizing the maximum edge - which of Dijkstra, binary search + BFS, or union-find fits best?",
+    "Prove the answer is monotone in time so binary search is valid.",
+    "Return the actual path taken, not just the arrival time."
+   ],
+   "siblings": [
+    "lc-0743",
+    "lc-1584"
+   ]
+  },
+  {
+   "id": "lc-0269",
+   "num": 269,
+   "title": "Alien Dictionary",
+   "slug": "alien-dictionary",
+   "difficulty": "hard",
+   "neetcode_group": "Advanced Graphs",
+   "patterns": [
+    "topological-sort",
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.75,
+    "meta": 0.72,
+    "microsoft": 0.65,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.45,
+    "openai": 0.4
+   },
+   "followups": [
+    "Which invalid inputs must you reject - name the prefix case explicitly.",
+    "How do you detect that the order is ambiguous rather than impossible?",
+    "Only pairwise comparisons are available instead of a word list - what changes?"
+   ],
+   "siblings": [
+    "lc-0210",
+    "lc-0207"
+   ]
+  },
+  {
+   "id": "lc-0787",
+   "num": 787,
+   "title": "Cheapest Flights Within K Stops",
+   "slug": "cheapest-flights-within-k-stops",
+   "difficulty": "medium",
+   "neetcode_group": "Advanced Graphs",
+   "patterns": [
+    "dijkstra",
+    "bfs",
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.72,
+    "meta": 0.68,
+    "microsoft": 0.62,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why does plain Dijkstra fail with the stop limit, and how do you repair it?",
+    "Give the Bellman-Ford formulation and explain why k+1 relaxation rounds suffice.",
+    "Add a departure-time constraint so flights must connect in order."
+   ],
+   "siblings": [
+    "lc-0743",
+    "lc-0778"
+   ]
+  },
+  {
+   "id": "lc-0070",
+   "num": 70,
+   "title": "Climbing Stairs",
+   "slug": "climbing-stairs",
+   "difficulty": "easy",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.6,
+    "meta": 0.65,
+    "microsoft": 0.65,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Reduce the space to O(1), then compute the n-th value in O(log n) with matrix exponentiation.",
+    "Steps of size 1..k are allowed - what is the new recurrence?",
+    "Some stairs are broken and cannot be stepped on - redo it."
+   ],
+   "siblings": [
+    "lc-0746",
+    "lc-0198"
+   ]
+  },
+  {
+   "id": "lc-0746",
+   "num": 746,
+   "title": "Min Cost Climbing Stairs",
+   "slug": "min-cost-climbing-stairs",
+   "difficulty": "easy",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.4,
+    "openai": 0.25
+   },
+   "followups": [
+    "Why can you start at either index 0 or 1, and how does that shape the base case?",
+    "Reconstruct the cheapest sequence of steps, not just its cost.",
+    "Generalize to jumps of up to k steps with per-step costs."
+   ],
+   "siblings": [
+    "lc-0070",
+    "lc-0198"
+   ]
+  },
+  {
+   "id": "lc-0198",
+   "num": 198,
+   "title": "House Robber",
+   "slug": "house-robber",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.75,
+    "meta": 0.75,
+    "microsoft": 0.72,
+    "apple": 0.68,
+    "bloomberg": 0.65,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "State the recurrence and reduce to two rolling variables.",
+    "Which houses were robbed - reconstruct the choice set.",
+    "Houses form a tree rather than a line (House Robber III) - what changes?"
+   ],
+   "siblings": [
+    "lc-0213",
+    "lc-0070"
+   ]
+  },
+  {
+   "id": "lc-0213",
+   "num": 213,
+   "title": "House Robber II",
+   "slug": "house-robber-ii",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.65,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why do two linear passes correctly handle the circular constraint?",
+    "Extend to a circle where you must skip at least two houses between robberies.",
+    "What if you may rob at most k houses?"
+   ],
+   "siblings": [
+    "lc-0198",
+    "lc-0070"
+   ]
+  },
+  {
+   "id": "lc-0005",
+   "num": 5,
+   "title": "Longest Palindromic Substring",
+   "slug": "longest-palindromic-substring",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d",
+    "two-pointers"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.78,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.65,
+    "openai": 0.4
+   },
+   "followups": [
+    "Expand-around-center versus the O(n^2) DP table - compare time and space.",
+    "Explain Manacher's algorithm and where the linear time comes from.",
+    "Find the longest palindromic subsequence instead - why is that a different DP?"
+   ],
+   "siblings": [
+    "lc-0647",
+    "lc-0125"
+   ]
+  },
+  {
+   "id": "lc-0647",
+   "num": 647,
+   "title": "Palindromic Substrings",
+   "slug": "palindromic-substrings",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d",
+    "two-pointers"
+   ],
+   "company_freq": {
+    "amazon": 0.68,
+    "google": 0.62,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Count distinct palindromic substrings instead of all occurrences.",
+    "How would Manacher's give you the count in O(n)?",
+    "Count palindromic subsequences - state the DP."
+   ],
+   "siblings": [
+    "lc-0005",
+    "lc-0131"
+   ]
+  },
+  {
+   "id": "lc-0091",
+   "num": 91,
+   "title": "Decode Ways",
+   "slug": "decode-ways",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.72,
+    "meta": 0.75,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Enumerate every edge case involving '0' and justify each base case.",
+    "Handle '*' wildcards that stand for any digit 1-9.",
+    "Return one valid decoding, not just the count."
+   ],
+   "siblings": [
+    "lc-0139",
+    "lc-0070"
+   ]
+  },
+  {
+   "id": "lc-0322",
+   "num": 322,
+   "title": "Coin Change",
+   "slug": "coin-change",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.9,
+    "google": 0.85,
+    "meta": 0.85,
+    "microsoft": 0.8,
+    "apple": 0.75,
+    "bloomberg": 0.75,
+    "tiktok": 0.7,
+    "openai": 0.5
+   },
+   "followups": [
+    "Why does greedy fail, and for which coin systems is it actually correct?",
+    "Return the coins used, not just the count.",
+    "The amount is 10^9 but there are only 5 coin types - what do you do instead of a DP table?"
+   ],
+   "siblings": [
+    "lc-0518",
+    "lc-0039"
+   ]
+  },
+  {
+   "id": "lc-0152",
+   "num": 152,
+   "title": "Maximum Product Subarray",
+   "slug": "maximum-product-subarray",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.72,
+    "meta": 0.72,
+    "microsoft": 0.68,
+    "apple": 0.6,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why must you track both the running max and min?",
+    "Handle zeros and overflow explicitly.",
+    "Return the subarray boundaries, and adapt to a circular array."
+   ],
+   "siblings": [
+    "lc-0053",
+    "lc-0238"
+   ]
+  },
+  {
+   "id": "lc-0139",
+   "num": 139,
+   "title": "Word Break",
+   "slug": "word-break",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d",
+    "trie"
+   ],
+   "company_freq": {
+    "amazon": 0.88,
+    "google": 0.85,
+    "meta": 0.85,
+    "microsoft": 0.8,
+    "apple": 0.72,
+    "bloomberg": 0.72,
+    "tiktok": 0.68,
+    "openai": 0.45
+   },
+   "followups": [
+    "What is the complexity with a hash set versus a trie of the dictionary?",
+    "Return every valid segmentation (Word Break II) and bound the output size.",
+    "The dictionary has 10^6 words and the string is 10^5 long - what do you change?"
+   ],
+   "siblings": [
+    "lc-0091",
+    "lc-0322"
+   ]
+  },
+  {
+   "id": "lc-0300",
+   "num": 300,
+   "title": "Longest Increasing Subsequence",
+   "slug": "longest-increasing-subsequence",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d",
+    "binary-search"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.82,
+    "meta": 0.8,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.75,
+    "tiktok": 0.65,
+    "openai": 0.45
+   },
+   "followups": [
+    "Explain the patience-sorting O(n log n) method and why the tails array is not the answer itself.",
+    "Reconstruct an actual longest subsequence.",
+    "Count how many longest increasing subsequences exist."
+   ],
+   "siblings": [
+    "lc-0416",
+    "lc-1143"
+   ]
+  },
+  {
+   "id": "lc-0416",
+   "num": 416,
+   "title": "Partition Equal Subset Sum",
+   "slug": "partition-equal-subset-sum",
+   "difficulty": "medium",
+   "neetcode_group": "1-D Dynamic Programming",
+   "patterns": [
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.72,
+    "meta": 0.7,
+    "microsoft": 0.68,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "Why is this 0/1 knapsack, and how do you compress it to one boolean row?",
+    "Solve it with a bitset - what is the speedup?",
+    "Split into k equal subsets instead of two - what complexity class is that?"
+   ],
+   "siblings": [
+    "lc-0494",
+    "lc-0322"
+   ]
+  },
+  {
+   "id": "lc-0062",
+   "num": 62,
+   "title": "Unique Paths",
+   "slug": "unique-paths",
+   "difficulty": "medium",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.68,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Give the closed-form binomial answer and say when the DP is still preferable.",
+    "Add obstacles - which cells become zero and why?",
+    "Reduce the DP to a single row of O(n) space."
+   ],
+   "siblings": [
+    "lc-1143",
+    "lc-0070"
+   ]
+  },
+  {
+   "id": "lc-1143",
+   "num": 1143,
+   "title": "Longest Common Subsequence",
+   "slug": "longest-common-subsequence",
+   "difficulty": "medium",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.78,
+    "meta": 0.75,
+    "microsoft": 0.72,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.6,
+    "openai": 0.45
+   },
+   "followups": [
+    "Reconstruct the subsequence itself from the table.",
+    "Cut the memory to O(min(m,n)) - what do you lose?",
+    "Relate it to edit distance and to longest increasing subsequence."
+   ],
+   "siblings": [
+    "lc-0072",
+    "lc-0300"
+   ]
+  },
+  {
+   "id": "lc-0309",
+   "num": 309,
+   "title": "Best Time to Buy and Sell Stock with Cooldown",
+   "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+   "difficulty": "medium",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.68,
+    "meta": 0.68,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Define your states precisely - held, sold, rest - and the transitions between them.",
+    "Generalize the cooldown to k days, and add a transaction fee.",
+    "Cap the number of transactions at k - what is the new state space?"
+   ],
+   "siblings": [
+    "lc-0121",
+    "lc-0518"
+   ]
+  },
+  {
+   "id": "lc-0518",
+   "num": 518,
+   "title": "Coin Change II",
+   "slug": "coin-change-ii",
+   "difficulty": "medium",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.72,
+    "google": 0.68,
+    "meta": 0.68,
+    "microsoft": 0.62,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why does looping coins outside and amount inside count combinations rather than permutations?",
+    "Count permutations instead - what is the loop order then?",
+    "The count overflows 64 bits - how do you handle it?"
+   ],
+   "siblings": [
+    "lc-0322",
+    "lc-0494"
+   ]
+  },
+  {
+   "id": "lc-0494",
+   "num": 494,
+   "title": "Target Sum",
+   "slug": "target-sum",
+   "difficulty": "medium",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.65,
+    "meta": 0.68,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Transform it into a subset-sum problem - show the algebra.",
+    "Handle zeros in the array and negative targets.",
+    "Return one assignment of signs, not just the count."
+   ],
+   "siblings": [
+    "lc-0416",
+    "lc-0518"
+   ]
+  },
+  {
+   "id": "lc-0097",
+   "num": 97,
+   "title": "Interleaving String",
+   "slug": "interleaving-string",
+   "difficulty": "medium",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.6,
+    "meta": 0.58,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.4,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why does a greedy two-pointer scan fail? Give a concrete counterexample.",
+    "Reduce the table to one dimension.",
+    "Extend to interleaving three strings - what is the complexity?"
+   ],
+   "siblings": [
+    "lc-1143",
+    "lc-0072"
+   ]
+  },
+  {
+   "id": "lc-0329",
+   "num": 329,
+   "title": "Longest Increasing Path in a Matrix",
+   "slug": "longest-increasing-path-in-a-matrix",
+   "difficulty": "hard",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d",
+    "dfs",
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.7,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why is no visited set needed here, and how does memoization make it linear?",
+    "Give the topological-sort formulation on the implied DAG.",
+    "Return the actual path, and handle equal-valued neighbors."
+   ],
+   "siblings": [
+    "lc-0300",
+    "lc-0207"
+   ]
+  },
+  {
+   "id": "lc-0115",
+   "num": 115,
+   "title": "Distinct Subsequences",
+   "slug": "distinct-subsequences",
+   "difficulty": "hard",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.55,
+    "google": 0.58,
+    "meta": 0.55,
+    "microsoft": 0.5,
+    "apple": 0.45,
+    "bloomberg": 0.5,
+    "tiktok": 0.35,
+    "openai": 0.3
+   },
+   "followups": [
+    "Explain the two branches of the recurrence when characters match.",
+    "Compress the DP to O(n) space - which direction must you iterate?",
+    "Counts overflow - what do you do about big integers?"
+   ],
+   "siblings": [
+    "lc-1143",
+    "lc-0072"
+   ]
+  },
+  {
+   "id": "lc-0072",
+   "num": 72,
+   "title": "Edit Distance",
+   "slug": "edit-distance",
+   "difficulty": "medium",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.82,
+    "meta": 0.8,
+    "microsoft": 0.78,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.5
+   },
+   "followups": [
+    "Reconstruct the actual sequence of edit operations.",
+    "Assign different costs to insert, delete, and replace - does the DP still work?",
+    "Only report whether the distance is at most k - can you beat O(mn)?"
+   ],
+   "siblings": [
+    "lc-1143",
+    "lc-0115"
+   ]
+  },
+  {
+   "id": "lc-0312",
+   "num": 312,
+   "title": "Burst Balloons",
+   "slug": "burst-balloons",
+   "difficulty": "hard",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.55,
+    "google": 0.62,
+    "meta": 0.55,
+    "microsoft": 0.5,
+    "apple": 0.45,
+    "bloomberg": 0.45,
+    "tiktok": 0.35,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why do you reason about the last balloon burst rather than the first?",
+    "What is the complexity, and can memoized recursion match the bottom-up version?",
+    "Return the burst order that achieves the maximum."
+   ],
+   "siblings": [
+    "lc-0115",
+    "lc-0010"
+   ]
+  },
+  {
+   "id": "lc-0010",
+   "num": 10,
+   "title": "Regular Expression Matching",
+   "slug": "regular-expression-matching",
+   "difficulty": "hard",
+   "neetcode_group": "2-D Dynamic Programming",
+   "patterns": [
+    "dp-2d"
+   ],
+   "company_freq": {
+    "amazon": 0.62,
+    "google": 0.7,
+    "meta": 0.65,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.5,
+    "tiktok": 0.4,
+    "openai": 0.4
+   },
+   "followups": [
+    "Enumerate the cases for '*' and justify the empty-match branch.",
+    "Add '+' and '?' support - what changes in the recurrence?",
+    "Compare with Wildcard Matching and with an NFA-based matcher."
+   ],
+   "siblings": [
+    "lc-0115",
+    "lc-0072"
+   ]
+  },
+  {
+   "id": "lc-0053",
+   "num": 53,
+   "title": "Maximum Subarray",
+   "slug": "maximum-subarray",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy",
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.88,
+    "google": 0.8,
+    "meta": 0.82,
+    "microsoft": 0.78,
+    "apple": 0.72,
+    "bloomberg": 0.8,
+    "tiktok": 0.65,
+    "openai": 0.4
+   },
+   "followups": [
+    "Prove Kadane's algorithm is correct - what is the invariant?",
+    "Give the divide-and-conquer solution the problem hints at.",
+    "Solve it for a circular array, and return the subarray indices."
+   ],
+   "siblings": [
+    "lc-0152",
+    "lc-0121"
+   ]
+  },
+  {
+   "id": "lc-0055",
+   "num": 55,
+   "title": "Jump Game",
+   "slug": "jump-game",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy",
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.75,
+    "meta": 0.78,
+    "microsoft": 0.72,
+    "apple": 0.68,
+    "bloomberg": 0.65,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Prove the greedy reachability scan is correct versus the DP.",
+    "Now jumps may go backwards too - what algorithm do you use?",
+    "Return the actual jump sequence when one exists."
+   ],
+   "siblings": [
+    "lc-0045",
+    "lc-0053"
+   ]
+  },
+  {
+   "id": "lc-0045",
+   "num": 45,
+   "title": "Jump Game II",
+   "slug": "jump-game-ii",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy",
+    "bfs"
+   ],
+   "company_freq": {
+    "amazon": 0.78,
+    "google": 0.72,
+    "meta": 0.72,
+    "microsoft": 0.68,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.55,
+    "openai": 0.4
+   },
+   "followups": [
+    "Explain the greedy as an implicit BFS over levels.",
+    "What if some indices are blocked, or jumps have costs?",
+    "Prove your greedy gives the minimum, not just a small number of jumps."
+   ],
+   "siblings": [
+    "lc-0055",
+    "lc-0053"
+   ]
+  },
+  {
+   "id": "lc-0134",
+   "num": 134,
+   "title": "Gas Station",
+   "slug": "gas-station",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.68,
+    "meta": 0.7,
+    "microsoft": 0.65,
+    "apple": 0.6,
+    "bloomberg": 0.65,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Prove that if total gas >= total cost a solution exists and your start index is it.",
+    "What if multiple valid starts exist - return them all.",
+    "Tank capacity is now limited - does the greedy survive?"
+   ],
+   "siblings": [
+    "lc-0055",
+    "lc-0053"
+   ]
+  },
+  {
+   "id": "lc-0846",
+   "num": 846,
+   "title": "Hand of Straights",
+   "slug": "hand-of-straights",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy",
+    "heap",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.6,
+    "meta": 0.55,
+    "microsoft": 0.5,
+    "apple": 0.45,
+    "bloomberg": 0.45,
+    "tiktok": 0.4,
+    "openai": 0.25
+   },
+   "followups": [
+    "Why must you always start a group at the smallest remaining card?",
+    "How do you make this efficient with 10^5 distinct values?",
+    "Groups may now be any run length at least k - redo it."
+   ],
+   "siblings": [
+    "lc-0621",
+    "lc-0763"
+   ]
+  },
+  {
+   "id": "lc-1899",
+   "num": 1899,
+   "title": "Merge Triplets to Form Target Triplet",
+   "slug": "merge-triplets-to-form-target-triplet",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.4,
+    "google": 0.45,
+    "meta": 0.4,
+    "microsoft": 0.35,
+    "apple": 0.3,
+    "bloomberg": 0.3,
+    "tiktok": 0.25,
+    "openai": 0.2
+   },
+   "followups": [
+    "Why can you discard any triplet that exceeds the target in any coordinate?",
+    "Does the order in which you merge triplets ever matter?",
+    "Generalize to k-dimensional vectors."
+   ],
+   "siblings": [
+    "lc-0763",
+    "lc-0134"
+   ]
+  },
+  {
+   "id": "lc-0763",
+   "num": 763,
+   "title": "Partition Labels",
+   "slug": "partition-labels",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy",
+    "two-pointers",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.62,
+    "apple": 0.6,
+    "bloomberg": 0.55,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Why does tracking the last occurrence of each character suffice?",
+    "Minimize the number of parts instead of maximizing it - is that the same answer?",
+    "Handle a huge alphabet or a streaming string."
+   ],
+   "siblings": [
+    "lc-0056",
+    "lc-0846"
+   ]
+  },
+  {
+   "id": "lc-0678",
+   "num": 678,
+   "title": "Valid Parenthesis String",
+   "slug": "valid-parenthesis-string",
+   "difficulty": "medium",
+   "neetcode_group": "Greedy",
+   "patterns": [
+    "greedy",
+    "monotonic-stack"
+   ],
+   "company_freq": {
+    "amazon": 0.62,
+    "google": 0.62,
+    "meta": 0.6,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Explain the low/high open-count range and why it is equivalent to trying every '*'.",
+    "Solve it with two stacks of indices instead - compare.",
+    "Return one concrete assignment of the wildcards that validates the string."
+   ],
+   "siblings": [
+    "lc-0020",
+    "lc-0022"
+   ]
+  },
+  {
+   "id": "lc-0057",
+   "num": 57,
+   "title": "Insert Interval",
+   "slug": "insert-interval",
+   "difficulty": "medium",
+   "neetcode_group": "Intervals",
+   "patterns": [
+    "intervals",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.72,
+    "meta": 0.78,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "Do it in one pass without re-sorting - what are the three phases?",
+    "Handle intervals that merely touch at an endpoint.",
+    "Inserts arrive continuously - what structure keeps them O(log n)?"
+   ],
+   "siblings": [
+    "lc-0056",
+    "lc-0435"
+   ]
+  },
+  {
+   "id": "lc-0056",
+   "num": 56,
+   "title": "Merge Intervals",
+   "slug": "merge-intervals",
+   "difficulty": "medium",
+   "neetcode_group": "Intervals",
+   "patterns": [
+    "intervals",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.9,
+    "google": 0.85,
+    "meta": 0.88,
+    "microsoft": 0.8,
+    "apple": 0.75,
+    "bloomberg": 0.8,
+    "tiktok": 0.7,
+    "openai": 0.5
+   },
+   "followups": [
+    "Why is sorting by start correct, and would sorting by end ever be better?",
+    "The intervals do not fit in memory - how do you merge them from disk?",
+    "Return the total covered length and the gaps as well."
+   ],
+   "siblings": [
+    "lc-0057",
+    "lc-0435"
+   ]
+  },
+  {
+   "id": "lc-0435",
+   "num": 435,
+   "title": "Non-overlapping Intervals",
+   "slug": "non-overlapping-intervals",
+   "difficulty": "medium",
+   "neetcode_group": "Intervals",
+   "patterns": [
+    "intervals",
+    "greedy"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.68,
+    "meta": 0.7,
+    "microsoft": 0.62,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.35
+   },
+   "followups": [
+    "Prove that sorting by end time gives the maximum number of kept intervals.",
+    "Intervals now have weights - is greedy still optimal?",
+    "Which intervals were removed - report them."
+   ],
+   "siblings": [
+    "lc-0056",
+    "lc-0253"
+   ]
+  },
+  {
+   "id": "lc-0252",
+   "num": 252,
+   "title": "Meeting Rooms",
+   "slug": "meeting-rooms",
+   "difficulty": "easy",
+   "neetcode_group": "Intervals",
+   "patterns": [
+    "intervals"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.62,
+    "meta": 0.72,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Do you need to sort, or can you answer with a sweep over endpoints?",
+    "Meetings arrive one at a time - answer after each arrival.",
+    "Adjacent meetings share an endpoint - is that a conflict?"
+   ],
+   "siblings": [
+    "lc-0253",
+    "lc-0056"
+   ]
+  },
+  {
+   "id": "lc-0253",
+   "num": 253,
+   "title": "Meeting Rooms II",
+   "slug": "meeting-rooms-ii",
+   "difficulty": "medium",
+   "neetcode_group": "Intervals",
+   "patterns": [
+    "intervals",
+    "heap"
+   ],
+   "company_freq": {
+    "amazon": 0.88,
+    "google": 0.82,
+    "meta": 0.85,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.75,
+    "tiktok": 0.65,
+    "openai": 0.45
+   },
+   "followups": [
+    "Compare the min-heap solution with the sweep-line of start/end events.",
+    "Report which meeting goes in which room, not just the count.",
+    "There are only k rooms - schedule to maximize meetings held."
+   ],
+   "siblings": [
+    "lc-0252",
+    "lc-0056"
+   ]
+  },
+  {
+   "id": "lc-1851",
+   "num": 1851,
+   "title": "Minimum Interval to Include Each Query",
+   "slug": "minimum-interval-to-include-each-query",
+   "difficulty": "hard",
+   "neetcode_group": "Intervals",
+   "patterns": [
+    "intervals",
+    "heap",
+    "binary-search"
+   ],
+   "company_freq": {
+    "amazon": 0.45,
+    "google": 0.5,
+    "meta": 0.45,
+    "microsoft": 0.4,
+    "apple": 0.35,
+    "bloomberg": 0.4,
+    "tiktok": 0.3,
+    "openai": 0.25
+   },
+   "followups": [
+    "Why does sorting both intervals and queries let a single heap sweep work?",
+    "Queries now arrive online and cannot be sorted - what changes?",
+    "Return the interval itself, not just its size."
+   ],
+   "siblings": [
+    "lc-0056",
+    "lc-0253"
+   ]
+  },
+  {
+   "id": "lc-0048",
+   "num": 48,
+   "title": "Rotate Image",
+   "slug": "rotate-image",
+   "difficulty": "medium",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.82,
+    "google": 0.72,
+    "meta": 0.75,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.35
+   },
+   "followups": [
+    "Do it in place - transpose then reverse, and prove that composes to a rotation.",
+    "Rotate counter-clockwise, and by 180 degrees.",
+    "The matrix is non-square, or too large to fit in memory - what now?"
+   ],
+   "siblings": [
+    "lc-0054",
+    "lc-0073"
+   ]
+  },
+  {
+   "id": "lc-0054",
+   "num": 54,
+   "title": "Spiral Matrix",
+   "slug": "spiral-matrix",
+   "difficulty": "medium",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.85,
+    "google": 0.75,
+    "meta": 0.75,
+    "microsoft": 0.75,
+    "apple": 0.7,
+    "bloomberg": 0.7,
+    "tiktok": 0.6,
+    "openai": 0.4
+   },
+   "followups": [
+    "How do the four boundaries prevent double-visiting the middle row or column?",
+    "Generate a spiral matrix instead of reading one (Spiral Matrix II).",
+    "Start the spiral at an arbitrary cell, or spiral inward counter-clockwise."
+   ],
+   "siblings": [
+    "lc-0048",
+    "lc-0073"
+   ]
+  },
+  {
+   "id": "lc-0073",
+   "num": 73,
+   "title": "Set Matrix Zeroes",
+   "slug": "set-matrix-zeroes",
+   "difficulty": "medium",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "matrix"
+   ],
+   "company_freq": {
+    "amazon": 0.8,
+    "google": 0.7,
+    "meta": 0.72,
+    "microsoft": 0.72,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Achieve O(1) extra space using the first row and column as markers - what is the catch?",
+    "Why does naively zeroing as you scan produce a wrong answer?",
+    "The matrix is stored sparsely - does your approach still make sense?"
+   ],
+   "siblings": [
+    "lc-0048",
+    "lc-0054"
+   ]
+  },
+  {
+   "id": "lc-0202",
+   "num": 202,
+   "title": "Happy Number",
+   "slug": "happy-number",
+   "difficulty": "easy",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "math",
+    "fast-slow-pointers",
+    "hash-map"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.55,
+    "meta": 0.55,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.4,
+    "openai": 0.25
+   },
+   "followups": [
+    "Why is cycle detection needed at all - what bounds the values you can reach?",
+    "Do it in O(1) space with Floyd's algorithm.",
+    "Generalize to base b or to cubes of digits."
+   ],
+   "siblings": [
+    "lc-0141",
+    "lc-0268"
+   ]
+  },
+  {
+   "id": "lc-0066",
+   "num": 66,
+   "title": "Plus One",
+   "slug": "plus-one",
+   "difficulty": "easy",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "math"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.5,
+    "meta": 0.55,
+    "microsoft": 0.55,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.4,
+    "openai": 0.2
+   },
+   "followups": [
+    "Handle the all-nines carry without allocating twice.",
+    "Add an arbitrary k instead of 1, then add two digit arrays.",
+    "How would you do this for a number stored across multiple chunks on disk?"
+   ],
+   "siblings": [
+    "lc-0043",
+    "lc-0002"
+   ]
+  },
+  {
+   "id": "lc-0050",
+   "num": 50,
+   "title": "Pow(x, n)",
+   "slug": "powx-n",
+   "difficulty": "medium",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "math",
+    "divide-and-conquer"
+   ],
+   "company_freq": {
+    "amazon": 0.75,
+    "google": 0.7,
+    "meta": 0.7,
+    "microsoft": 0.7,
+    "apple": 0.65,
+    "bloomberg": 0.65,
+    "tiktok": 0.55,
+    "openai": 0.35
+   },
+   "followups": [
+    "Handle negative n and the INT_MIN edge case.",
+    "Give the iterative binary-exponentiation version.",
+    "Compute it modulo a prime, and extend to matrix exponentiation."
+   ],
+   "siblings": [
+    "lc-0043",
+    "lc-0007"
+   ]
+  },
+  {
+   "id": "lc-0043",
+   "num": 43,
+   "title": "Multiply Strings",
+   "slug": "multiply-strings",
+   "difficulty": "medium",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "math"
+   ],
+   "company_freq": {
+    "amazon": 0.68,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why is the product digit at position i+j+1, and how do carries propagate?",
+    "Handle leading zeros and negative inputs.",
+    "Numbers have 10^6 digits - would you switch to Karatsuba or FFT?"
+   ],
+   "siblings": [
+    "lc-0066",
+    "lc-0002"
+   ]
+  },
+  {
+   "id": "lc-2013",
+   "num": 2013,
+   "title": "Detect Squares",
+   "slug": "detect-squares",
+   "difficulty": "medium",
+   "neetcode_group": "Math & Geometry",
+   "patterns": [
+    "hash-map",
+    "math"
+   ],
+   "company_freq": {
+    "amazon": 0.5,
+    "google": 0.5,
+    "meta": 0.45,
+    "microsoft": 0.4,
+    "apple": 0.35,
+    "bloomberg": 0.4,
+    "tiktok": 0.3,
+    "openai": 0.2
+   },
+   "followups": [
+    "Why do you only iterate over diagonal candidates rather than all point pairs?",
+    "Support removing points as well as adding them.",
+    "Extend to detecting rectangles, or squares rotated off-axis."
+   ],
+   "siblings": [
+    "lc-0036",
+    "lc-0049"
+   ]
+  },
+  {
+   "id": "lc-0136",
+   "num": 136,
+   "title": "Single Number",
+   "slug": "single-number",
+   "difficulty": "easy",
+   "neetcode_group": "Bit Manipulation",
+   "patterns": [
+    "bit-manipulation"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.62,
+    "microsoft": 0.6,
+    "apple": 0.6,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Why does XOR work, and what property of it are you relying on?",
+    "Every element appears three times except one - now what?",
+    "Two elements appear once - separate them in O(1) space."
+   ],
+   "siblings": [
+    "lc-0268",
+    "lc-0191"
+   ]
+  },
+  {
+   "id": "lc-0191",
+   "num": 191,
+   "title": "Number of 1 Bits",
+   "slug": "number-of-1-bits",
+   "difficulty": "easy",
+   "neetcode_group": "Bit Manipulation",
+   "patterns": [
+    "bit-manipulation"
+   ],
+   "company_freq": {
+    "amazon": 0.65,
+    "google": 0.6,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.6,
+    "bloomberg": 0.65,
+    "tiktok": 0.45,
+    "openai": 0.25
+   },
+   "followups": [
+    "Explain the n & (n-1) trick and its complexity versus scanning 32 bits.",
+    "How would you count bits for many numbers efficiently - see Counting Bits.",
+    "Count set bits in a 64-bit word with a divide-and-conquer bit hack."
+   ],
+   "siblings": [
+    "lc-0338",
+    "lc-0190"
+   ]
+  },
+  {
+   "id": "lc-0338",
+   "num": 338,
+   "title": "Counting Bits",
+   "slug": "counting-bits",
+   "difficulty": "easy",
+   "neetcode_group": "Bit Manipulation",
+   "patterns": [
+    "bit-manipulation",
+    "dp-1d"
+   ],
+   "company_freq": {
+    "amazon": 0.65,
+    "google": 0.62,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.55,
+    "tiktok": 0.45,
+    "openai": 0.3
+   },
+   "followups": [
+    "State the DP recurrence and explain why i>>1 is the right subproblem.",
+    "Give an alternative recurrence using i & (i-1).",
+    "Do it without any DP array if only the total count is required."
+   ],
+   "siblings": [
+    "lc-0191",
+    "lc-0136"
+   ]
+  },
+  {
+   "id": "lc-0190",
+   "num": 190,
+   "title": "Reverse Bits",
+   "slug": "reverse-bits",
+   "difficulty": "easy",
+   "neetcode_group": "Bit Manipulation",
+   "patterns": [
+    "bit-manipulation"
+   ],
+   "company_freq": {
+    "amazon": 0.62,
+    "google": 0.55,
+    "meta": 0.58,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.4,
+    "openai": 0.25
+   },
+   "followups": [
+    "Optimize with a lookup table - what is the memory/speed trade?",
+    "If the function is called millions of times, how do you cache?",
+    "Reverse only the lowest k bits, leaving the rest intact."
+   ],
+   "siblings": [
+    "lc-0191",
+    "lc-0371"
+   ]
+  },
+  {
+   "id": "lc-0268",
+   "num": 268,
+   "title": "Missing Number",
+   "slug": "missing-number",
+   "difficulty": "easy",
+   "neetcode_group": "Bit Manipulation",
+   "patterns": [
+    "bit-manipulation",
+    "math"
+   ],
+   "company_freq": {
+    "amazon": 0.7,
+    "google": 0.6,
+    "meta": 0.62,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.5,
+    "openai": 0.3
+   },
+   "followups": [
+    "Compare the XOR solution with the Gauss sum - which one avoids overflow?",
+    "Two numbers are missing instead of one - find both in O(1) space.",
+    "The numbers are on disk and out of order - how do you scan for it?"
+   ],
+   "siblings": [
+    "lc-0136",
+    "lc-0287"
+   ]
+  },
+  {
+   "id": "lc-0371",
+   "num": 371,
+   "title": "Sum of Two Integers",
+   "slug": "sum-of-two-integers",
+   "difficulty": "medium",
+   "neetcode_group": "Bit Manipulation",
+   "patterns": [
+    "bit-manipulation"
+   ],
+   "company_freq": {
+    "amazon": 0.6,
+    "google": 0.58,
+    "meta": 0.6,
+    "microsoft": 0.55,
+    "apple": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.4,
+    "openai": 0.25
+   },
+   "followups": [
+    "Walk through the carry loop and explain how negatives work in two's complement.",
+    "Implement subtraction and multiplication the same way.",
+    "Why does this need masking in languages with arbitrary-precision integers?"
+   ],
+   "siblings": [
+    "lc-0007",
+    "lc-0190"
+   ]
+  },
+  {
+   "id": "lc-0007",
+   "num": 7,
+   "title": "Reverse Integer",
+   "slug": "reverse-integer",
+   "difficulty": "medium",
+   "neetcode_group": "Bit Manipulation",
+   "patterns": [
+    "math",
+    "bit-manipulation"
+   ],
+   "company_freq": {
+    "amazon": 0.62,
+    "google": 0.55,
+    "meta": 0.6,
+    "microsoft": 0.6,
+    "apple": 0.55,
+    "bloomberg": 0.6,
+    "tiktok": 0.45,
+    "openai": 0.25
+   },
+   "followups": [
+    "Detect overflow before it happens without using a 64-bit type.",
+    "Handle negatives and trailing zeros.",
+    "Extend to reversing a 64-bit integer, and to reversing digits in base b."
+   ],
+   "siblings": [
+    "lc-0371",
+    "lc-0043"
+   ]
+  }
+ ]
+}

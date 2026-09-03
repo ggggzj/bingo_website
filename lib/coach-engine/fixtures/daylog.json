@@ -1,0 +1,319 @@
+{
+ "_meta": {
+  "generated": "2026-09-03",
+  "source": "/Users/guozhengjia/Desktop/AceLeetcode",
+  "note": "Output of the reference Python engine. Regenerate with generate.py; never edit."
+ },
+ "ref": "2026-08-23",
+ "logs": {
+  "mixed-week": {
+   "log": {
+    "2026-08-23": {
+     "assigned_new": [
+      "g"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": []
+    },
+    "2026-08-22": {
+     "assigned_new": [
+      "e",
+      "f"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "e",
+       "grade": "pass",
+       "mode": "grill"
+      },
+      {
+       "id": "f",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-21": {
+     "assigned_new": [
+      "c",
+      "d"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [
+      "c",
+      "d"
+     ],
+     "done": []
+    },
+    "2026-08-20": {
+     "assigned_new": [
+      "a",
+      "b"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "a",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-19": {
+     "assigned_new": [],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "x",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-18": {
+     "assigned_new": [],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": []
+    },
+    "2026-08-17": {
+     "assigned_new": [
+      "z"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": []
+    }
+   },
+   "statuses": {
+    "2026-08-17": "missed",
+    "2026-08-18": "rest",
+    "2026-08-19": "extra",
+    "2026-08-20": "partial",
+    "2026-08-21": "ungraded",
+    "2026-08-22": "complete",
+    "2026-08-23": "pending"
+   },
+   "streak": 1,
+   "adherence": {
+    "window": 30,
+    "assigned_days": 5,
+    "finished_days": 1,
+    "worked_days": 4,
+    "rate": 0.2
+   }
+  },
+  "long-streak": {
+   "log": {
+    "2026-08-23": {
+     "assigned_new": [
+      "p0"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p0",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-22": {
+     "assigned_new": [
+      "p1"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p1",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-21": {
+     "assigned_new": [
+      "p2"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p2",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-20": {
+     "assigned_new": [
+      "p3"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p3",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-19": {
+     "assigned_new": [
+      "p4"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p4",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-18": {
+     "assigned_new": [
+      "p5"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p5",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-17": {
+     "assigned_new": [
+      "p6"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p6",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-16": {
+     "assigned_new": [
+      "p7"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p7",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-15": {
+     "assigned_new": [
+      "p8"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p8",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    },
+    "2026-08-14": {
+     "assigned_new": [
+      "p9"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": [
+      {
+       "id": "p9",
+       "grade": "pass",
+       "mode": "grill"
+      }
+     ]
+    }
+   },
+   "statuses": {
+    "2026-08-14": "complete",
+    "2026-08-15": "complete",
+    "2026-08-16": "complete",
+    "2026-08-17": "complete",
+    "2026-08-18": "complete",
+    "2026-08-19": "complete",
+    "2026-08-20": "complete",
+    "2026-08-21": "complete",
+    "2026-08-22": "complete",
+    "2026-08-23": "complete"
+   },
+   "streak": 10,
+   "adherence": {
+    "window": 30,
+    "assigned_days": 10,
+    "finished_days": 10,
+    "worked_days": 10,
+    "rate": 1.0
+   }
+  },
+  "ungraded-today": {
+   "log": {
+    "2026-08-23": {
+     "assigned_new": [
+      "a"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [
+      "a"
+     ],
+     "done": []
+    }
+   },
+   "statuses": {
+    "2026-08-23": "partial"
+   },
+   "streak": 0,
+   "adherence": {
+    "window": 30,
+    "assigned_days": 1,
+    "finished_days": 0,
+    "worked_days": 1,
+    "rate": 0.0
+   }
+  }
+ }
+}

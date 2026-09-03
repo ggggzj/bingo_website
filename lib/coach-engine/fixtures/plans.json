@@ -1,0 +1,1758 @@
+{
+ "_meta": {
+  "generated": "2026-09-03",
+  "source": "/Users/guozhengjia/Desktop/AceLeetcode",
+  "note": "Output of the reference Python engine. Regenerate with generate.py; never edit."
+ },
+ "cases": [
+  {
+   "name": "fresh-60",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": null,
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {},
+   "minutes": null,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [
+      "lc-0001",
+      "lc-0238"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 48,
+     "deferred_reviews": 0,
+     "sprint": false,
+     "sprint_days": null,
+     "total_seen": 0,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 2,
+     "reviews": [],
+     "new": [
+      {
+       "id": "lc-0001",
+       "minutes": 20,
+       "score": 0.786,
+       "done": false,
+       "solved": false,
+       "grade": null
+      },
+      {
+       "id": "lc-0238",
+       "minutes": 28,
+       "score": 0.769,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fresh-104",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": null,
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {},
+   "minutes": 104,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [
+      "lc-0001",
+      "lc-0238"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 48,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 104,
+     "planned_minutes": 48,
+     "deferred_reviews": 0,
+     "sprint": false,
+     "sprint_days": null,
+     "total_seen": 0,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 2,
+     "reviews": [],
+     "new": [
+      {
+       "id": "lc-0001",
+       "minutes": 20,
+       "score": 0.786,
+       "done": false,
+       "solved": false,
+       "grade": null
+      },
+      {
+       "id": "lc-0238",
+       "minutes": 28,
+       "score": 0.769,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fresh-30",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": null,
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {},
+   "minutes": 30,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [
+      "lc-0001"
+     ],
+     "assigned_reviews": [],
+     "planned_minutes": 20,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 30,
+     "planned_minutes": 20,
+     "deferred_reviews": 0,
+     "sprint": false,
+     "sprint_days": null,
+     "total_seen": 0,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 1,
+     "reviews": [],
+     "new": [
+      {
+       "id": "lc-0001",
+       "minutes": 20,
+       "score": 0.786,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "backlog-60",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": null,
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {
+    "lc-0217": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-07-24",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0242": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-07-22",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 1"
+     ]
+    },
+    "lc-0001": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-07-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 2"
+     ]
+    },
+    "lc-0049": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 3,
+     "due": "2026-07-22",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0347": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 1,
+     "due": "2026-07-12",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 4"
+     ]
+    },
+    "lc-0271": {
+     "state": "learning",
+     "ease": 2.4,
+     "interval_days": 3,
+     "due": "2026-07-12",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0238": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 1,
+     "due": "2026-07-10",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 6"
+     ]
+    },
+    "lc-0036": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 7,
+     "due": "2026-07-14",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 7"
+     ]
+    },
+    "lc-0128": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 1,
+     "due": "2026-06-30",
+     "reps": 1,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 8"
+     ]
+    },
+    "lc-0125": {
+     "state": "learning",
+     "ease": 2.55,
+     "interval_days": 3,
+     "due": "2026-06-30",
+     "reps": 2,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 9"
+     ]
+    },
+    "lc-0167": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 3,
+     "due": "2026-06-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0015": {
+     "state": "learning",
+     "ease": 2.15,
+     "interval_days": 1,
+     "due": "2026-07-02",
+     "reps": 4,
+     "lapses": 2,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 11"
+     ]
+    },
+    "lc-0011": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-06-18",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0042": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-06-16",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 13"
+     ]
+    },
+    "lc-0121": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-06-22",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 14"
+     ]
+    }
+   },
+   "minutes": null,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [
+      "lc-0146"
+     ],
+     "assigned_reviews": [
+      "lc-0042"
+     ],
+     "planned_minutes": 51,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 51,
+     "deferred_reviews": 14,
+     "sprint": false,
+     "sprint_days": null,
+     "total_seen": 15,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 2,
+     "reviews": [
+      {
+       "id": "lc-0042",
+       "mode": "re-solve",
+       "minutes": 23,
+       "risk": 98.67,
+       "days_overdue": 77,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ],
+     "new": [
+      {
+       "id": "lc-0146",
+       "minutes": 28,
+       "score": 0.861,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sprint-backlog",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": "2026-09-08",
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {
+    "lc-0217": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-07-24",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0242": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-07-22",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 1"
+     ]
+    },
+    "lc-0001": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-07-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 2"
+     ]
+    },
+    "lc-0049": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 3,
+     "due": "2026-07-22",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0347": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 1,
+     "due": "2026-07-12",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 4"
+     ]
+    },
+    "lc-0271": {
+     "state": "learning",
+     "ease": 2.4,
+     "interval_days": 3,
+     "due": "2026-07-12",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0238": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 1,
+     "due": "2026-07-10",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 6"
+     ]
+    },
+    "lc-0036": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 7,
+     "due": "2026-07-14",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 7"
+     ]
+    },
+    "lc-0128": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 1,
+     "due": "2026-06-30",
+     "reps": 1,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 8"
+     ]
+    },
+    "lc-0125": {
+     "state": "learning",
+     "ease": 2.55,
+     "interval_days": 3,
+     "due": "2026-06-30",
+     "reps": 2,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 9"
+     ]
+    },
+    "lc-0167": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 3,
+     "due": "2026-06-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0015": {
+     "state": "learning",
+     "ease": 2.15,
+     "interval_days": 1,
+     "due": "2026-07-02",
+     "reps": 4,
+     "lapses": 2,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 11"
+     ]
+    },
+    "lc-0011": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-06-18",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0042": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-06-16",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 13"
+     ]
+    },
+    "lc-0121": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-06-22",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 14"
+     ]
+    }
+   },
+   "minutes": null,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [],
+     "assigned_reviews": [
+      "lc-0042",
+      "lc-0015",
+      "lc-0128"
+     ],
+     "planned_minutes": 57,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 57,
+     "deferred_reviews": 12,
+     "sprint": true,
+     "sprint_days": 7,
+     "total_seen": 15,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 3,
+     "reviews": [
+      {
+       "id": "lc-0042",
+       "mode": "re-solve",
+       "minutes": 23,
+       "risk": 98.67,
+       "days_overdue": 77,
+       "done": false,
+       "solved": false,
+       "grade": null
+      },
+      {
+       "id": "lc-0015",
+       "mode": "re-solve",
+       "minutes": 17,
+       "risk": 91.88,
+       "days_overdue": 61,
+       "done": false,
+       "solved": false,
+       "grade": null
+      },
+      {
+       "id": "lc-0128",
+       "mode": "re-solve",
+       "minutes": 17,
+       "risk": 79.49,
+       "days_overdue": 63,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ],
+     "new": []
+    }
+   ]
+  },
+  {
+   "name": "sprint-edge-day14",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": "2026-09-15",
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {
+    "lc-0217": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-07-24",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0242": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-07-22",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 1"
+     ]
+    },
+    "lc-0001": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-07-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 2"
+     ]
+    },
+    "lc-0049": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 3,
+     "due": "2026-07-22",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0347": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 1,
+     "due": "2026-07-12",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 4"
+     ]
+    },
+    "lc-0271": {
+     "state": "learning",
+     "ease": 2.4,
+     "interval_days": 3,
+     "due": "2026-07-12",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0238": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 1,
+     "due": "2026-07-10",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 6"
+     ]
+    },
+    "lc-0036": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 7,
+     "due": "2026-07-14",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 7"
+     ]
+    },
+    "lc-0128": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 1,
+     "due": "2026-06-30",
+     "reps": 1,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 8"
+     ]
+    },
+    "lc-0125": {
+     "state": "learning",
+     "ease": 2.55,
+     "interval_days": 3,
+     "due": "2026-06-30",
+     "reps": 2,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 9"
+     ]
+    },
+    "lc-0167": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 3,
+     "due": "2026-06-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0015": {
+     "state": "learning",
+     "ease": 2.15,
+     "interval_days": 1,
+     "due": "2026-07-02",
+     "reps": 4,
+     "lapses": 2,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 11"
+     ]
+    },
+    "lc-0011": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-06-18",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0042": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-06-16",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 13"
+     ]
+    },
+    "lc-0121": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-06-22",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 14"
+     ]
+    }
+   },
+   "minutes": null,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [],
+     "assigned_reviews": [
+      "lc-0042",
+      "lc-0015",
+      "lc-0128"
+     ],
+     "planned_minutes": 57,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 57,
+     "deferred_reviews": 12,
+     "sprint": true,
+     "sprint_days": 14,
+     "total_seen": 15,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 3,
+     "reviews": [
+      {
+       "id": "lc-0042",
+       "mode": "re-solve",
+       "minutes": 23,
+       "risk": 98.67,
+       "days_overdue": 77,
+       "done": false,
+       "solved": false,
+       "grade": null
+      },
+      {
+       "id": "lc-0015",
+       "mode": "re-solve",
+       "minutes": 17,
+       "risk": 91.88,
+       "days_overdue": 61,
+       "done": false,
+       "solved": false,
+       "grade": null
+      },
+      {
+       "id": "lc-0128",
+       "mode": "re-solve",
+       "minutes": 17,
+       "risk": 79.49,
+       "days_overdue": 63,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ],
+     "new": []
+    }
+   ]
+  },
+  {
+   "name": "sprint-past-interview",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": "2026-08-31",
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {
+    "lc-0217": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-07-24",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0242": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-07-22",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 1"
+     ]
+    },
+    "lc-0001": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-07-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 2"
+     ]
+    },
+    "lc-0049": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 3,
+     "due": "2026-07-22",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0347": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 1,
+     "due": "2026-07-12",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 4"
+     ]
+    },
+    "lc-0271": {
+     "state": "learning",
+     "ease": 2.4,
+     "interval_days": 3,
+     "due": "2026-07-12",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0238": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 1,
+     "due": "2026-07-10",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 6"
+     ]
+    },
+    "lc-0036": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 7,
+     "due": "2026-07-14",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 7"
+     ]
+    },
+    "lc-0128": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 1,
+     "due": "2026-06-30",
+     "reps": 1,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 8"
+     ]
+    },
+    "lc-0125": {
+     "state": "learning",
+     "ease": 2.55,
+     "interval_days": 3,
+     "due": "2026-06-30",
+     "reps": 2,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 9"
+     ]
+    },
+    "lc-0167": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 3,
+     "due": "2026-06-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0015": {
+     "state": "learning",
+     "ease": 2.15,
+     "interval_days": 1,
+     "due": "2026-07-02",
+     "reps": 4,
+     "lapses": 2,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 11"
+     ]
+    },
+    "lc-0011": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-06-18",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0042": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-06-16",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 13"
+     ]
+    },
+    "lc-0121": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-06-22",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 14"
+     ]
+    }
+   },
+   "minutes": null,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [
+      "lc-0146"
+     ],
+     "assigned_reviews": [
+      "lc-0042"
+     ],
+     "planned_minutes": 51,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 51,
+     "deferred_reviews": 14,
+     "sprint": false,
+     "sprint_days": -1,
+     "total_seen": 15,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 2,
+     "reviews": [
+      {
+       "id": "lc-0042",
+       "mode": "re-solve",
+       "minutes": 23,
+       "risk": 98.67,
+       "days_overdue": 77,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ],
+     "new": [
+      {
+       "id": "lc-0146",
+       "minutes": 28,
+       "score": 0.861,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "frozen-rebuild",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": null,
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {
+    "lc-0217": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-07-24",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0242": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-07-22",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 1"
+     ]
+    },
+    "lc-0001": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-07-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 2"
+     ]
+    },
+    "lc-0049": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 3,
+     "due": "2026-07-22",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0347": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 1,
+     "due": "2026-07-12",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 4"
+     ]
+    },
+    "lc-0271": {
+     "state": "learning",
+     "ease": 2.4,
+     "interval_days": 3,
+     "due": "2026-07-12",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0238": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 1,
+     "due": "2026-07-10",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 6"
+     ]
+    },
+    "lc-0036": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 7,
+     "due": "2026-07-14",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 7"
+     ]
+    },
+    "lc-0128": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 1,
+     "due": "2026-06-30",
+     "reps": 1,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 8"
+     ]
+    },
+    "lc-0125": {
+     "state": "learning",
+     "ease": 2.55,
+     "interval_days": 3,
+     "due": "2026-06-30",
+     "reps": 2,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 9"
+     ]
+    },
+    "lc-0167": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 3,
+     "due": "2026-06-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0015": {
+     "state": "learning",
+     "ease": 2.15,
+     "interval_days": 1,
+     "due": "2026-07-02",
+     "reps": 4,
+     "lapses": 2,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 11"
+     ]
+    },
+    "lc-0011": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-06-18",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0042": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-06-16",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 13"
+     ]
+    },
+    "lc-0121": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-06-22",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 14"
+     ]
+    }
+   },
+   "minutes": null,
+   "ref": "2026-09-01",
+   "frozen_script": [],
+   "entries": [
+    {
+     "assigned_new": [
+      "lc-0146"
+     ],
+     "assigned_reviews": [
+      "lc-0042"
+     ],
+     "planned_minutes": 51,
+     "solved": [],
+     "done": []
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 51,
+     "deferred_reviews": 14,
+     "sprint": false,
+     "sprint_days": null,
+     "total_seen": 15,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 2,
+     "reviews": [
+      {
+       "id": "lc-0042",
+       "mode": "re-solve",
+       "minutes": 23,
+       "risk": 98.67,
+       "days_overdue": 77,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ],
+     "new": [
+      {
+       "id": "lc-0146",
+       "minutes": 28,
+       "score": 0.861,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "frozen-progress",
+   "config": {
+    "daily_minutes": 60,
+    "new_per_day": 2,
+    "sprint_window_days": 14,
+    "interview_date": null,
+    "target_companies": [
+     "amazon",
+     "google",
+     "meta",
+     "microsoft",
+     "apple",
+     "bloomberg",
+     "tiktok",
+     "openai"
+    ]
+   },
+   "reviews": {
+    "lc-0217": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-07-24",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0242": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-07-22",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 1"
+     ]
+    },
+    "lc-0001": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-07-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 2"
+     ]
+    },
+    "lc-0049": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 3,
+     "due": "2026-07-22",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0347": {
+     "state": "learning",
+     "ease": 2.45,
+     "interval_days": 1,
+     "due": "2026-07-12",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 4"
+     ]
+    },
+    "lc-0271": {
+     "state": "learning",
+     "ease": 2.4,
+     "interval_days": 3,
+     "due": "2026-07-12",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0238": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 1,
+     "due": "2026-07-10",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 6"
+     ]
+    },
+    "lc-0036": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 7,
+     "due": "2026-07-14",
+     "reps": 4,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 7"
+     ]
+    },
+    "lc-0128": {
+     "state": "learning",
+     "ease": 2.3,
+     "interval_days": 1,
+     "due": "2026-06-30",
+     "reps": 1,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 8"
+     ]
+    },
+    "lc-0125": {
+     "state": "learning",
+     "ease": 2.55,
+     "interval_days": 3,
+     "due": "2026-06-30",
+     "reps": 2,
+     "lapses": 0,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 9"
+     ]
+    },
+    "lc-0167": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 3,
+     "due": "2026-06-28",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0015": {
+     "state": "learning",
+     "ease": 2.15,
+     "interval_days": 1,
+     "due": "2026-07-02",
+     "reps": 4,
+     "lapses": 2,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 11"
+     ]
+    },
+    "lc-0011": {
+     "state": "learning",
+     "ease": 2.6,
+     "interval_days": 1,
+     "due": "2026-06-18",
+     "reps": 1,
+     "lapses": 0,
+     "last_grade": "pass",
+     "weak_points": []
+    },
+    "lc-0042": {
+     "state": "learning",
+     "ease": 2.25,
+     "interval_days": 1,
+     "due": "2026-06-16",
+     "reps": 2,
+     "lapses": 1,
+     "last_grade": "fail",
+     "weak_points": [
+      "weak point 13"
+     ]
+    },
+    "lc-0121": {
+     "state": "learning",
+     "ease": 2.35,
+     "interval_days": 7,
+     "due": "2026-06-22",
+     "reps": 3,
+     "lapses": 1,
+     "last_grade": "partial",
+     "weak_points": [
+      "weak point 14"
+     ]
+    }
+   },
+   "minutes": null,
+   "ref": "2026-09-01",
+   "frozen_script": [
+    [
+     "solve",
+     "lc-0146"
+    ],
+    [
+     "done",
+     "lc-0042",
+     "partial"
+    ]
+   ],
+   "entries": [
+    {
+     "assigned_new": [
+      "lc-0146"
+     ],
+     "assigned_reviews": [
+      "lc-0042"
+     ],
+     "planned_minutes": 51,
+     "solved": [],
+     "done": []
+    },
+    {
+     "assigned_new": [
+      "lc-0146"
+     ],
+     "assigned_reviews": [
+      "lc-0042"
+     ],
+     "planned_minutes": 51,
+     "solved": [
+      "lc-0146",
+      "lc-0042"
+     ],
+     "done": [
+      {
+       "id": "lc-0042",
+       "grade": "partial",
+       "mode": "grill"
+      }
+     ]
+    }
+   ],
+   "plans": [
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 51,
+     "deferred_reviews": 14,
+     "sprint": false,
+     "sprint_days": null,
+     "total_seen": 15,
+     "total_problems": 150,
+     "done_today": 0,
+     "solved_today": 0,
+     "assigned_today": 2,
+     "reviews": [
+      {
+       "id": "lc-0042",
+       "mode": "re-solve",
+       "minutes": 23,
+       "risk": 98.67,
+       "days_overdue": 77,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ],
+     "new": [
+      {
+       "id": "lc-0146",
+       "minutes": 28,
+       "score": 0.861,
+       "done": false,
+       "solved": false,
+       "grade": null
+      }
+     ]
+    },
+    {
+     "date": "2026-09-01",
+     "budget": 60,
+     "planned_minutes": 51,
+     "deferred_reviews": 14,
+     "sprint": false,
+     "sprint_days": null,
+     "total_seen": 15,
+     "total_problems": 150,
+     "done_today": 1,
+     "solved_today": 2,
+     "assigned_today": 2,
+     "reviews": [
+      {
+       "id": "lc-0042",
+       "mode": "re-solve",
+       "minutes": 23,
+       "risk": 98.67,
+       "days_overdue": 77,
+       "done": true,
+       "solved": true,
+       "grade": "partial"
+      }
+     ],
+     "new": [
+      {
+       "id": "lc-0146",
+       "minutes": 28,
+       "score": null,
+       "done": false,
+       "solved": true,
+       "grade": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
