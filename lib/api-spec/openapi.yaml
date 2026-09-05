@@ -16,6 +16,8 @@ tags:
     description: Sign-up and sign-in
   - name: stats
     description: Growth dashboard, owner only
+  - name: coach
+    description: Interview coach, allowlisted users only
 paths:
   /healthz:
     get:
@@ -253,6 +255,241 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  # Coach routes answer 404 for anyone not signed in and on the COACH_EMAILS
+  # allowlist — the same uniform not-found the stats routes use, so the
+  # feature's existence is not confirmed to probers. The 404s below mean
+  # "not allowed" as much as "no such thing".
+  /coach/plan:
+    get:
+      operationId: getCoachPlan
+      tags: [coach]
+      summary: Today's practice plan
+      description: >-
+        Builds the caller's plan for the current UTC date. The first call of
+        a day freezes the dealt assignment; later calls rebuild the same
+        list with completion marks, never dealing fresh problems.
+      responses:
+        "200":
+          description: The plan for today
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachPlan"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /coach/solved:
+    post:
+      operationId: setCoachSolved
+      tags: [coach]
+      summary: Tick or untick a problem as solved
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoachSolvedInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ok"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The problem was graded today and cannot be un-solved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Unknown problem or invalid body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /coach/grade:
+    post:
+      operationId: recordCoachGrade
+      tags: [coach]
+      summary: Record a grilling grade
+      description: >-
+        Applies the engine's grading to the caller's review state (creating
+        it on first encounter), appends one review event, and stamps the
+        day log. Re-grading the same problem the same day overwrites.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoachGradeInput"
+      responses:
+        "200":
+          description: The updated review state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachGradeResult"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Unknown problem or invalid body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /coach/forecast:
+    get:
+      operationId: getCoachForecast
+      tags: [coach]
+      summary: Upcoming review load per day
+      parameters:
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 60
+      responses:
+        "200":
+          description: Review count and minutes per upcoming day; overdue counts on today
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachForecast"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /coach/log:
+    get:
+      operationId: getCoachLog
+      tags: [coach]
+      summary: Day log with statuses, streak and adherence
+      parameters:
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 366
+      responses:
+        "200":
+          description: Trailing day-log window, newest day last
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachLog"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /coach/config:
+    get:
+      operationId: getCoachConfig
+      tags: [coach]
+      summary: The caller's coach settings
+      description: Creates the row with defaults on first read.
+      responses:
+        "200":
+          description: Current settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachConfig"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateCoachConfig
+      tags: [coach]
+      summary: Update the caller's coach settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoachConfigInput"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachConfig"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Invalid settings; nothing changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /coach/token:
+    post:
+      operationId: createCoachToken
+      tags: [coach]
+      summary: Issue a personal API token
+      description: >-
+        Session-only — a bearer token cannot mint its successor. The
+        plaintext is returned exactly once; issuing revokes the caller's
+        previous tokens.
+      responses:
+        "201":
+          description: The new token, shown this one time
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachToken"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: revokeCoachToken
+      tags: [coach]
+      summary: Revoke the caller's tokens
+      responses:
+        "200":
+          description: Revoked (idempotent)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ok"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -397,3 +634,201 @@ components:
       properties:
         error:
           type: string
+    CoachProblemSummary:
+      type: object
+      required: [id, num, title, slug, difficulty, patterns, neetcodeGroup]
+      properties:
+        id: { type: string }
+        num: { type: integer }
+        title: { type: string }
+        slug: { type: string }
+        difficulty: { type: string, enum: [easy, medium, hard] }
+        patterns:
+          type: array
+          items: { type: string }
+        neetcodeGroup: { type: string }
+    CoachPlanReviewItem:
+      type: object
+      required: [problem, mode, minutes, risk, daysOverdue, weakPoints, done, solved]
+      properties:
+        problem:
+          $ref: "#/components/schemas/CoachProblemSummary"
+        mode: { type: string, enum: [grill, re-solve] }
+        minutes: { type: integer }
+        risk: { type: number }
+        daysOverdue: { type: integer }
+        weakPoints:
+          type: array
+          items: { type: string }
+        done: { type: boolean }
+        solved: { type: boolean }
+        grade: { type: string, enum: [pass, partial, fail], nullable: true }
+    CoachPlanNewItem:
+      type: object
+      required: [problem, minutes, done, solved]
+      properties:
+        problem:
+          $ref: "#/components/schemas/CoachProblemSummary"
+        minutes: { type: integer }
+        score: { type: number, nullable: true }
+        done: { type: boolean }
+        solved: { type: boolean }
+        grade: { type: string, enum: [pass, partial, fail], nullable: true }
+    CoachPlan:
+      type: object
+      required:
+        - date
+        - budget
+        - plannedMinutes
+        - reviews
+        - new
+        - deferredReviews
+        - sprint
+        - totalSeen
+        - totalProblems
+        - doneToday
+        - solvedToday
+        - assignedToday
+      properties:
+        date: { type: string }
+        budget: { type: integer }
+        plannedMinutes: { type: integer }
+        reviews:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachPlanReviewItem"
+        new:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachPlanNewItem"
+        deferredReviews: { type: integer }
+        sprint: { type: boolean }
+        sprintDays: { type: integer, nullable: true }
+        totalSeen: { type: integer }
+        totalProblems: { type: integer }
+        doneToday: { type: integer }
+        solvedToday: { type: integer }
+        assignedToday: { type: integer }
+    CoachSolvedInput:
+      type: object
+      required: [problemId, solved]
+      properties:
+        problemId: { type: string }
+        solved: { type: boolean }
+    CoachGradeInput:
+      type: object
+      required: [problemId, grade]
+      properties:
+        problemId: { type: string }
+        grade: { type: string, enum: [pass, partial, fail] }
+        weakPoints:
+          type: array
+          items: { type: string, maxLength: 300 }
+          maxItems: 6
+        mode: { type: string, enum: [grill, re-solve] }
+        notes: { type: string, maxLength: 2000 }
+    CoachGradeResult:
+      type: object
+      required: [problemId, state, intervalDays, due, lapses, weakPoints]
+      properties:
+        problemId: { type: string }
+        state: { type: string, enum: [new, learning, review, mastered] }
+        intervalDays: { type: integer }
+        due: { type: string }
+        lapses: { type: integer }
+        weakPoints:
+          type: array
+          items: { type: string }
+    CoachForecastDay:
+      type: object
+      required: [date, count, minutes]
+      properties:
+        date: { type: string }
+        count: { type: integer }
+        minutes: { type: integer }
+    CoachForecast:
+      type: object
+      required: [days]
+      properties:
+        days:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachForecastDay"
+    CoachDoneEntry:
+      type: object
+      required: [id, grade, mode]
+      properties:
+        id: { type: string }
+        grade: { type: string, enum: [pass, partial, fail] }
+        mode: { type: string }
+    CoachLogDay:
+      type: object
+      required: [day, status, assignedNew, assignedReviews, plannedMinutes, solved, done]
+      properties:
+        day: { type: string }
+        status:
+          type: string
+          enum: [complete, partial, ungraded, missed, extra, rest, pending]
+        assignedNew:
+          type: array
+          items: { type: string }
+        assignedReviews:
+          type: array
+          items: { type: string }
+        plannedMinutes: { type: integer }
+        solved:
+          type: array
+          items: { type: string }
+        done:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachDoneEntry"
+    CoachAdherence:
+      type: object
+      required: [window, assignedDays, finishedDays, workedDays, rate]
+      properties:
+        window: { type: integer }
+        assignedDays: { type: integer }
+        finishedDays: { type: integer }
+        workedDays: { type: integer }
+        rate: { type: number }
+    CoachLog:
+      type: object
+      required: [days, streak, adherence]
+      properties:
+        days:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachLogDay"
+        streak: { type: integer }
+        adherence:
+          $ref: "#/components/schemas/CoachAdherence"
+    CoachConfig:
+      type: object
+      required: [dailyMinutes, newPerDay, sprintWindowDays, targetCompanies]
+      properties:
+        dailyMinutes: { type: integer }
+        newPerDay: { type: integer }
+        sprintWindowDays: { type: integer }
+        interviewDate: { type: string, nullable: true }
+        targetCompanies:
+          type: array
+          items: { type: string }
+    CoachConfigInput:
+      type: object
+      properties:
+        dailyMinutes: { type: integer, minimum: 15, maximum: 480 }
+        newPerDay: { type: integer, minimum: 0, maximum: 10 }
+        sprintWindowDays: { type: integer, minimum: 1, maximum: 60 }
+        interviewDate: { type: string, format: date, nullable: true }
+        targetCompanies:
+          type: array
+          items: { type: string, maxLength: 40 }
+          maxItems: 20
+    CoachToken:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+          description: Shown exactly once. The server stores only its hash.

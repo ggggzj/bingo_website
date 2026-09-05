@@ -7,6 +7,7 @@ import {
   real,
   serial,
   text,
+  timestamp,
   unique,
 } from "drizzle-orm/pg-core";
 import { usersTable } from "./auth";
@@ -124,6 +125,27 @@ export const coachConfigTable = pgTable("coach_config", {
     .default([]),
 });
 
+/** Personal API tokens for the local grill bridge. Sessions discipline —
+ * only the SHA-256 of the token is stored, rows are revocable — but with no
+ * expiry: the bridge is a trusted personal machine, and rotation is one POST
+ * away. Issuing a new token revokes the caller's previous ones, so "which
+ * machine can write grades" stays a one-row question. */
+export const coachApiTokensTable = pgTable(
+  "coach_api_tokens",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull().unique(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    lastUsedAt: timestamp("last_used_at"),
+    revokedAt: timestamp("revoked_at"),
+  },
+  (table) => [index("coach_api_tokens_user_id_idx").on(table.userId)],
+);
+
+export type CoachApiToken = typeof coachApiTokensTable.$inferSelect;
 export type CoachProblem = typeof coachProblemsTable.$inferSelect;
 export type CoachReview = typeof coachReviewsTable.$inferSelect;
 export type CoachReviewEvent = typeof coachReviewEventsTable.$inferSelect;

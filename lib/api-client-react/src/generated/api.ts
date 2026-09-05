@@ -18,8 +18,19 @@ import type {
 
 import type {
   Account,
+  CoachConfig,
+  CoachConfigInput,
+  CoachForecast,
+  CoachGradeInput,
+  CoachGradeResult,
+  CoachLog,
+  CoachPlan,
+  CoachSolvedInput,
+  CoachToken,
   Credentials,
   ErrorResponse,
+  GetCoachForecastParams,
+  GetCoachLogParams,
   GetStatsDailyParams,
   GetStatsRegistrationsParams,
   HealthStatus,
@@ -789,3 +800,766 @@ export function useGetStatsRegistrations<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Builds the caller's plan for the current UTC date. The first call of a day freezes the dealt assignment; later calls rebuild the same list with completion marks, never dealing fresh problems.
+ * @summary Today's practice plan
+ */
+export const getGetCoachPlanUrl = () => {
+  return `/api/coach/plan`;
+};
+
+export const getCoachPlan = async (
+  options?: RequestInit,
+): Promise<CoachPlan> => {
+  return customFetch<CoachPlan>(getGetCoachPlanUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetCoachPlanQueryKey = () => {
+  return [`/api/coach/plan`] as const;
+};
+
+export const getGetCoachPlanQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCoachPlan>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachPlan>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCoachPlanQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCoachPlan>>> = ({
+    signal,
+  }) => getCoachPlan({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachPlan>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCoachPlanQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCoachPlan>>
+>;
+export type GetCoachPlanQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Today's practice plan
+ */
+
+export function useGetCoachPlan<
+  TData = Awaited<ReturnType<typeof getCoachPlan>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachPlan>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCoachPlanQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Tick or untick a problem as solved
+ */
+export const getSetCoachSolvedUrl = () => {
+  return `/api/coach/solved`;
+};
+
+export const setCoachSolved = async (
+  coachSolvedInput: CoachSolvedInput,
+  options?: RequestInit,
+): Promise<Ok> => {
+  return customFetch<Ok>(getSetCoachSolvedUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(coachSolvedInput),
+  });
+};
+
+export const getSetCoachSolvedMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof setCoachSolved>>,
+    TError,
+    { data: BodyType<CoachSolvedInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof setCoachSolved>>,
+  TError,
+  { data: BodyType<CoachSolvedInput> },
+  TContext
+> => {
+  const mutationKey = ["setCoachSolved"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof setCoachSolved>>,
+    { data: BodyType<CoachSolvedInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return setCoachSolved(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SetCoachSolvedMutationResult = NonNullable<
+  Awaited<ReturnType<typeof setCoachSolved>>
+>;
+export type SetCoachSolvedMutationBody = BodyType<CoachSolvedInput>;
+export type SetCoachSolvedMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Tick or untick a problem as solved
+ */
+export const useSetCoachSolved = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof setCoachSolved>>,
+    TError,
+    { data: BodyType<CoachSolvedInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof setCoachSolved>>,
+  TError,
+  { data: BodyType<CoachSolvedInput> },
+  TContext
+> => {
+  return useMutation(getSetCoachSolvedMutationOptions(options));
+};
+
+/**
+ * Applies the engine's grading to the caller's review state (creating it on first encounter), appends one review event, and stamps the day log. Re-grading the same problem the same day overwrites.
+ * @summary Record a grilling grade
+ */
+export const getRecordCoachGradeUrl = () => {
+  return `/api/coach/grade`;
+};
+
+export const recordCoachGrade = async (
+  coachGradeInput: CoachGradeInput,
+  options?: RequestInit,
+): Promise<CoachGradeResult> => {
+  return customFetch<CoachGradeResult>(getRecordCoachGradeUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(coachGradeInput),
+  });
+};
+
+export const getRecordCoachGradeMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof recordCoachGrade>>,
+    TError,
+    { data: BodyType<CoachGradeInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof recordCoachGrade>>,
+  TError,
+  { data: BodyType<CoachGradeInput> },
+  TContext
+> => {
+  const mutationKey = ["recordCoachGrade"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof recordCoachGrade>>,
+    { data: BodyType<CoachGradeInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return recordCoachGrade(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RecordCoachGradeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof recordCoachGrade>>
+>;
+export type RecordCoachGradeMutationBody = BodyType<CoachGradeInput>;
+export type RecordCoachGradeMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Record a grilling grade
+ */
+export const useRecordCoachGrade = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof recordCoachGrade>>,
+    TError,
+    { data: BodyType<CoachGradeInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof recordCoachGrade>>,
+  TError,
+  { data: BodyType<CoachGradeInput> },
+  TContext
+> => {
+  return useMutation(getRecordCoachGradeMutationOptions(options));
+};
+
+/**
+ * @summary Upcoming review load per day
+ */
+export const getGetCoachForecastUrl = (params?: GetCoachForecastParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/coach/forecast?${stringifiedParams}`
+    : `/api/coach/forecast`;
+};
+
+export const getCoachForecast = async (
+  params?: GetCoachForecastParams,
+  options?: RequestInit,
+): Promise<CoachForecast> => {
+  return customFetch<CoachForecast>(getGetCoachForecastUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetCoachForecastQueryKey = (
+  params?: GetCoachForecastParams,
+) => {
+  return [`/api/coach/forecast`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetCoachForecastQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCoachForecast>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetCoachForecastParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCoachForecast>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetCoachForecastQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getCoachForecast>>
+  > = ({ signal }) => getCoachForecast(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachForecast>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCoachForecastQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCoachForecast>>
+>;
+export type GetCoachForecastQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Upcoming review load per day
+ */
+
+export function useGetCoachForecast<
+  TData = Awaited<ReturnType<typeof getCoachForecast>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetCoachForecastParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCoachForecast>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCoachForecastQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Day log with statuses, streak and adherence
+ */
+export const getGetCoachLogUrl = (params?: GetCoachLogParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/coach/log?${stringifiedParams}`
+    : `/api/coach/log`;
+};
+
+export const getCoachLog = async (
+  params?: GetCoachLogParams,
+  options?: RequestInit,
+): Promise<CoachLog> => {
+  return customFetch<CoachLog>(getGetCoachLogUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetCoachLogQueryKey = (params?: GetCoachLogParams) => {
+  return [`/api/coach/log`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetCoachLogQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCoachLog>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetCoachLogParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCoachLog>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCoachLogQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCoachLog>>> = ({
+    signal,
+  }) => getCoachLog(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachLog>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCoachLogQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCoachLog>>
+>;
+export type GetCoachLogQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Day log with statuses, streak and adherence
+ */
+
+export function useGetCoachLog<
+  TData = Awaited<ReturnType<typeof getCoachLog>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetCoachLogParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getCoachLog>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCoachLogQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Creates the row with defaults on first read.
+ * @summary The caller's coach settings
+ */
+export const getGetCoachConfigUrl = () => {
+  return `/api/coach/config`;
+};
+
+export const getCoachConfig = async (
+  options?: RequestInit,
+): Promise<CoachConfig> => {
+  return customFetch<CoachConfig>(getGetCoachConfigUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetCoachConfigQueryKey = () => {
+  return [`/api/coach/config`] as const;
+};
+
+export const getGetCoachConfigQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCoachConfig>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachConfig>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCoachConfigQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCoachConfig>>> = ({
+    signal,
+  }) => getCoachConfig({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachConfig>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCoachConfigQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCoachConfig>>
+>;
+export type GetCoachConfigQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary The caller's coach settings
+ */
+
+export function useGetCoachConfig<
+  TData = Awaited<ReturnType<typeof getCoachConfig>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachConfig>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCoachConfigQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Update the caller's coach settings
+ */
+export const getUpdateCoachConfigUrl = () => {
+  return `/api/coach/config`;
+};
+
+export const updateCoachConfig = async (
+  coachConfigInput: CoachConfigInput,
+  options?: RequestInit,
+): Promise<CoachConfig> => {
+  return customFetch<CoachConfig>(getUpdateCoachConfigUrl(), {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(coachConfigInput),
+  });
+};
+
+export const getUpdateCoachConfigMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateCoachConfig>>,
+    TError,
+    { data: BodyType<CoachConfigInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateCoachConfig>>,
+  TError,
+  { data: BodyType<CoachConfigInput> },
+  TContext
+> => {
+  const mutationKey = ["updateCoachConfig"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateCoachConfig>>,
+    { data: BodyType<CoachConfigInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateCoachConfig(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateCoachConfigMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateCoachConfig>>
+>;
+export type UpdateCoachConfigMutationBody = BodyType<CoachConfigInput>;
+export type UpdateCoachConfigMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Update the caller's coach settings
+ */
+export const useUpdateCoachConfig = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateCoachConfig>>,
+    TError,
+    { data: BodyType<CoachConfigInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateCoachConfig>>,
+  TError,
+  { data: BodyType<CoachConfigInput> },
+  TContext
+> => {
+  return useMutation(getUpdateCoachConfigMutationOptions(options));
+};
+
+/**
+ * Session-only — a bearer token cannot mint its successor. The plaintext is returned exactly once; issuing revokes the caller's previous tokens.
+ * @summary Issue a personal API token
+ */
+export const getCreateCoachTokenUrl = () => {
+  return `/api/coach/token`;
+};
+
+export const createCoachToken = async (
+  options?: RequestInit,
+): Promise<CoachToken> => {
+  return customFetch<CoachToken>(getCreateCoachTokenUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getCreateCoachTokenMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createCoachToken>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createCoachToken>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["createCoachToken"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createCoachToken>>,
+    void
+  > = () => {
+    return createCoachToken(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateCoachTokenMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createCoachToken>>
+>;
+
+export type CreateCoachTokenMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Issue a personal API token
+ */
+export const useCreateCoachToken = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createCoachToken>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createCoachToken>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getCreateCoachTokenMutationOptions(options));
+};
+
+/**
+ * @summary Revoke the caller's tokens
+ */
+export const getRevokeCoachTokenUrl = () => {
+  return `/api/coach/token`;
+};
+
+export const revokeCoachToken = async (options?: RequestInit): Promise<Ok> => {
+  return customFetch<Ok>(getRevokeCoachTokenUrl(), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getRevokeCoachTokenMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof revokeCoachToken>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof revokeCoachToken>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["revokeCoachToken"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof revokeCoachToken>>,
+    void
+  > = () => {
+    return revokeCoachToken(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RevokeCoachTokenMutationResult = NonNullable<
+  Awaited<ReturnType<typeof revokeCoachToken>>
+>;
+
+export type RevokeCoachTokenMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Revoke the caller's tokens
+ */
+export const useRevokeCoachToken = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof revokeCoachToken>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof revokeCoachToken>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getRevokeCoachTokenMutationOptions(options));
+};

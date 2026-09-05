@@ -20,6 +20,7 @@ dashboard that only the owner can see.
 |---|---|---|
 | `DATABASE_URL` | api-server, db | Postgres connection string |
 | `OWNER_EMAIL` | api-server | Which account may see the growth dashboard. Comma-separated, read case-insensitively. **Unset means nobody** — the dashboard is closed, not open. |
+| `COACH_EMAILS` | api-server | Which accounts may use the interview coach (`/api/coach/*`) while it is in development. Same rules as `OWNER_EMAIL`: comma-separated, case-insensitive, **unset means nobody**. |
 | `STATS_API_BASE_URL` | api-server | Origin of the extension's API, e.g. `https://h1bchecker-production.up.railway.app` |
 | `STATS_TOKEN` | api-server | Must match `STATS_TOKEN` on that server. Server-side only; never sent to a browser. |
 | `TRUST_PROXY` | api-server | Proxies in front of us. Defaults to 1 in production, 0 elsewhere — see Gotchas. |

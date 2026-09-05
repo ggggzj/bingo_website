@@ -153,3 +153,231 @@ export const GetStatsRegistrationsResponse = zod.object({
     }),
   ),
 });
+
+/**
+ * Builds the caller's plan for the current UTC date. The first call of a day freezes the dealt assignment; later calls rebuild the same list with completion marks, never dealing fresh problems.
+ * @summary Today's practice plan
+ */
+export const GetCoachPlanResponse = zod.object({
+  date: zod.string(),
+  budget: zod.number(),
+  plannedMinutes: zod.number(),
+  reviews: zod.array(
+    zod.object({
+      problem: zod.object({
+        id: zod.string(),
+        num: zod.number(),
+        title: zod.string(),
+        slug: zod.string(),
+        difficulty: zod.enum(["easy", "medium", "hard"]),
+        patterns: zod.array(zod.string()),
+        neetcodeGroup: zod.string(),
+      }),
+      mode: zod.enum(["grill", "re-solve"]),
+      minutes: zod.number(),
+      risk: zod.number(),
+      daysOverdue: zod.number(),
+      weakPoints: zod.array(zod.string()),
+      done: zod.boolean(),
+      solved: zod.boolean(),
+      grade: zod.enum(["pass", "partial", "fail"]).nullish(),
+    }),
+  ),
+  new: zod.array(
+    zod.object({
+      problem: zod.object({
+        id: zod.string(),
+        num: zod.number(),
+        title: zod.string(),
+        slug: zod.string(),
+        difficulty: zod.enum(["easy", "medium", "hard"]),
+        patterns: zod.array(zod.string()),
+        neetcodeGroup: zod.string(),
+      }),
+      minutes: zod.number(),
+      score: zod.number().nullish(),
+      done: zod.boolean(),
+      solved: zod.boolean(),
+      grade: zod.enum(["pass", "partial", "fail"]).nullish(),
+    }),
+  ),
+  deferredReviews: zod.number(),
+  sprint: zod.boolean(),
+  sprintDays: zod.number().nullish(),
+  totalSeen: zod.number(),
+  totalProblems: zod.number(),
+  doneToday: zod.number(),
+  solvedToday: zod.number(),
+  assignedToday: zod.number(),
+});
+
+/**
+ * @summary Tick or untick a problem as solved
+ */
+export const SetCoachSolvedBody = zod.object({
+  problemId: zod.string(),
+  solved: zod.boolean(),
+});
+
+export const SetCoachSolvedResponse = zod.object({
+  ok: zod.boolean(),
+});
+
+/**
+ * Applies the engine's grading to the caller's review state (creating it on first encounter), appends one review event, and stamps the day log. Re-grading the same problem the same day overwrites.
+ * @summary Record a grilling grade
+ */
+export const recordCoachGradeBodyWeakPointsItemMax = 300;
+
+export const recordCoachGradeBodyWeakPointsMax = 6;
+
+export const recordCoachGradeBodyNotesMax = 2000;
+
+export const RecordCoachGradeBody = zod.object({
+  problemId: zod.string(),
+  grade: zod.enum(["pass", "partial", "fail"]),
+  weakPoints: zod
+    .array(zod.string().max(recordCoachGradeBodyWeakPointsItemMax))
+    .max(recordCoachGradeBodyWeakPointsMax)
+    .optional(),
+  mode: zod.enum(["grill", "re-solve"]).optional(),
+  notes: zod.string().max(recordCoachGradeBodyNotesMax).optional(),
+});
+
+export const RecordCoachGradeResponse = zod.object({
+  problemId: zod.string(),
+  state: zod.enum(["new", "learning", "review", "mastered"]),
+  intervalDays: zod.number(),
+  due: zod.string(),
+  lapses: zod.number(),
+  weakPoints: zod.array(zod.string()),
+});
+
+/**
+ * @summary Upcoming review load per day
+ */
+export const getCoachForecastQueryDaysMax = 60;
+
+export const GetCoachForecastQueryParams = zod.object({
+  days: zod.coerce.number().min(1).max(getCoachForecastQueryDaysMax).optional(),
+});
+
+export const GetCoachForecastResponse = zod.object({
+  days: zod.array(
+    zod.object({
+      date: zod.string(),
+      count: zod.number(),
+      minutes: zod.number(),
+    }),
+  ),
+});
+
+/**
+ * @summary Day log with statuses, streak and adherence
+ */
+export const getCoachLogQueryDaysMax = 366;
+
+export const GetCoachLogQueryParams = zod.object({
+  days: zod.coerce.number().min(1).max(getCoachLogQueryDaysMax).optional(),
+});
+
+export const GetCoachLogResponse = zod.object({
+  days: zod.array(
+    zod.object({
+      day: zod.string(),
+      status: zod.enum([
+        "complete",
+        "partial",
+        "ungraded",
+        "missed",
+        "extra",
+        "rest",
+        "pending",
+      ]),
+      assignedNew: zod.array(zod.string()),
+      assignedReviews: zod.array(zod.string()),
+      plannedMinutes: zod.number(),
+      solved: zod.array(zod.string()),
+      done: zod.array(
+        zod.object({
+          id: zod.string(),
+          grade: zod.enum(["pass", "partial", "fail"]),
+          mode: zod.string(),
+        }),
+      ),
+    }),
+  ),
+  streak: zod.number(),
+  adherence: zod.object({
+    window: zod.number(),
+    assignedDays: zod.number(),
+    finishedDays: zod.number(),
+    workedDays: zod.number(),
+    rate: zod.number(),
+  }),
+});
+
+/**
+ * Creates the row with defaults on first read.
+ * @summary The caller's coach settings
+ */
+export const GetCoachConfigResponse = zod.object({
+  dailyMinutes: zod.number(),
+  newPerDay: zod.number(),
+  sprintWindowDays: zod.number(),
+  interviewDate: zod.string().nullish(),
+  targetCompanies: zod.array(zod.string()),
+});
+
+/**
+ * @summary Update the caller's coach settings
+ */
+export const updateCoachConfigBodyDailyMinutesMin = 15;
+export const updateCoachConfigBodyDailyMinutesMax = 480;
+
+export const updateCoachConfigBodyNewPerDayMin = 0;
+export const updateCoachConfigBodyNewPerDayMax = 10;
+
+export const updateCoachConfigBodySprintWindowDaysMax = 60;
+
+export const updateCoachConfigBodyTargetCompaniesItemMax = 40;
+
+export const updateCoachConfigBodyTargetCompaniesMax = 20;
+
+export const UpdateCoachConfigBody = zod.object({
+  dailyMinutes: zod
+    .number()
+    .min(updateCoachConfigBodyDailyMinutesMin)
+    .max(updateCoachConfigBodyDailyMinutesMax)
+    .optional(),
+  newPerDay: zod
+    .number()
+    .min(updateCoachConfigBodyNewPerDayMin)
+    .max(updateCoachConfigBodyNewPerDayMax)
+    .optional(),
+  sprintWindowDays: zod
+    .number()
+    .min(1)
+    .max(updateCoachConfigBodySprintWindowDaysMax)
+    .optional(),
+  interviewDate: zod.coerce.date().nullish(),
+  targetCompanies: zod
+    .array(zod.string().max(updateCoachConfigBodyTargetCompaniesItemMax))
+    .max(updateCoachConfigBodyTargetCompaniesMax)
+    .optional(),
+});
+
+export const UpdateCoachConfigResponse = zod.object({
+  dailyMinutes: zod.number(),
+  newPerDay: zod.number(),
+  sprintWindowDays: zod.number(),
+  interviewDate: zod.string().nullish(),
+  targetCompanies: zod.array(zod.string()),
+});
+
+/**
+ * @summary Revoke the caller's tokens
+ */
+export const RevokeCoachTokenResponse = zod.object({
+  ok: zod.boolean(),
+});

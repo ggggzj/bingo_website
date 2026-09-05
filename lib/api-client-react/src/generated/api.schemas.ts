@@ -92,6 +92,237 @@ export interface ErrorResponse {
   error: string;
 }
 
+export type CoachProblemSummaryDifficulty =
+  (typeof CoachProblemSummaryDifficulty)[keyof typeof CoachProblemSummaryDifficulty];
+
+export const CoachProblemSummaryDifficulty = {
+  easy: "easy",
+  medium: "medium",
+  hard: "hard",
+} as const;
+
+export interface CoachProblemSummary {
+  id: string;
+  num: number;
+  title: string;
+  slug: string;
+  difficulty: CoachProblemSummaryDifficulty;
+  patterns: string[];
+  neetcodeGroup: string;
+}
+
+export type CoachPlanReviewItemMode =
+  (typeof CoachPlanReviewItemMode)[keyof typeof CoachPlanReviewItemMode];
+
+export const CoachPlanReviewItemMode = {
+  grill: "grill",
+  "re-solve": "re-solve",
+} as const;
+
+export type CoachPlanReviewItemGrade =
+  | (typeof CoachPlanReviewItemGrade)[keyof typeof CoachPlanReviewItemGrade]
+  | null;
+
+export const CoachPlanReviewItemGrade = {
+  pass: "pass",
+  partial: "partial",
+  fail: "fail",
+} as const;
+
+export interface CoachPlanReviewItem {
+  problem: CoachProblemSummary;
+  mode: CoachPlanReviewItemMode;
+  minutes: number;
+  risk: number;
+  daysOverdue: number;
+  weakPoints: string[];
+  done: boolean;
+  solved: boolean;
+  grade?: CoachPlanReviewItemGrade;
+}
+
+export type CoachPlanNewItemGrade =
+  | (typeof CoachPlanNewItemGrade)[keyof typeof CoachPlanNewItemGrade]
+  | null;
+
+export const CoachPlanNewItemGrade = {
+  pass: "pass",
+  partial: "partial",
+  fail: "fail",
+} as const;
+
+export interface CoachPlanNewItem {
+  problem: CoachProblemSummary;
+  minutes: number;
+  score?: number | null;
+  done: boolean;
+  solved: boolean;
+  grade?: CoachPlanNewItemGrade;
+}
+
+export interface CoachPlan {
+  date: string;
+  budget: number;
+  plannedMinutes: number;
+  reviews: CoachPlanReviewItem[];
+  new: CoachPlanNewItem[];
+  deferredReviews: number;
+  sprint: boolean;
+  sprintDays?: number | null;
+  totalSeen: number;
+  totalProblems: number;
+  doneToday: number;
+  solvedToday: number;
+  assignedToday: number;
+}
+
+export interface CoachSolvedInput {
+  problemId: string;
+  solved: boolean;
+}
+
+export type CoachGradeInputGrade =
+  (typeof CoachGradeInputGrade)[keyof typeof CoachGradeInputGrade];
+
+export const CoachGradeInputGrade = {
+  pass: "pass",
+  partial: "partial",
+  fail: "fail",
+} as const;
+
+export type CoachGradeInputMode =
+  (typeof CoachGradeInputMode)[keyof typeof CoachGradeInputMode];
+
+export const CoachGradeInputMode = {
+  grill: "grill",
+  "re-solve": "re-solve",
+} as const;
+
+export interface CoachGradeInput {
+  problemId: string;
+  grade: CoachGradeInputGrade;
+  /** @maxItems 6 */
+  weakPoints?: string[];
+  mode?: CoachGradeInputMode;
+  /** @maxLength 2000 */
+  notes?: string;
+}
+
+export type CoachGradeResultState =
+  (typeof CoachGradeResultState)[keyof typeof CoachGradeResultState];
+
+export const CoachGradeResultState = {
+  new: "new",
+  learning: "learning",
+  review: "review",
+  mastered: "mastered",
+} as const;
+
+export interface CoachGradeResult {
+  problemId: string;
+  state: CoachGradeResultState;
+  intervalDays: number;
+  due: string;
+  lapses: number;
+  weakPoints: string[];
+}
+
+export interface CoachForecastDay {
+  date: string;
+  count: number;
+  minutes: number;
+}
+
+export interface CoachForecast {
+  days: CoachForecastDay[];
+}
+
+export type CoachDoneEntryGrade =
+  (typeof CoachDoneEntryGrade)[keyof typeof CoachDoneEntryGrade];
+
+export const CoachDoneEntryGrade = {
+  pass: "pass",
+  partial: "partial",
+  fail: "fail",
+} as const;
+
+export interface CoachDoneEntry {
+  id: string;
+  grade: CoachDoneEntryGrade;
+  mode: string;
+}
+
+export type CoachLogDayStatus =
+  (typeof CoachLogDayStatus)[keyof typeof CoachLogDayStatus];
+
+export const CoachLogDayStatus = {
+  complete: "complete",
+  partial: "partial",
+  ungraded: "ungraded",
+  missed: "missed",
+  extra: "extra",
+  rest: "rest",
+  pending: "pending",
+} as const;
+
+export interface CoachLogDay {
+  day: string;
+  status: CoachLogDayStatus;
+  assignedNew: string[];
+  assignedReviews: string[];
+  plannedMinutes: number;
+  solved: string[];
+  done: CoachDoneEntry[];
+}
+
+export interface CoachAdherence {
+  window: number;
+  assignedDays: number;
+  finishedDays: number;
+  workedDays: number;
+  rate: number;
+}
+
+export interface CoachLog {
+  days: CoachLogDay[];
+  streak: number;
+  adherence: CoachAdherence;
+}
+
+export interface CoachConfig {
+  dailyMinutes: number;
+  newPerDay: number;
+  sprintWindowDays: number;
+  interviewDate?: string | null;
+  targetCompanies: string[];
+}
+
+export interface CoachConfigInput {
+  /**
+   * @minimum 15
+   * @maximum 480
+   */
+  dailyMinutes?: number;
+  /**
+   * @minimum 0
+   * @maximum 10
+   */
+  newPerDay?: number;
+  /**
+   * @minimum 1
+   * @maximum 60
+   */
+  sprintWindowDays?: number;
+  interviewDate?: string | null;
+  /** @maxItems 20 */
+  targetCompanies?: string[];
+}
+
+export interface CoachToken {
+  /** Shown exactly once. The server stores only its hash. */
+  token: string;
+}
+
 export type GetStatsDailyParams = {
   /**
    * @minimum 1
@@ -106,4 +337,20 @@ export type GetStatsRegistrationsParams = {
    * @maximum 1000
    */
   limit?: number;
+};
+
+export type GetCoachForecastParams = {
+  /**
+   * @minimum 1
+   * @maximum 60
+   */
+  days?: number;
+};
+
+export type GetCoachLogParams = {
+  /**
+   * @minimum 1
+   * @maximum 366
+   */
+  days?: number;
 };
