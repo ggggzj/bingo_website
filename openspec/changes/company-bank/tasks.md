@@ -17,7 +17,7 @@
 
 ## 2. Bank refresh
 
-- [ ] 2.1 Merge approved values into `lib/db/data/coach-problems.json`
+- [x] 2.1 Merge approved values into `lib/db/data/coach-problems.json`
       (with `_research_date` metadata), reseed the production and scratch
       databases via `seed-coach`, and refresh the AceLeetcode
       `data/problems.json` copy; verify row count stays 150 and a sampled
