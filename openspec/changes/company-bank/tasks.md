@@ -2,7 +2,7 @@
 
 ## 1. Research (owner-gated)
 
-- [ ] 1.1 Build the frequency research table: for each proposed company
+- [x] 1.1 Build the frequency research table: for each proposed company
       (databricks, stripe, airbnb, doordash, snowflake, uber, coinbase,
       anthropic, xai, scale, perplexity) and each of the 150 bank problems,
       a 0–1 frequency estimate with sources (recent interview reports,
