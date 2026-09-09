@@ -2,7 +2,7 @@
 
 ## 1. Pattern table (owner-gated)
 
-- [ ] 1.1 Draft the pattern→multiplier table for the `ai-engineer` track
+- [x] 1.1 Draft the pattern→multiplier table for the `ai-engineer` track
       over the bank's 29 patterns (boost candidates: matrix, math, heap,
       hash-map, prefix-sum, dp variants with simulation flavor; most stay
       1.0), each non-1.0 entry with a one-line rationale; commit as
