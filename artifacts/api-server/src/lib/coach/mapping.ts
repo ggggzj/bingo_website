@@ -92,6 +92,10 @@ export function configRowToEngine(row: CoachConfigRow): CoachConfig {
     sprint_window_days: row.sprintWindowDays,
     interview_date: row.interviewDate,
     target_companies: row.targetCompanies,
+    // A row written before the column existed, or by hand, falls back to
+    // the default track rather than failing the whole config read.
+    active_track:
+      row.activeTrack === "ai-engineer" ? "ai-engineer" : "sde",
   };
 }
 
@@ -103,5 +107,6 @@ export function engineToConfigRow(userId: number, cfg: CoachConfig) {
     sprintWindowDays: cfg.sprint_window_days,
     interviewDate: cfg.interview_date,
     targetCompanies: cfg.target_companies,
+    activeTrack: cfg.active_track,
   };
 }

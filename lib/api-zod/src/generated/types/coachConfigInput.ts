@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { CoachConfigInputActiveTrack } from "./coachConfigInputActiveTrack";
 
 export interface CoachConfigInput {
   /**
@@ -23,6 +24,7 @@ export interface CoachConfigInput {
    */
   sprintWindowDays?: number;
   interviewDate?: Date | null;
+  activeTrack?: CoachConfigInputActiveTrack;
   /** @maxItems 20 */
   targetCompanies?: string[];
 }

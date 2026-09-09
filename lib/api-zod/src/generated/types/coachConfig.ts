@@ -5,12 +5,15 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { CoachConfigActiveTrack } from "./coachConfigActiveTrack";
 
 export interface CoachConfig {
   dailyMinutes: number;
   newPerDay: number;
   sprintWindowDays: number;
   interviewDate?: string | null;
+  /** Which application track's weights steer new-problem selection. Takes effect from the next dealt day; a frozen day keeps its assignment. */
+  activeTrack: CoachConfigActiveTrack;
   targetCompanies: string[];
   /** Every company the problem bank carries frequency data for, derived from the bank — the settings page renders its multi-select from this, never from a hardcoded list. */
   knownCompanies: string[];

@@ -7,6 +7,7 @@
  * ground under it.
  */
 import { pythonSum } from "./round";
+import { trackFactor, type Track } from "./trackWeights";
 import type { Difficulty, Problem, ReviewState } from "./types";
 
 // Rough prerequisite order of the NeetCode 150 groups.
@@ -120,23 +121,28 @@ export function scoreProblem(
   stats: PatternStats,
   companies: string[],
   sprint: boolean,
+  track: Track = "sde",
 ): number {
   const demand = companyDemand(problem, companies);
-  if (sprint) {
-    // Interview in two weeks: nothing matters except what they ask.
-    return 0.8 * demand + 0.2 * curriculumScore(problem);
-  }
-  return (
-    0.4 * demand +
-    0.28 * patternGapScore(problem, stats) +
-    0.14 * weakPatternScore(problem, stats) +
-    0.18 * curriculumScore(problem)
-  );
+  const base = sprint
+    ? // Interview in two weeks: nothing matters except what they ask.
+      0.8 * demand + 0.2 * curriculumScore(problem)
+    : 0.4 * demand +
+      0.28 * patternGapScore(problem, stats) +
+      0.14 * weakPatternScore(problem, stats) +
+      0.18 * curriculumScore(problem);
+  // Multiplicative so the four signals keep their relative structure; the
+  // sde factor is exactly 1.0 and short-circuits, so default scoring stays
+  // bit-identical and the parity fixtures pass untouched.
+  const factor = trackFactor(problem, track);
+  return factor === 1.0 ? base : base * factor;
 }
 
 export interface RankOptions {
   sprint?: boolean;
   limit?: number;
+  /** Which application track's weights to apply. Default `sde` = no change. */
+  track?: Track;
 }
 
 /** Unseen problems, best first. Ties break by ascending problem number so the
@@ -147,13 +153,16 @@ export function rankNewProblems(
   companies: string[],
   opts: RankOptions = {},
 ): Array<{ problem: Problem; score: number }> {
-  const { sprint = false, limit } = opts;
+  const { sprint = false, limit, track = "sde" } = opts;
   const stats = patternStats(problems, reviews);
   const ranked: Array<{ problem: Problem; score: number }> = [];
   for (const [pid, problem] of Object.entries(problems)) {
     if (pid in reviews) continue;
     if (hardIsLocked(problem, stats)) continue;
-    ranked.push({ problem, score: scoreProblem(problem, stats, companies, sprint) });
+    ranked.push({
+      problem,
+      score: scoreProblem(problem, stats, companies, sprint, track),
+    });
   }
   ranked.sort((a, b) => b.score - a.score || a.problem.num - b.problem.num);
   return limit ? ranked.slice(0, limit) : ranked;

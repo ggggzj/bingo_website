@@ -289,15 +289,36 @@ export interface CoachLog {
   adherence: CoachAdherence;
 }
 
+/**
+ * Which application track's weights steer new-problem selection. Takes effect from the next dealt day; a frozen day keeps its assignment.
+ */
+export type CoachConfigActiveTrack =
+  (typeof CoachConfigActiveTrack)[keyof typeof CoachConfigActiveTrack];
+
+export const CoachConfigActiveTrack = {
+  sde: "sde",
+  "ai-engineer": "ai-engineer",
+} as const;
+
 export interface CoachConfig {
   dailyMinutes: number;
   newPerDay: number;
   sprintWindowDays: number;
   interviewDate?: string | null;
+  /** Which application track's weights steer new-problem selection. Takes effect from the next dealt day; a frozen day keeps its assignment. */
+  activeTrack: CoachConfigActiveTrack;
   targetCompanies: string[];
   /** Every company the problem bank carries frequency data for, derived from the bank — the settings page renders its multi-select from this, never from a hardcoded list. */
   knownCompanies: string[];
 }
+
+export type CoachConfigInputActiveTrack =
+  (typeof CoachConfigInputActiveTrack)[keyof typeof CoachConfigInputActiveTrack];
+
+export const CoachConfigInputActiveTrack = {
+  sde: "sde",
+  "ai-engineer": "ai-engineer",
+} as const;
 
 export interface CoachConfigInput {
   /**
@@ -316,6 +337,7 @@ export interface CoachConfigInput {
    */
   sprintWindowDays?: number;
   interviewDate?: string | null;
+  activeTrack?: CoachConfigInputActiveTrack;
   /** @maxItems 20 */
   targetCompanies?: string[];
 }

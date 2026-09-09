@@ -19,4 +19,4 @@ are pulled forward, the rest keep their normal order.
 Clamp: a problem's factor = max over its patterns' multipliers, clamped to
 [0.5, 1.5] (headroom for future tuning; nothing drafted here exceeds 1.30).
 
-_Approval recorded below when given._
+**Approved by owner 2026-09-09** — as drafted, no adjustments.

@@ -123,6 +123,10 @@ export const coachConfigTable = pgTable("coach_config", {
     .$type<string[]>()
     .notNull()
     .default([]),
+  // Which application track's weights steer new-problem selection. Text
+  // rather than a pg enum: adding a track should not need a migration, and
+  // the valid set is validated once, in the API schema.
+  activeTrack: text("active_track").notNull().default("sde"),
 });
 
 /** Personal API tokens for the local grill bridge. Sessions discipline —

@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import {
   GRADES,
+  TRACKS,
   applyGrade,
   adherence,
   blankEntry,
@@ -70,6 +71,7 @@ const configInput = z
       .regex(/^\d{4}-\d{2}-\d{2}$/)
       .nullable(),
     targetCompanies: z.array(z.string().min(1).max(40)).max(20),
+    activeTrack: z.enum(TRACKS),
   })
   .partial()
   .strict();
@@ -137,6 +139,7 @@ function serializeConfig(
     newPerDay: cfg.new_per_day,
     sprintWindowDays: cfg.sprint_window_days,
     interviewDate: cfg.interview_date,
+    activeTrack: cfg.active_track,
     targetCompanies: cfg.target_companies,
     knownCompanies: [...known].sort(),
   };
@@ -399,6 +402,7 @@ export function createCoachRouter(
             ? patch.interviewDate
             : current.interview_date,
         target_companies: patch.targetCompanies ?? current.target_companies,
+        active_track: patch.activeTrack ?? current.active_track,
       };
       const [saved, problems] = await Promise.all([
         store.putConfig(id, next),

@@ -354,7 +354,47 @@ describe("coach routes", () => {
         interviewDate: null,
         targetCompanies: [],
         knownCompanies: [],
+        activeTrack: "sde",
       });
+    });
+
+    it("round-trips the active track and rejects an unknown one", async () => {
+      const { agent } = await signIn();
+      const saved = await agent
+        .put("/api/coach/config")
+        .send({ activeTrack: "ai-engineer" });
+      expect(saved.status).toBe(200);
+      expect(saved.body.activeTrack).toBe("ai-engineer");
+      expect((await agent.get("/api/coach/config")).body.activeTrack).toBe(
+        "ai-engineer",
+      );
+
+      const bad = await agent
+        .put("/api/coach/config")
+        .send({ activeTrack: "wizard" });
+      expect(bad.status).toBe(422);
+      expect((await agent.get("/api/coach/config")).body.activeTrack).toBe(
+        "ai-engineer",
+      );
+    });
+
+    it("the AI track reorders the plan's new problems", async () => {
+      // Same group and difficulty; only the pattern's track relevance differs,
+      // and the ML-adjacent problem has the higher number so it loses on sde.
+      coach.seedProblems({
+        "lc-0001": problem("lc-0001", 1, { patterns: ["linked-list"] }),
+        "lc-0002": problem("lc-0002", 2, { patterns: ["matrix"] }),
+      });
+      const sdeUser = await signIn(ME);
+      const sdePlan = await sdeUser.agent.get("/api/coach/plan");
+      expect(sdePlan.body.new[0].problem.id).toBe("lc-0001");
+
+      const aiUser = await signIn(OTHER);
+      await aiUser.agent
+        .put("/api/coach/config")
+        .send({ activeTrack: "ai-engineer" });
+      const aiPlan = await aiUser.agent.get("/api/coach/plan");
+      expect(aiPlan.body.new[0].problem.id).toBe("lc-0002");
     });
 
     it("serves the company roster derived from the bank", async () => {

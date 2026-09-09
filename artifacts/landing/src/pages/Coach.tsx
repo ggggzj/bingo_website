@@ -446,6 +446,39 @@ function SettingsPanel({ enabled }: { enabled: boolean }) {
           </div>
         </div>
         <div>
+          <Label className="text-xs">Track</Label>
+          <p className="text-xs text-muted-foreground mb-1.5">
+            AI Engineer pulls ML-adjacent patterns forward. Applies from the
+            next plan — today's assignment stays as dealt.
+          </p>
+          <div className="flex gap-1.5">
+            {(
+              [
+                ["sde", "SDE"],
+                ["ai-engineer", "AI Engineer"],
+              ] as const
+            ).map(([value, label]) => {
+              const active = draft.activeTrack === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  data-testid={`track-${value}`}
+                  aria-pressed={active}
+                  onClick={() => setDraft({ ...draft, activeTrack: value })}
+                  className={`text-xs px-3 py-1.5 rounded-md border transition-colors ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-muted-foreground border-border hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <div>
           <Label className="text-xs">Target companies</Label>
           <p className="text-xs text-muted-foreground mb-1.5">
             New problems are weighted toward what these companies actually ask.
@@ -493,6 +526,7 @@ function SettingsPanel({ enabled }: { enabled: boolean }) {
                 sprintWindowDays: draft.sprintWindowDays,
                 interviewDate: draft.interviewDate,
                 targetCompanies: draft.targetCompanies,
+                activeTrack: draft.activeTrack,
               },
             })
           }

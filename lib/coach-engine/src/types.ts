@@ -78,6 +78,8 @@ export const coachConfigSchema = z.object({
   sprint_window_days: z.number().int().default(14),
   interview_date: z.string().nullable().default(null),
   target_companies: z.array(z.string()).default([]),
+  // Which application track's weights steer new-problem selection.
+  active_track: z.enum(["sde", "ai-engineer"]).default("sde"),
 });
 export type CoachConfig = z.infer<typeof coachConfigSchema>;
 

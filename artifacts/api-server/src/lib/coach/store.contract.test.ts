@@ -71,6 +71,7 @@ function runContract(name: string, setup: () => Promise<Harness>) {
         sprint_window_days: 14,
         interview_date: null,
         target_companies: [],
+        active_track: "sde",
       });
       const next = { ...cfg, daily_minutes: 90, interview_date: "2026-12-01" };
       await h.store.putConfig(h.userId, next);

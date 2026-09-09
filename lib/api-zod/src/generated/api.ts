@@ -326,6 +326,11 @@ export const GetCoachConfigResponse = zod.object({
   newPerDay: zod.number(),
   sprintWindowDays: zod.number(),
   interviewDate: zod.string().nullish(),
+  activeTrack: zod
+    .enum(["sde", "ai-engineer"])
+    .describe(
+      "Which application track's weights steer new-problem selection. Takes effect from the next dealt day; a frozen day keeps its assignment.",
+    ),
   targetCompanies: zod.array(zod.string()),
   knownCompanies: zod
     .array(zod.string())
@@ -366,6 +371,7 @@ export const UpdateCoachConfigBody = zod.object({
     .max(updateCoachConfigBodySprintWindowDaysMax)
     .optional(),
   interviewDate: zod.coerce.date().nullish(),
+  activeTrack: zod.enum(["sde", "ai-engineer"]).optional(),
   targetCompanies: zod
     .array(zod.string().max(updateCoachConfigBodyTargetCompaniesItemMax))
     .max(updateCoachConfigBodyTargetCompaniesMax)
@@ -377,6 +383,11 @@ export const UpdateCoachConfigResponse = zod.object({
   newPerDay: zod.number(),
   sprintWindowDays: zod.number(),
   interviewDate: zod.string().nullish(),
+  activeTrack: zod
+    .enum(["sde", "ai-engineer"])
+    .describe(
+      "Which application track's weights steer new-problem selection. Takes effect from the next dealt day; a frozen day keeps its assignment.",
+    ),
   targetCompanies: zod.array(zod.string()),
   knownCompanies: zod
     .array(zod.string())

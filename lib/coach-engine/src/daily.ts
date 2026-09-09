@@ -164,7 +164,7 @@ export function buildPlan(input: BuildPlanInput): BuildPlanResult {
       problems,
       reviews,
       config.target_companies,
-      { sprint },
+      { sprint, track: config.active_track },
     )) {
       const cost = estimateMinutes(problem);
       if (cost > remaining) continue;
