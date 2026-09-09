@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Account from "@/pages/Account";
+import Coach from "@/pages/Coach";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -19,6 +20,9 @@ function Router() {
       {/* Not guarded here: the page itself renders NotFound when the server refuses
           its data, so the route existing gives nothing away. */}
       <Route path="/dashboard" component={Dashboard} />
+      {/* Same stance as /dashboard: the page hides itself from anyone the
+          coach API refuses. */}
+      <Route path="/coach" component={Coach} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -4,6 +4,7 @@ import { SiGooglechrome } from "react-icons/si";
 import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useCoachAccess } from "@/hooks/use-coach-access";
 import { CHROME_STORE_URL } from "@/lib/links";
 
 /**
@@ -23,6 +24,9 @@ const SECTIONS = [
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Shares the /coach page's query key, so this adds no request of its own;
+  // for anyone the server refuses it stays false and no link ever appears.
+  const { hasAccess: showCoach } = useCoachAccess();
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/85 backdrop-blur-md border-b border-border/60">
@@ -55,6 +59,15 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {showCoach && (
+            <Link
+              href="/coach"
+              className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2"
+              data-testid="link-coach"
+            >
+              Coach
+            </Link>
+          )}
           <Link
             href="/login"
             className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2"
@@ -108,6 +121,16 @@ export function SiteHeader() {
                 {section.label}
               </a>
             ))}
+            {showCoach && (
+              <Link
+                href="/coach"
+                onClick={() => setMenuOpen(false)}
+                className="py-2 text-sm font-medium text-foreground"
+                data-testid="link-mobile-coach"
+              >
+                Coach
+              </Link>
+            )}
             <Link
               href="/login"
               onClick={() => setMenuOpen(false)}
