@@ -61,4 +61,4 @@ rounded to 2 decimals, floored at 0.05. Problems the company never tagged get **
    AI-lab prep to `track-split`?
 3. Any companies to add or drop from the roster?
 
-_Approval recorded below when given._
+**Approved by owner 2026-09-09**: all 15 replace/ADD companies merged; anthropic / xai / scale / perplexity omitted (AI-lab prep deferred to track-split).

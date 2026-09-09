@@ -16,14 +16,13 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.7,
     "google": 0.5,
+    "amazon": 0.62,
     "meta": 0.5,
-    "microsoft": 0.6,
-    "apple": 0.5,
-    "bloomberg": 0.6,
-    "tiktok": 0.4,
-    "openai": 0.2
+    "microsoft": 0.5,
+    "apple": 0.15,
+    "bloomberg": 0.5,
+    "airbnb": 0.45
    },
    "followups": [
     "Can you solve it without extra space, and what do you trade away?",
@@ -46,14 +45,13 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.55,
-    "meta": 0.55,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.25
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.62,
+    "microsoft": 0.62,
+    "apple": 0.23,
+    "bloomberg": 0.62,
+    "uber": 0.38
    },
    "followups": [
     "How does your solution change for full Unicode input rather than lowercase ASCII?",
@@ -76,14 +74,18 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.92,
-    "google": 0.8,
-    "meta": 0.85,
-    "microsoft": 0.8,
+    "google": 1.0,
+    "amazon": 1.0,
+    "meta": 1.0,
+    "microsoft": 1.0,
     "apple": 0.75,
-    "bloomberg": 0.8,
-    "tiktok": 0.7,
-    "openai": 0.45
+    "bloomberg": 1.0,
+    "tiktok": 0.38,
+    "databricks": 0.23,
+    "airbnb": 0.45,
+    "doordash": 0.3,
+    "snowflake": 0.38,
+    "uber": 0.38
    },
    "followups": [
     "What changes if the array is already sorted and you must use O(1) extra space?",
@@ -106,14 +108,15 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.75,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.7,
+    "google": 0.5,
+    "amazon": 0.75,
+    "meta": 0.5,
+    "microsoft": 0.62,
+    "apple": 0.62,
     "bloomberg": 0.75,
-    "tiktok": 0.6,
-    "openai": 0.35
+    "tiktok": 0.3,
+    "doordash": 0.15,
+    "uber": 0.38
    },
    "followups": [
     "Compare sorting each word versus a 26-slot count key - when does each win?",
@@ -138,14 +141,15 @@
     "quickselect"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.8,
-    "meta": 0.75,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.8,
-    "tiktok": 0.65,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.38,
+    "apple": 0.62,
+    "bloomberg": 0.5,
+    "tiktok": 0.5,
+    "snowflake": 0.62,
+    "uber": 0.38
    },
    "followups": [
     "Your solution must beat O(n log n) - how do bucket sort and quickselect each get there?",
@@ -168,14 +172,13 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.55,
-    "meta": 0.6,
-    "microsoft": 0.4,
-    "apple": 0.35,
-    "bloomberg": 0.4,
-    "tiktok": 0.3,
-    "openai": 0.25
+    "google": 0.23,
+    "amazon": 0.15,
+    "meta": 0.15,
+    "microsoft": 0.15,
+    "tiktok": 0.15,
+    "openai": 0.53,
+    "snowflake": 0.23
    },
    "followups": [
     "Why does a length-prefix scheme survive arbitrary payloads when a delimiter scheme does not?",
@@ -197,14 +200,13 @@
     "prefix-sum"
    ],
    "company_freq": {
-    "amazon": 0.88,
-    "google": 0.8,
-    "meta": 0.8,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.8,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.62,
+    "microsoft": 0.62,
+    "apple": 0.45,
+    "bloomberg": 0.62,
+    "uber": 0.45
    },
    "followups": [
     "Division is banned - explain why, then handle the case where it were allowed and zeros exist.",
@@ -228,14 +230,14 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.65,
-    "google": 0.55,
-    "meta": 0.5,
-    "microsoft": 0.55,
+    "google": 0.3,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.38,
     "apple": 0.5,
-    "bloomberg": 0.45,
-    "tiktok": 0.35,
-    "openai": 0.2
+    "bloomberg": 0.5,
+    "tiktok": 0.15,
+    "uber": 0.38
    },
    "followups": [
     "Can you validate all rows, columns, and boxes in a single pass?",
@@ -259,14 +261,14 @@
     "union-find"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.8,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.7,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.62,
+    "amazon": 0.62,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.5,
+    "bloomberg": 0.62,
+    "tiktok": 0.38,
+    "uber": 0.23
    },
    "followups": [
     "Prove your set-based scan is O(n) and not O(n^2) despite the inner while loop.",
@@ -289,14 +291,14 @@
     "two-pointers"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.75,
+    "microsoft": 0.62,
+    "apple": 0.62,
+    "bloomberg": 0.62,
+    "tiktok": 0.23,
+    "uber": 0.3
    },
    "followups": [
     "Do it without building a cleaned copy of the string.",
@@ -320,14 +322,13 @@
     "binary-search"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.5,
+    "amazon": 0.38,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.3,
+    "bloomberg": 0.5,
+    "tiktok": 0.15
    },
    "followups": [
     "Prove the two-pointer scan never skips the answer.",
@@ -350,14 +351,13 @@
     "two-pointers"
    ],
    "company_freq": {
-    "amazon": 0.88,
-    "google": 0.82,
-    "meta": 0.85,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.8,
-    "tiktok": 0.7,
-    "openai": 0.45
+    "google": 0.62,
+    "amazon": 0.75,
+    "meta": 0.75,
+    "microsoft": 0.62,
+    "apple": 0.62,
+    "bloomberg": 0.75,
+    "tiktok": 0.45
    },
    "followups": [
     "How do you suppress duplicate triplets without a hash set of results?",
@@ -381,14 +381,15 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.78,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.62,
+    "amazon": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.75,
+    "apple": 0.38,
+    "bloomberg": 0.75,
+    "tiktok": 0.3,
+    "snowflake": 0.23,
+    "uber": 0.15
    },
    "followups": [
     "Prove that moving the shorter wall inward can never discard the optimum.",
@@ -413,14 +414,17 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.8,
-    "meta": 0.8,
+    "google": 0.62,
+    "amazon": 0.88,
+    "meta": 0.62,
     "microsoft": 0.75,
-    "apple": 0.7,
+    "apple": 0.38,
     "bloomberg": 0.75,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "tiktok": 0.53,
+    "openai": 0.3,
+    "airbnb": 0.45,
+    "snowflake": 0.75,
+    "uber": 0.23
    },
    "followups": [
     "Give three solutions - prefix max arrays, monotonic stack, two pointers - and their space costs.",
@@ -444,14 +448,16 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.7,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.7,
-    "bloomberg": 0.85,
-    "tiktok": 0.6,
-    "openai": 0.35
+    "google": 0.62,
+    "amazon": 0.75,
+    "meta": 0.88,
+    "microsoft": 0.62,
+    "apple": 0.75,
+    "bloomberg": 0.88,
+    "tiktok": 0.5,
+    "snowflake": 0.23,
+    "uber": 0.5,
+    "coinbase": 0.3
    },
    "followups": [
     "Adapt it to unlimited transactions, then to at most two transactions.",
@@ -475,14 +481,14 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.9,
-    "google": 0.85,
-    "meta": 0.85,
-    "microsoft": 0.8,
-    "apple": 0.75,
-    "bloomberg": 0.8,
-    "tiktok": 0.75,
-    "openai": 0.5
+    "google": 0.62,
+    "amazon": 0.75,
+    "meta": 0.75,
+    "microsoft": 0.75,
+    "apple": 0.62,
+    "bloomberg": 0.88,
+    "tiktok": 0.53,
+    "uber": 0.15
    },
    "followups": [
     "Why can the left pointer jump instead of crawling, and when is that wrong?",
@@ -505,14 +511,13 @@
     "sliding-window"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.7,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.38,
+    "microsoft": 0.62,
+    "apple": 0.15,
+    "bloomberg": 0.62,
+    "uber": 0.15
    },
    "followups": [
     "Why is it safe never to decrease the running max-count when the window shrinks?",
@@ -536,14 +541,14 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.65,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.25,
+    "microsoft": 0.38,
+    "apple": 0.38,
+    "bloomberg": 0.38,
+    "tiktok": 0.23,
+    "databricks": 0.3
    },
    "followups": [
     "How do you compare two frequency maps in O(1) per step rather than O(26)?",
@@ -567,14 +572,16 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.8,
-    "meta": 0.8,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.62,
+    "microsoft": 0.62,
+    "apple": 0.15,
+    "bloomberg": 0.25,
+    "tiktok": 0.45,
+    "airbnb": 0.38,
+    "snowflake": 0.53,
+    "uber": 0.38
    },
    "followups": [
     "Explain the 'have vs need' counter - why does it let you shrink greedily?",
@@ -598,14 +605,15 @@
     "monotonic-stack"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.8,
-    "meta": 0.72,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.75,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.62,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.23,
+    "bloomberg": 0.62,
+    "tiktok": 0.3,
+    "doordash": 0.23,
+    "uber": 0.3
    },
    "followups": [
     "Why is the deque solution O(n) amortized when each element can be pushed and popped?",
@@ -628,14 +636,15 @@
     "monotonic-stack"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.7,
-    "meta": 0.8,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.75,
-    "tiktok": 0.65,
-    "openai": 0.4
+    "google": 0.62,
+    "amazon": 0.62,
+    "meta": 0.75,
+    "microsoft": 0.5,
+    "apple": 0.45,
+    "bloomberg": 0.88,
+    "tiktok": 0.38,
+    "airbnb": 0.45,
+    "uber": 0.15
    },
    "followups": [
     "Add wildcard '*' that can be either bracket or empty - how does the stack argument break?",
@@ -658,14 +667,14 @@
     "monotonic-stack"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.65,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.5,
+    "apple": 0.38,
+    "bloomberg": 0.62,
+    "snowflake": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "Can you get O(1) min with only one stack and constant extra space per element?",
@@ -688,14 +697,12 @@
     "monotonic-stack"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.6,
-    "bloomberg": 0.7,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.25,
+    "apple": 0.15,
+    "bloomberg": 0.38
    },
    "followups": [
     "How do you convert an infix expression to RPN, and what precedence rules apply?",
@@ -718,14 +725,14 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.75,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.62,
+    "apple": 0.3,
+    "bloomberg": 0.62,
+    "tiktok": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "Why does the open<n, close<open pruning generate each string exactly once?",
@@ -748,14 +755,12 @@
     "monotonic-stack"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.65,
-    "apple": 0.6,
-    "bloomberg": 0.7,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "bloomberg": 0.5,
+    "tiktok": 0.38
    },
    "followups": [
     "Prove the monotonic stack does O(n) total work.",
@@ -779,14 +784,11 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.55,
-    "google": 0.5,
-    "meta": 0.45,
-    "microsoft": 0.4,
-    "apple": 0.35,
-    "bloomberg": 0.35,
-    "tiktok": 0.3,
-    "openai": 0.2
+    "google": 0.23,
+    "amazon": 0.15,
+    "meta": 0.07,
+    "microsoft": 0.25,
+    "bloomberg": 0.15
    },
    "followups": [
     "Why does sorting by start position and scanning backwards find fleets correctly?",
@@ -809,14 +811,15 @@
     "monotonic-stack"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.15,
+    "bloomberg": 0.5,
+    "tiktok": 0.3,
+    "doordash": 0.3,
+    "uber": 0.3
    },
    "followups": [
     "Walk through what the stack holds and why popping yields a maximal rectangle.",
@@ -839,14 +842,11 @@
     "binary-search"
    ],
    "company_freq": {
-    "amazon": 0.6,
     "google": 0.5,
-    "meta": 0.5,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.55,
-    "tiktok": 0.4,
-    "openai": 0.25
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "bloomberg": 0.38
    },
    "followups": [
     "Write the loop so it cannot overflow or spin forever - which invariant guarantees termination?",
@@ -870,14 +870,14 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.62,
+    "apple": 0.15,
+    "bloomberg": 0.38,
+    "tiktok": 0.23,
+    "uber": 0.15
    },
    "followups": [
     "Why can you treat the matrix as one flat sorted array here but not in Search a 2D Matrix II?",
@@ -901,14 +901,15 @@
     "greedy"
    ],
    "company_freq": {
+    "google": 0.62,
     "amazon": 0.75,
-    "google": 0.7,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "meta": 0.5,
+    "microsoft": 0.62,
+    "apple": 0.38,
+    "bloomberg": 0.62,
+    "tiktok": 0.3,
+    "doordash": 0.45,
+    "uber": 0.3
    },
    "followups": [
     "What exactly is the monotone predicate you binary search on, and why is it monotone?",
@@ -931,14 +932,14 @@
     "binary-search"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.72,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.7,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.3,
+    "apple": 0.15,
+    "bloomberg": 0.5,
+    "tiktok": 0.3,
+    "uber": 0.23
    },
    "followups": [
     "Why compare mid against the right end rather than the left?",
@@ -961,14 +962,14 @@
     "binary-search"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.78,
-    "meta": 0.78,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.75,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.75,
+    "meta": 0.62,
+    "microsoft": 0.62,
+    "apple": 0.3,
+    "bloomberg": 0.62,
+    "tiktok": 0.5,
+    "uber": 0.5
    },
    "followups": [
     "How do you decide which half is sorted, and what breaks with duplicate values?",
@@ -992,14 +993,19 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.55,
+    "google": 0.25,
+    "amazon": 0.5,
+    "meta": 0.25,
+    "microsoft": 0.15,
     "apple": 0.5,
-    "bloomberg": 0.55,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "bloomberg": 0.38,
+    "tiktok": 0.23,
+    "openai": 0.45,
+    "databricks": 0.75,
+    "airbnb": 0.23,
+    "snowflake": 0.38,
+    "uber": 0.62,
+    "coinbase": 0.53
    },
    "followups": [
     "What if sets arrive out of timestamp order - does your binary search still hold?",
@@ -1023,14 +1029,14 @@
     "divide-and-conquer"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.7,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.4
+    "google": 0.62,
+    "amazon": 0.75,
+    "meta": 0.75,
+    "microsoft": 0.62,
+    "apple": 0.38,
+    "bloomberg": 0.75,
+    "tiktok": 0.15,
+    "uber": 0.15
    },
    "followups": [
     "Explain the partition invariant and why you binary search the shorter array.",
@@ -1053,14 +1059,14 @@
     "linked-list"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.7,
-    "meta": 0.8,
-    "microsoft": 0.8,
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.5,
     "apple": 0.75,
-    "bloomberg": 0.7,
-    "tiktok": 0.65,
-    "openai": 0.4
+    "bloomberg": 0.5,
+    "tiktok": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "Give both the iterative and recursive versions and compare stack usage.",
@@ -1084,14 +1090,14 @@
     "merge-sort"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.7,
-    "meta": 0.75,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.5,
+    "apple": 0.38,
+    "bloomberg": 0.62,
+    "tiktok": 0.23,
+    "snowflake": 0.38
    },
    "followups": [
     "Do it in place with O(1) extra space and no dummy node.",
@@ -1115,14 +1121,13 @@
     "fast-slow-pointers"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.6,
-    "meta": 0.7,
-    "microsoft": 0.6,
-    "apple": 0.6,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.25,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.23,
+    "bloomberg": 0.5,
+    "tiktok": 0.38
    },
    "followups": [
     "Why does the slow/fast split land correctly for both odd and even lengths?",
@@ -1146,14 +1151,13 @@
     "two-pointers"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.65,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.62,
+    "meta": 0.5,
+    "microsoft": 0.3,
+    "apple": 0.3,
+    "bloomberg": 0.38,
+    "tiktok": 0.23
    },
    "followups": [
     "Do it in one pass - what makes the dummy node necessary?",
@@ -1177,14 +1181,15 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.7,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.7,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.62,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.15,
+    "bloomberg": 0.5,
+    "tiktok": 0.15,
+    "snowflake": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "Solve it with O(1) extra space using the interleaving trick.",
@@ -1208,14 +1213,17 @@
     "math"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.7,
+    "google": 0.75,
+    "amazon": 0.75,
     "meta": 0.75,
     "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.75,
-    "tiktok": 0.6,
-    "openai": 0.35
+    "apple": 0.23,
+    "bloomberg": 0.88,
+    "tiktok": 0.15,
+    "airbnb": 0.45,
+    "doordash": 0.15,
+    "snowflake": 0.23,
+    "uber": 0.15
    },
    "followups": [
     "What changes if the digits are stored most-significant-first?",
@@ -1239,14 +1247,11 @@
     "fast-slow-pointers"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.65,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "bloomberg": 0.3
    },
    "followups": [
     "Prove the fast pointer must meet the slow one inside a cycle.",
@@ -1270,14 +1275,12 @@
     "binary-search"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.75,
-    "meta": 0.7,
-    "microsoft": 0.65,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "bloomberg": 0.3,
+    "tiktok": 0.23
    },
    "followups": [
     "Explain why the array can be viewed as a linked list with a cycle.",
@@ -1301,14 +1304,16 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.95,
-    "google": 0.85,
-    "meta": 0.9,
-    "microsoft": 0.85,
-    "apple": 0.8,
-    "bloomberg": 0.85,
-    "tiktok": 0.8,
-    "openai": 0.55
+    "google": 0.5,
+    "amazon": 0.88,
+    "meta": 0.5,
+    "microsoft": 0.75,
+    "apple": 1.0,
+    "bloomberg": 0.62,
+    "tiktok": 1.0,
+    "doordash": 0.23,
+    "snowflake": 0.38,
+    "uber": 0.62
    },
    "followups": [
     "Why a doubly linked list plus a hash map - what fails with a singly linked list?",
@@ -1333,14 +1338,17 @@
     "divide-and-conquer"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.8,
-    "meta": 0.78,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.8,
-    "tiktok": 0.6,
-    "openai": 0.45
+    "google": 0.3,
+    "amazon": 0.75,
+    "meta": 0.62,
+    "microsoft": 0.62,
+    "apple": 0.5,
+    "bloomberg": 0.62,
+    "tiktok": 0.38,
+    "airbnb": 0.45,
+    "doordash": 0.23,
+    "snowflake": 0.45,
+    "uber": 0.38
    },
    "followups": [
     "Compare the heap solution with divide-and-conquer merging - complexity and constants.",
@@ -1363,14 +1371,14 @@
     "linked-list"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.65,
-    "meta": 0.68,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.23,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.38,
     "tiktok": 0.5,
-    "openai": 0.35
+    "uber": 0.15
    },
    "followups": [
     "Handle the trailing group of fewer than k nodes - both leave-as-is and reverse-anyway.",
@@ -1394,14 +1402,11 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.23,
+    "meta": 0.38,
+    "microsoft": 0.15,
+    "bloomberg": 0.23
    },
    "followups": [
     "Give the iterative version - which traversal order works and why.",
@@ -1425,14 +1430,13 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.25,
+    "amazon": 0.3,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "apple": 0.3,
+    "bloomberg": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "Do it iteratively both DFS and BFS - which one gives you level information for free?",
@@ -1455,14 +1459,14 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.72,
-    "meta": 0.72,
-    "microsoft": 0.65,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.3,
+    "amazon": 0.5,
+    "meta": 0.75,
+    "microsoft": 0.5,
+    "apple": 0.15,
+    "bloomberg": 0.5,
+    "tiktok": 0.23,
+    "doordash": 0.15
    },
    "followups": [
     "Why does a single post-order pass suffice instead of recomputing heights?",
@@ -1485,14 +1489,12 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.6,
-    "bloomberg": 0.55,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.5
    },
    "followups": [
     "How do you avoid the O(n^2) recomputation of heights?",
@@ -1515,14 +1517,12 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.65,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.25
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.38
    },
    "followups": [
     "Give an iterative version and say what the queue must hold.",
@@ -1545,14 +1545,11 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.68,
-    "google": 0.62,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.25,
+    "amazon": 0.25,
+    "meta": 0.23,
+    "microsoft": 0.25,
+    "bloomberg": 0.38
    },
    "followups": [
     "What is the naive complexity, and how does serializing plus KMP beat it?",
@@ -1576,14 +1573,12 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.72,
-    "meta": 0.72,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.15,
+    "amazon": 0.3,
+    "meta": 0.3,
+    "microsoft": 0.3,
+    "apple": 0.15,
+    "bloomberg": 0.3
    },
    "followups": [
     "How does the solution change for a plain binary tree with no BST property?",
@@ -1606,14 +1601,12 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.75,
-    "meta": 0.78,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.38,
+    "meta": 0.3,
+    "microsoft": 0.38,
+    "apple": 0.38,
+    "bloomberg": 0.38
    },
    "followups": [
     "How do you know where one level ends inside a single queue?",
@@ -1637,14 +1630,14 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.72,
+    "google": 0.25,
+    "amazon": 0.5,
     "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.23,
+    "tiktok": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "Solve it with DFS instead of BFS - what ordering makes it work?",
@@ -1667,14 +1660,10 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.55,
-    "google": 0.55,
-    "meta": 0.5,
-    "microsoft": 0.45,
-    "apple": 0.4,
-    "bloomberg": 0.4,
-    "tiktok": 0.35,
-    "openai": 0.25
+    "google": 0.12,
+    "amazon": 0.07,
+    "meta": 0.07,
+    "microsoft": 0.23
    },
    "followups": [
     "What state must the recursion carry down, and why is it not returnable upward?",
@@ -1699,14 +1688,12 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.8,
-    "meta": 0.8,
-    "microsoft": 0.78,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.25,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.5
    },
    "followups": [
     "Why does checking only node-versus-children fail? Give a counterexample.",
@@ -1730,14 +1717,13 @@
     "in-order-traversal"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.75,
-    "meta": 0.72,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.23,
+    "amazon": 0.3,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "bloomberg": 0.3,
+    "tiktok": 0.15,
+    "uber": 0.75
    },
    "followups": [
     "Stop early with an iterative in-order walk - what is the space cost?",
@@ -1761,14 +1747,13 @@
     "divide-and-conquer"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.75,
-    "meta": 0.72,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.25,
+    "amazon": 0.3,
+    "meta": 0.23,
+    "microsoft": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.38,
+    "snowflake": 0.23
    },
    "followups": [
     "How does a hash map of in-order indices cut the complexity to O(n)?",
@@ -1792,14 +1777,15 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.78,
-    "meta": 0.78,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.38,
+    "tiktok": 0.5,
+    "doordash": 0.53,
+    "uber": 0.23
    },
    "followups": [
     "Distinguish what you return upward from what you record globally.",
@@ -1823,14 +1809,15 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.8,
-    "meta": 0.8,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.45
+    "google": 0.23,
+    "amazon": 0.38,
+    "meta": 0.23,
+    "microsoft": 0.5,
+    "apple": 0.3,
+    "bloomberg": 0.3,
+    "tiktok": 0.5,
+    "doordash": 0.3,
+    "uber": 0.5
    },
    "followups": [
     "Which traversal makes deserialization unambiguous, and why do null markers matter?",
@@ -1853,14 +1840,16 @@
     "trie"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.8,
-    "meta": 0.78,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.25,
+    "amazon": 0.23,
+    "meta": 0.23,
+    "microsoft": 0.38,
+    "apple": 0.38,
+    "bloomberg": 0.38,
+    "tiktok": 0.15,
+    "doordash": 0.3,
+    "snowflake": 0.23,
+    "uber": 0.3
    },
    "followups": [
     "Compare a 26-slot array per node against a hash map - memory versus speed.",
@@ -1884,14 +1873,15 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.72,
-    "meta": 0.7,
-    "microsoft": 0.65,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.15,
+    "amazon": 0.25,
+    "meta": 0.15,
+    "microsoft": 0.15,
+    "apple": 0.23,
+    "bloomberg": 0.15,
+    "tiktok": 0.3,
+    "doordash": 0.15,
+    "snowflake": 0.62
    },
    "followups": [
     "What is the worst-case cost of a query that is all wildcards?",
@@ -1916,14 +1906,17 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.78,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.23,
+    "amazon": 0.38,
+    "meta": 0.25,
+    "microsoft": 0.3,
+    "apple": 0.15,
+    "bloomberg": 0.07,
+    "tiktok": 0.38,
+    "airbnb": 0.45,
+    "doordash": 0.23,
+    "snowflake": 0.53,
+    "uber": 0.62
    },
    "followups": [
     "Why is a trie decisively better than running Word Search once per word?",
@@ -1946,14 +1939,11 @@
     "heap"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.65,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.23,
+    "meta": 0.23,
+    "microsoft": 0.25,
+    "bloomberg": 0.07
    },
    "followups": [
     "Why a min-heap of size k rather than a max-heap of everything?",
@@ -1976,14 +1966,11 @@
     "heap"
    ],
    "company_freq": {
-    "amazon": 0.5,
-    "google": 0.45,
-    "meta": 0.4,
-    "microsoft": 0.45,
-    "apple": 0.4,
-    "bloomberg": 0.45,
-    "tiktok": 0.3,
-    "openai": 0.2
+    "google": 0.25,
+    "amazon": 0.25,
+    "meta": 0.07,
+    "microsoft": 0.25,
+    "bloomberg": 0.38
    },
    "followups": [
     "Can you beat the heap using counting sort when weights are bounded?",
@@ -2007,14 +1994,12 @@
     "quickselect"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.75,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.15,
+    "amazon": 0.3,
+    "meta": 0.62,
+    "microsoft": 0.15,
+    "apple": 0.15,
+    "bloomberg": 0.25
    },
    "followups": [
     "Heap versus quickselect - expected and worst-case complexity for each.",
@@ -2038,14 +2023,14 @@
     "quickselect"
    ],
    "company_freq": {
-    "amazon": 0.88,
-    "google": 0.8,
-    "meta": 0.8,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.8,
-    "tiktok": 0.65,
-    "openai": 0.45
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.75,
+    "microsoft": 0.5,
+    "apple": 0.5,
+    "bloomberg": 0.38,
+    "tiktok": 0.5,
+    "uber": 0.15
    },
    "followups": [
     "Walk through quickselect and explain how to avoid the O(n^2) worst case.",
@@ -2069,14 +2054,15 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.23,
+    "microsoft": 0.5,
+    "apple": 0.62,
+    "bloomberg": 0.38,
+    "tiktok": 0.23,
+    "snowflake": 0.38,
+    "uber": 0.23
    },
    "followups": [
     "Derive the closed-form formula and prove it matches the greedy simulation.",
@@ -2100,14 +2086,12 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.65,
-    "meta": 0.75,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.15,
+    "amazon": 0.23,
+    "microsoft": 0.15,
+    "apple": 0.15,
+    "bloomberg": 0.07,
+    "uber": 0.15
    },
    "followups": [
     "Fan-out on write versus fan-out on read - which do you pick for a celebrity with 100M followers?",
@@ -2130,14 +2114,15 @@
     "heap"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.8,
-    "meta": 0.8,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.8,
-    "tiktok": 0.65,
-    "openai": 0.45
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.3,
+    "microsoft": 0.5,
+    "apple": 0.38,
+    "bloomberg": 0.25,
+    "tiktok": 0.38,
+    "snowflake": 0.23,
+    "uber": 0.5
    },
    "followups": [
     "Explain the two-heap invariant and how you rebalance after each insert.",
@@ -2160,14 +2145,13 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.72,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.38,
+    "microsoft": 0.5,
+    "bloomberg": 0.45,
+    "tiktok": 0.62,
+    "uber": 0.3
    },
    "followups": [
     "Give the bitmask iterative version and compare it to recursion.",
@@ -2190,14 +2174,15 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.72,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.3,
+    "meta": 0.62,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.3,
+    "tiktok": 0.3,
+    "airbnb": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "Why does passing a start index prevent permutations of the same combination?",
@@ -2220,14 +2205,14 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.72,
-    "meta": 0.72,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.38,
+    "tiktok": 0.3,
+    "uber": 0.23
    },
    "followups": [
     "Do it by swapping in place - what is the space cost versus a used[] array?",
@@ -2250,14 +2235,12 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.68,
-    "google": 0.6,
-    "meta": 0.62,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.25,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.5
    },
    "followups": [
     "Why does sorting plus the skip-equal-sibling rule remove exactly the duplicates?",
@@ -2280,14 +2263,12 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.68,
-    "google": 0.6,
-    "meta": 0.62,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.23,
+    "amazon": 0.25,
+    "meta": 0.38,
+    "microsoft": 0.23,
+    "bloomberg": 0.38,
+    "tiktok": 0.23
    },
    "followups": [
     "Contrast the dedup rule here with the reuse rule in Combination Sum.",
@@ -2312,14 +2293,15 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.75,
-    "meta": 0.78,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.65,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.25,
+    "amazon": 0.5,
+    "meta": 0.3,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.75,
+    "tiktok": 0.5,
+    "snowflake": 0.23,
+    "uber": 0.75
    },
    "followups": [
     "How do you mark visited cells without extra space, and is that safe with recursion?",
@@ -2343,14 +2325,11 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.65,
-    "google": 0.62,
-    "meta": 0.62,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "bloomberg": 0.38
    },
    "followups": [
     "Precompute a palindrome table - how much does it cut off the runtime?",
@@ -2373,14 +2352,13 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.7,
-    "meta": 0.72,
-    "microsoft": 0.68,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.5,
+    "apple": 0.38,
+    "bloomberg": 0.5,
+    "uber": 0.38
    },
    "followups": [
     "Give the iterative BFS-style build and compare memory with recursion.",
@@ -2403,14 +2381,12 @@
     "backtracking"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.4,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.62,
+    "microsoft": 0.62,
+    "bloomberg": 0.38,
+    "tiktok": 0.45
    },
    "followups": [
     "Which O(1) checks let you test a diagonal conflict - derive the index formulas.",
@@ -2435,14 +2411,16 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.95,
-    "google": 0.9,
-    "meta": 0.9,
-    "microsoft": 0.85,
-    "apple": 0.8,
-    "bloomberg": 0.8,
-    "tiktok": 0.8,
-    "openai": 0.5
+    "google": 0.5,
+    "amazon": 0.75,
+    "meta": 0.62,
+    "microsoft": 0.75,
+    "apple": 0.75,
+    "bloomberg": 0.75,
+    "tiktok": 0.88,
+    "doordash": 0.23,
+    "snowflake": 0.23,
+    "uber": 0.75
    },
    "followups": [
     "DFS, BFS, and union-find all work - which do you choose for a 10^6 x 10^6 grid and why?",
@@ -2467,14 +2445,13 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.75,
-    "meta": 0.78,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.25,
+    "amazon": 0.25,
+    "meta": 0.45,
+    "microsoft": 0.15,
+    "apple": 0.15,
+    "bloomberg": 0.15,
+    "uber": 0.3
    },
    "followups": [
     "How does the visited map prevent infinite recursion on cycles?",
@@ -2499,14 +2476,15 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.7,
-    "meta": 0.72,
-    "microsoft": 0.65,
-    "apple": 0.6,
-    "bloomberg": 0.55,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.25,
+    "meta": 0.3,
+    "microsoft": 0.15,
+    "apple": 0.15,
+    "bloomberg": 0.15,
+    "tiktok": 0.38,
+    "doordash": 0.3,
+    "snowflake": 0.62
    },
    "followups": [
     "Why does mutating the grid to mark visited work, and when is it unacceptable?",
@@ -2531,14 +2509,12 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.7,
-    "meta": 0.68,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.5,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.3,
+    "meta": 0.15,
+    "microsoft": 0.15,
+    "bloomberg": 0.07,
+    "tiktok": 0.3
    },
    "followups": [
     "Why search from the oceans inward instead of from each cell outward?",
@@ -2563,14 +2539,13 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.65,
-    "meta": 0.68,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.5,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "bloomberg": 0.38,
+    "tiktok": 0.15,
+    "uber": 0.15
    },
    "followups": [
     "Explain the border-first trick and why it avoids checking enclosure directly.",
@@ -2594,14 +2569,18 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.75,
-    "meta": 0.72,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.75,
+    "meta": 0.38,
+    "microsoft": 0.62,
+    "apple": 0.23,
+    "bloomberg": 0.62,
+    "tiktok": 0.3,
+    "openai": 1.0,
+    "databricks": 0.23,
+    "doordash": 0.15,
+    "snowflake": 0.3,
+    "uber": 0.5
    },
    "followups": [
     "Why must this be multi-source BFS rather than a DFS?",
@@ -2625,14 +2604,15 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.65,
-    "google": 0.6,
-    "meta": 0.65,
-    "microsoft": 0.5,
-    "apple": 0.45,
-    "bloomberg": 0.4,
-    "tiktok": 0.4,
-    "openai": 0.25
+    "google": 0.15,
+    "amazon": 0.15,
+    "meta": 0.25,
+    "microsoft": 0.07,
+    "bloomberg": 0.07,
+    "tiktok": 0.3,
+    "doordash": 1.0,
+    "snowflake": 0.23,
+    "uber": 0.23
    },
    "followups": [
     "Why does one multi-source BFS beat running BFS from every gate?",
@@ -2657,14 +2637,16 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.9,
-    "google": 0.85,
-    "meta": 0.85,
-    "microsoft": 0.8,
-    "apple": 0.75,
-    "bloomberg": 0.75,
-    "tiktok": 0.7,
-    "openai": 0.5
+    "google": 0.5,
+    "amazon": 0.75,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.62,
+    "bloomberg": 0.3,
+    "tiktok": 0.62,
+    "doordash": 0.23,
+    "snowflake": 0.62,
+    "uber": 0.5
    },
    "followups": [
     "Contrast Kahn's algorithm with DFS coloring - which reports the actual cycle more easily?",
@@ -2689,14 +2671,17 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.88,
-    "google": 0.82,
-    "meta": 0.82,
-    "microsoft": 0.78,
-    "apple": 0.72,
-    "bloomberg": 0.72,
-    "tiktok": 0.68,
-    "openai": 0.45
+    "google": 0.23,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "apple": 0.75,
+    "bloomberg": 0.38,
+    "tiktok": 0.53,
+    "doordash": 0.3,
+    "snowflake": 0.88,
+    "uber": 0.5,
+    "coinbase": 0.3
    },
    "followups": [
     "Return the lexicographically smallest valid order - what changes?",
@@ -2719,14 +2704,11 @@
     "union-find"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.68,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.23,
+    "amazon": 0.25,
+    "meta": 0.15,
+    "microsoft": 0.25,
+    "bloomberg": 0.38
    },
    "followups": [
     "Explain union by rank and path compression, and give the amortized complexity.",
@@ -2750,14 +2732,10 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.5,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.15,
+    "amazon": 0.23,
+    "meta": 0.07,
+    "tiktok": 0.23
    },
    "followups": [
     "Union-find versus DFS here - compare complexity and when each is preferable.",
@@ -2781,14 +2759,13 @@
     "dfs"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.68,
-    "meta": 0.7,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.15,
+    "amazon": 0.07,
+    "meta": 0.15,
+    "microsoft": 0.07,
+    "tiktok": 0.15,
+    "snowflake": 0.62,
+    "uber": 0.15
    },
    "followups": [
     "What two conditions together make a graph a tree, and why is one alone not enough?",
@@ -2811,14 +2788,14 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.75,
-    "meta": 0.72,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.62,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "apple": 0.5,
+    "bloomberg": 0.62,
+    "tiktok": 0.38,
+    "uber": 0.3
    },
    "followups": [
     "How does bidirectional BFS change the complexity, and when does it not help?",
@@ -2842,14 +2819,11 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.72,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.25,
+    "meta": 0.07,
+    "microsoft": 0.15,
+    "bloomberg": 0.15
    },
    "followups": [
     "Why Dijkstra and not BFS, and what happens with a negative edge?",
@@ -2873,14 +2847,13 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.65,
-    "google": 0.65,
-    "meta": 0.6,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.4,
-    "openai": 0.3
+    "google": 0.23,
+    "amazon": 0.23,
+    "meta": 0.07,
+    "microsoft": 0.07,
+    "apple": 0.15,
+    "bloomberg": 0.25,
+    "uber": 0.23
    },
    "followups": [
     "Why does naive greedy DFS get stuck, and how does Hierholzer's algorithm fix it?",
@@ -2905,14 +2878,12 @@
     "heap"
    ],
    "company_freq": {
-    "amazon": 0.68,
-    "google": 0.68,
-    "meta": 0.6,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.25,
+    "meta": 0.07,
+    "microsoft": 0.07,
+    "tiktok": 0.3,
+    "uber": 0.23
    },
    "followups": [
     "Prim versus Kruskal on a dense complete graph - which wins and why?",
@@ -2937,14 +2908,12 @@
     "union-find"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.62,
-    "meta": 0.55,
-    "microsoft": 0.5,
-    "apple": 0.45,
-    "bloomberg": 0.45,
-    "tiktok": 0.4,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.15,
+    "meta": 0.5,
+    "microsoft": 0.25,
+    "doordash": 0.23,
+    "uber": 0.15
    },
    "followups": [
     "Frame it as minimizing the maximum edge - which of Dijkstra, binary search + BFS, or union-find fits best?",
@@ -2968,14 +2937,15 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.75,
-    "meta": 0.72,
-    "microsoft": 0.65,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.45,
-    "openai": 0.4
+    "google": 0.23,
+    "amazon": 0.25,
+    "meta": 0.3,
+    "microsoft": 0.15,
+    "apple": 0.23,
+    "bloomberg": 0.25,
+    "tiktok": 0.3,
+    "airbnb": 0.45,
+    "uber": 0.88
    },
    "followups": [
     "Which invalid inputs must you reject - name the prefix case explicitly.",
@@ -3000,14 +2970,17 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.72,
-    "meta": 0.68,
-    "microsoft": 0.62,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.15,
+    "microsoft": 0.15,
+    "apple": 0.38,
+    "bloomberg": 0.15,
+    "tiktok": 0.62,
+    "stripe": 0.45,
+    "airbnb": 0.45,
+    "snowflake": 0.3,
+    "uber": 0.23
    },
    "followups": [
     "Why does plain Dijkstra fail with the stop limit, and how do you repair it?",
@@ -3030,14 +3003,14 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.6,
-    "meta": 0.65,
-    "microsoft": 0.65,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.38,
+    "microsoft": 0.62,
+    "apple": 0.38,
+    "bloomberg": 0.75,
+    "tiktok": 0.38,
+    "uber": 0.15
    },
    "followups": [
     "Reduce the space to O(1), then compute the n-th value in O(log n) with matrix exponentiation.",
@@ -3060,14 +3033,11 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.5,
-    "meta": 0.5,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.4,
-    "openai": 0.25
+    "google": 0.25,
+    "amazon": 0.25,
+    "meta": 0.25,
+    "microsoft": 0.38,
+    "bloomberg": 0.15
    },
    "followups": [
     "Why can you start at either index 0 or 1, and how does that shape the base case?",
@@ -3090,14 +3060,16 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.75,
-    "meta": 0.75,
-    "microsoft": 0.72,
-    "apple": 0.68,
-    "bloomberg": 0.65,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.23,
+    "bloomberg": 0.62,
+    "tiktok": 0.38,
+    "databricks": 0.62,
+    "airbnb": 0.45,
+    "uber": 0.23
    },
    "followups": [
     "State the recurrence and reduce to two rolling variables.",
@@ -3120,14 +3092,15 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.65,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.25,
+    "microsoft": 0.3,
+    "apple": 0.15,
+    "bloomberg": 0.38,
+    "tiktok": 0.23,
+    "databricks": 0.45,
+    "uber": 0.15
    },
    "followups": [
     "Why do two linear passes correctly handle the circular constraint?",
@@ -3151,14 +3124,15 @@
     "two-pointers"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.78,
-    "meta": 0.8,
+    "google": 0.62,
+    "amazon": 0.75,
+    "meta": 0.75,
     "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.65,
-    "openai": 0.4
+    "apple": 0.5,
+    "bloomberg": 0.88,
+    "tiktok": 0.45,
+    "doordash": 0.15,
+    "uber": 0.5
    },
    "followups": [
     "Expand-around-center versus the O(n^2) DP table - compare time and space.",
@@ -3182,14 +3156,12 @@
     "two-pointers"
    ],
    "company_freq": {
-    "amazon": 0.68,
-    "google": 0.62,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.23,
+    "amazon": 0.25,
+    "meta": 0.62,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.15
    },
    "followups": [
     "Count distinct palindromic substrings instead of all occurrences.",
@@ -3212,14 +3184,14 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.72,
-    "meta": 0.75,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.15,
+    "amazon": 0.23,
+    "meta": 0.25,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.38,
+    "tiktok": 0.15,
+    "uber": 0.3
    },
    "followups": [
     "Enumerate every edge case involving '0' and justify each base case.",
@@ -3242,14 +3214,15 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.9,
-    "google": 0.85,
-    "meta": 0.85,
-    "microsoft": 0.8,
-    "apple": 0.75,
-    "bloomberg": 0.75,
-    "tiktok": 0.7,
-    "openai": 0.5
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.62,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.62,
+    "tiktok": 0.45,
+    "airbnb": 0.23,
+    "uber": 0.3
    },
    "followups": [
     "Why does greedy fail, and for which coin systems is it actually correct?",
@@ -3272,14 +3245,12 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.72,
-    "meta": 0.72,
-    "microsoft": 0.68,
-    "apple": 0.6,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.3,
+    "bloomberg": 0.5,
+    "tiktok": 0.23
    },
    "followups": [
     "Why must you track both the running max and min?",
@@ -3303,14 +3274,14 @@
     "trie"
    ],
    "company_freq": {
-    "amazon": 0.88,
-    "google": 0.85,
-    "meta": 0.85,
-    "microsoft": 0.8,
-    "apple": 0.72,
-    "bloomberg": 0.72,
-    "tiktok": 0.68,
-    "openai": 0.45
+    "google": 0.3,
+    "amazon": 0.5,
+    "meta": 0.3,
+    "microsoft": 0.38,
+    "apple": 0.38,
+    "bloomberg": 0.62,
+    "tiktok": 0.3,
+    "uber": 0.38
    },
    "followups": [
     "What is the complexity with a hash set versus a trie of the dictionary?",
@@ -3334,14 +3305,13 @@
     "binary-search"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.82,
-    "meta": 0.8,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.75,
-    "tiktok": 0.65,
-    "openai": 0.45
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.5,
+    "bloomberg": 0.5,
+    "tiktok": 0.53,
+    "uber": 0.15
    },
    "followups": [
     "Explain the patience-sorting O(n log n) method and why the tails array is not the answer itself.",
@@ -3364,14 +3334,12 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.72,
-    "meta": 0.7,
-    "microsoft": 0.68,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.25,
+    "bloomberg": 0.3,
+    "tiktok": 0.3
    },
    "followups": [
     "Why is this 0/1 knapsack, and how do you compress it to one boolean row?",
@@ -3394,14 +3362,12 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.68,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.62,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "bloomberg": 0.3,
+    "tiktok": 0.15
    },
    "followups": [
     "Give the closed-form binomial answer and say when the DP is still preferable.",
@@ -3424,14 +3390,14 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.78,
-    "meta": 0.75,
-    "microsoft": 0.72,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.6,
-    "openai": 0.45
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.25,
+    "tiktok": 0.23,
+    "doordash": 0.3
    },
    "followups": [
     "Reconstruct the subsequence itself from the table.",
@@ -3454,14 +3420,12 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.68,
-    "meta": 0.68,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.23,
+    "amazon": 0.12,
+    "microsoft": 0.07,
+    "apple": 0.5,
+    "bloomberg": 0.25,
+    "tiktok": 0.23
    },
    "followups": [
     "Define your states precisely - held, sold, rest - and the transitions between them.",
@@ -3484,14 +3448,12 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.72,
-    "google": 0.68,
-    "meta": 0.68,
-    "microsoft": 0.62,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.15,
+    "microsoft": 0.38,
+    "bloomberg": 0.15,
+    "tiktok": 0.23
    },
    "followups": [
     "Why does looping coins outside and amount inside count combinations rather than permutations?",
@@ -3514,14 +3476,11 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.65,
-    "meta": 0.68,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.3,
+    "meta": 0.3,
+    "microsoft": 0.25,
+    "bloomberg": 0.23
    },
    "followups": [
     "Transform it into a subset-sum problem - show the algebra.",
@@ -3544,14 +3503,12 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.6,
-    "meta": 0.58,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.4,
-    "openai": 0.3
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.15,
+    "microsoft": 0.23,
+    "apple": 0.23,
+    "bloomberg": 0.23
    },
    "followups": [
     "Why does a greedy two-pointer scan fail? Give a concrete counterexample.",
@@ -3576,14 +3533,15 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.7,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.15,
+    "meta": 0.3,
+    "microsoft": 0.25,
+    "apple": 0.15,
+    "bloomberg": 0.25,
+    "tiktok": 0.38,
+    "doordash": 0.75,
+    "uber": 0.23
    },
    "followups": [
     "Why is no visited set needed here, and how does memoization make it linear?",
@@ -3606,14 +3564,11 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.55,
-    "google": 0.58,
-    "meta": 0.55,
-    "microsoft": 0.5,
-    "apple": 0.45,
-    "bloomberg": 0.5,
-    "tiktok": 0.35,
-    "openai": 0.3
+    "google": 0.15,
+    "amazon": 0.23,
+    "meta": 0.15,
+    "microsoft": 0.25,
+    "bloomberg": 0.25
    },
    "followups": [
     "Explain the two branches of the recurrence when characters match.",
@@ -3636,14 +3591,13 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.82,
-    "meta": 0.8,
-    "microsoft": 0.78,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.5
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.5,
+    "apple": 0.62,
+    "bloomberg": 0.38,
+    "tiktok": 0.38
    },
    "followups": [
     "Reconstruct the actual sequence of edit operations.",
@@ -3666,14 +3620,12 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.55,
-    "google": 0.62,
-    "meta": 0.55,
-    "microsoft": 0.5,
-    "apple": 0.45,
-    "bloomberg": 0.45,
-    "tiktok": 0.35,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "bloomberg": 0.07,
+    "uber": 0.23
    },
    "followups": [
     "Why do you reason about the last balloon burst rather than the first?",
@@ -3696,14 +3648,16 @@
     "dp-2d"
    ],
    "company_freq": {
-    "amazon": 0.62,
-    "google": 0.7,
-    "meta": 0.65,
-    "microsoft": 0.6,
-    "apple": 0.55,
+    "google": 0.5,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "apple": 0.3,
     "bloomberg": 0.5,
-    "tiktok": 0.4,
-    "openai": 0.4
+    "tiktok": 0.3,
+    "airbnb": 0.45,
+    "snowflake": 0.3,
+    "uber": 0.3
    },
    "followups": [
     "Enumerate the cases for '*' and justify the empty-match branch.",
@@ -3727,14 +3681,15 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.88,
-    "google": 0.8,
-    "meta": 0.82,
-    "microsoft": 0.78,
-    "apple": 0.72,
-    "bloomberg": 0.8,
-    "tiktok": 0.65,
-    "openai": 0.4
+    "google": 0.62,
+    "amazon": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.75,
+    "apple": 0.38,
+    "bloomberg": 0.62,
+    "tiktok": 0.3,
+    "airbnb": 0.23,
+    "uber": 0.23
    },
    "followups": [
     "Prove Kadane's algorithm is correct - what is the invariant?",
@@ -3758,14 +3713,14 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.75,
-    "meta": 0.78,
-    "microsoft": 0.72,
-    "apple": 0.68,
-    "bloomberg": 0.65,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.62,
+    "microsoft": 0.5,
+    "apple": 0.3,
+    "bloomberg": 0.5,
+    "tiktok": 0.5,
+    "doordash": 0.23
    },
    "followups": [
     "Prove the greedy reachability scan is correct versus the DP.",
@@ -3789,14 +3744,15 @@
     "bfs"
    ],
    "company_freq": {
-    "amazon": 0.78,
-    "google": 0.72,
-    "meta": 0.72,
-    "microsoft": 0.68,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.55,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.15,
+    "bloomberg": 0.38,
+    "tiktok": 0.3,
+    "doordash": 0.15,
+    "snowflake": 0.23
    },
    "followups": [
     "Explain the greedy as an implicit BFS over levels.",
@@ -3819,14 +3775,13 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.68,
-    "meta": 0.7,
-    "microsoft": 0.65,
-    "apple": 0.6,
-    "bloomberg": 0.65,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.25,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.5,
+    "tiktok": 0.62
    },
    "followups": [
     "Prove that if total gas >= total cost a solution exists and your start index is it.",
@@ -3851,14 +3806,11 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.6,
-    "meta": 0.55,
-    "microsoft": 0.5,
-    "apple": 0.45,
-    "bloomberg": 0.45,
-    "tiktok": 0.4,
-    "openai": 0.25
+    "google": 0.15,
+    "amazon": 0.07,
+    "meta": 0.07,
+    "microsoft": 0.07,
+    "bloomberg": 0.07
    },
    "followups": [
     "Why must you always start a group at the smallest remaining card?",
@@ -3881,14 +3833,7 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.4,
-    "google": 0.45,
-    "meta": 0.4,
-    "microsoft": 0.35,
-    "apple": 0.3,
-    "bloomberg": 0.3,
-    "tiktok": 0.25,
-    "openai": 0.2
+    "google": 0.15
    },
    "followups": [
     "Why can you discard any triplet that exceeds the target in any coordinate?",
@@ -3913,14 +3858,11 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.62,
-    "apple": 0.6,
-    "bloomberg": 0.55,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.07,
+    "amazon": 0.23,
+    "meta": 0.07,
+    "microsoft": 0.38,
+    "bloomberg": 0.07
    },
    "followups": [
     "Why does tracking the last occurrence of each character suffice?",
@@ -3944,14 +3886,13 @@
     "monotonic-stack"
    ],
    "company_freq": {
-    "amazon": 0.62,
-    "google": 0.62,
-    "meta": 0.6,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.15,
+    "amazon": 0.25,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "apple": 0.15,
+    "bloomberg": 0.38,
+    "tiktok": 0.38
    },
    "followups": [
     "Explain the low/high open-count range and why it is equivalent to trying every '*'.",
@@ -3975,14 +3916,14 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.72,
-    "meta": 0.78,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.15,
+    "tiktok": 0.15,
+    "uber": 0.23
    },
    "followups": [
     "Do it in one pass without re-sorting - what are the three phases?",
@@ -4006,14 +3947,17 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.9,
-    "google": 0.85,
-    "meta": 0.88,
-    "microsoft": 0.8,
-    "apple": 0.75,
-    "bloomberg": 0.8,
-    "tiktok": 0.7,
-    "openai": 0.5
+    "google": 0.62,
+    "amazon": 0.75,
+    "meta": 0.75,
+    "microsoft": 0.75,
+    "apple": 0.88,
+    "bloomberg": 0.88,
+    "tiktok": 0.62,
+    "databricks": 0.23,
+    "stripe": 0.38,
+    "doordash": 0.23,
+    "uber": 0.5
    },
    "followups": [
     "Why is sorting by start correct, and would sorting by end ever be better?",
@@ -4037,14 +3981,14 @@
     "greedy"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.68,
-    "meta": 0.7,
-    "microsoft": 0.62,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.35
+    "google": 0.15,
+    "amazon": 0.38,
+    "meta": 0.15,
+    "microsoft": 0.25,
+    "apple": 0.15,
+    "bloomberg": 0.5,
+    "tiktok": 0.23,
+    "snowflake": 0.23
    },
    "followups": [
     "Prove that sorting by end time gives the maximum number of kept intervals.",
@@ -4067,14 +4011,14 @@
     "intervals"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.62,
-    "meta": 0.72,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.15,
+    "amazon": 0.25,
+    "meta": 0.23,
+    "microsoft": 0.15,
+    "apple": 0.62,
+    "bloomberg": 0.07,
+    "tiktok": 0.3,
+    "uber": 0.15
    },
    "followups": [
     "Do you need to sort, or can you answer with a sweep over endpoints?",
@@ -4098,14 +4042,15 @@
     "heap"
    ],
    "company_freq": {
-    "amazon": 0.88,
-    "google": 0.82,
-    "meta": 0.85,
-    "microsoft": 0.75,
-    "apple": 0.7,
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.62,
+    "apple": 0.5,
     "bloomberg": 0.75,
-    "tiktok": 0.65,
-    "openai": 0.45
+    "tiktok": 0.62,
+    "snowflake": 0.23,
+    "uber": 0.5
    },
    "followups": [
     "Compare the min-heap solution with the sweep-line of start/end events.",
@@ -4130,14 +4075,9 @@
     "binary-search"
    ],
    "company_freq": {
-    "amazon": 0.45,
-    "google": 0.5,
-    "meta": 0.45,
-    "microsoft": 0.4,
-    "apple": 0.35,
-    "bloomberg": 0.4,
-    "tiktok": 0.3,
-    "openai": 0.25
+    "google": 0.15,
+    "amazon": 0.07,
+    "bloomberg": 0.07
    },
    "followups": [
     "Why does sorting both intervals and queries let a single heap sweep work?",
@@ -4160,14 +4100,14 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.82,
-    "google": 0.72,
-    "meta": 0.75,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.62,
+    "meta": 0.5,
+    "microsoft": 0.5,
+    "apple": 0.62,
+    "bloomberg": 0.62,
+    "tiktok": 0.23,
+    "uber": 0.23
    },
    "followups": [
     "Do it in place - transpose then reverse, and prove that composes to a rotation.",
@@ -4190,14 +4130,15 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.85,
-    "google": 0.75,
-    "meta": 0.75,
-    "microsoft": 0.75,
-    "apple": 0.7,
-    "bloomberg": 0.7,
-    "tiktok": 0.6,
-    "openai": 0.4
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "apple": 0.62,
+    "bloomberg": 0.5,
+    "tiktok": 0.5,
+    "databricks": 0.23,
+    "uber": 0.38
    },
    "followups": [
     "How do the four boundaries prevent double-visiting the middle row or column?",
@@ -4220,14 +4161,13 @@
     "matrix"
    ],
    "company_freq": {
-    "amazon": 0.8,
-    "google": 0.7,
-    "meta": 0.72,
-    "microsoft": 0.72,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.62,
+    "microsoft": 0.5,
+    "apple": 0.23,
+    "bloomberg": 0.5,
+    "uber": 0.15
    },
    "followups": [
     "Achieve O(1) extra space using the first row and column as markers - what is the catch?",
@@ -4252,14 +4192,16 @@
     "hash-map"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.55,
-    "meta": 0.55,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.4,
-    "openai": 0.25
+    "google": 0.5,
+    "amazon": 0.38,
+    "meta": 0.38,
+    "microsoft": 0.5,
+    "apple": 0.23,
+    "bloomberg": 0.3,
+    "tiktok": 0.15,
+    "airbnb": 0.45,
+    "snowflake": 0.88,
+    "uber": 0.3
    },
    "followups": [
     "Why is cycle detection needed at all - what bounds the values you can reach?",
@@ -4282,14 +4224,12 @@
     "math"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.5,
-    "meta": 0.55,
-    "microsoft": 0.55,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.4,
-    "openai": 0.2
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.5,
+    "microsoft": 0.38,
+    "bloomberg": 0.5,
+    "tiktok": 0.15
    },
    "followups": [
     "Handle the all-nines carry without allocating twice.",
@@ -4313,14 +4253,12 @@
     "divide-and-conquer"
    ],
    "company_freq": {
-    "amazon": 0.75,
-    "google": 0.7,
-    "meta": 0.7,
-    "microsoft": 0.7,
-    "apple": 0.65,
-    "bloomberg": 0.65,
-    "tiktok": 0.55,
-    "openai": 0.35
+    "google": 0.5,
+    "amazon": 0.5,
+    "meta": 0.75,
+    "microsoft": 0.38,
+    "bloomberg": 0.62,
+    "tiktok": 0.15
    },
    "followups": [
     "Handle negative n and the INT_MIN edge case.",
@@ -4343,14 +4281,12 @@
     "math"
    ],
    "company_freq": {
-    "amazon": 0.68,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.25,
+    "amazon": 0.38,
+    "meta": 0.3,
+    "microsoft": 0.25,
+    "bloomberg": 0.25,
+    "tiktok": 0.5
    },
    "followups": [
     "Why is the product digit at position i+j+1, and how do carries propagate?",
@@ -4374,14 +4310,9 @@
     "math"
    ],
    "company_freq": {
-    "amazon": 0.5,
-    "google": 0.5,
-    "meta": 0.45,
-    "microsoft": 0.4,
-    "apple": 0.35,
-    "bloomberg": 0.4,
-    "tiktok": 0.3,
-    "openai": 0.2
+    "google": 0.23,
+    "amazon": 0.07,
+    "meta": 0.07
    },
    "followups": [
     "Why do you only iterate over diagonal candidates rather than all point pairs?",
@@ -4404,14 +4335,12 @@
     "bit-manipulation"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.62,
-    "microsoft": 0.6,
-    "apple": 0.6,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.38,
+    "amazon": 0.5,
+    "meta": 0.38,
+    "microsoft": 0.38,
+    "bloomberg": 0.62,
+    "airbnb": 0.45
    },
    "followups": [
     "Why does XOR work, and what property of it are you relying on?",
@@ -4434,14 +4363,12 @@
     "bit-manipulation"
    ],
    "company_freq": {
-    "amazon": 0.65,
-    "google": 0.6,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.6,
-    "bloomberg": 0.65,
-    "tiktok": 0.45,
-    "openai": 0.25
+    "google": 0.25,
+    "amazon": 0.15,
+    "meta": 0.38,
+    "microsoft": 0.23,
+    "apple": 0.38,
+    "bloomberg": 0.07
    },
    "followups": [
     "Explain the n & (n-1) trick and its complexity versus scanning 32 bits.",
@@ -4465,14 +4392,12 @@
     "dp-1d"
    ],
    "company_freq": {
-    "amazon": 0.65,
-    "google": 0.62,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.55,
-    "tiktok": 0.45,
-    "openai": 0.3
+    "google": 0.15,
+    "amazon": 0.25,
+    "meta": 0.15,
+    "microsoft": 0.15,
+    "apple": 0.15,
+    "bloomberg": 0.15
    },
    "followups": [
     "State the DP recurrence and explain why i>>1 is the right subproblem.",
@@ -4495,14 +4420,13 @@
     "bit-manipulation"
    ],
    "company_freq": {
-    "amazon": 0.62,
-    "google": 0.55,
-    "meta": 0.58,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.4,
-    "openai": 0.25
+    "google": 0.38,
+    "amazon": 0.38,
+    "meta": 0.15,
+    "microsoft": 0.15,
+    "apple": 0.38,
+    "bloomberg": 0.15,
+    "airbnb": 0.45
    },
    "followups": [
     "Optimize with a lookup table - what is the memory/speed trade?",
@@ -4526,14 +4450,12 @@
     "math"
    ],
    "company_freq": {
-    "amazon": 0.7,
-    "google": 0.6,
-    "meta": 0.62,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.5,
-    "openai": 0.3
+    "google": 0.5,
+    "amazon": 0.38,
+    "meta": 0.23,
+    "microsoft": 0.38,
+    "apple": 0.23,
+    "bloomberg": 0.5
    },
    "followups": [
     "Compare the XOR solution with the Gauss sum - which one avoids overflow?",
@@ -4556,14 +4478,11 @@
     "bit-manipulation"
    ],
    "company_freq": {
-    "amazon": 0.6,
-    "google": 0.58,
-    "meta": 0.6,
-    "microsoft": 0.55,
-    "apple": 0.5,
-    "bloomberg": 0.5,
-    "tiktok": 0.4,
-    "openai": 0.25
+    "google": 0.25,
+    "amazon": 0.25,
+    "meta": 0.15,
+    "microsoft": 0.38,
+    "bloomberg": 0.23
    },
    "followups": [
     "Walk through the carry loop and explain how negatives work in two's complement.",
@@ -4587,14 +4506,13 @@
     "bit-manipulation"
    ],
    "company_freq": {
-    "amazon": 0.62,
-    "google": 0.55,
-    "meta": 0.6,
-    "microsoft": 0.6,
-    "apple": 0.55,
-    "bloomberg": 0.6,
-    "tiktok": 0.45,
-    "openai": 0.25
+    "google": 0.62,
+    "amazon": 0.5,
+    "meta": 0.5,
+    "microsoft": 0.62,
+    "apple": 0.62,
+    "bloomberg": 0.62,
+    "uber": 0.15
    },
    "followups": [
     "Detect overflow before it happens without using a 64-bit type.",
@@ -4606,5 +4524,8 @@
     "lc-0043"
    ]
   }
- ]
+ ],
+ "_research_date": "2026-09-09",
+ "_research_source": "snehasishroy/leetcode-companywise-interview-questions@master (LeetCode tags snapshot 2026-07-12)",
+ "_research_note": "Frequencies from LC company tags, six-month weighted; untagged problems carry no entry for that company. Owner approved 2026-09-09; AI labs deliberately omitted."
 }

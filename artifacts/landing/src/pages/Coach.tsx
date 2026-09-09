@@ -445,6 +445,41 @@ function SettingsPanel({ enabled }: { enabled: boolean }) {
             />
           </div>
         </div>
+        <div>
+          <Label className="text-xs">Target companies</Label>
+          <p className="text-xs text-muted-foreground mb-1.5">
+            New problems are weighted toward what these companies actually ask.
+            None selected means every company counts equally.
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {(draft.knownCompanies ?? []).map((company) => {
+              const active = draft.targetCompanies.includes(company);
+              return (
+                <button
+                  key={company}
+                  type="button"
+                  data-testid={`company-${company}`}
+                  aria-pressed={active}
+                  onClick={() =>
+                    setDraft({
+                      ...draft,
+                      targetCompanies: active
+                        ? draft.targetCompanies.filter((c) => c !== company)
+                        : [...draft.targetCompanies, company],
+                    })
+                  }
+                  className={`text-xs px-2 py-1 rounded-full border transition-colors ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-muted-foreground border-border hover:text-foreground"
+                  }`}
+                >
+                  {company}
+                </button>
+              );
+            })}
+          </div>
+        </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <Button
           size="sm"
@@ -457,6 +492,7 @@ function SettingsPanel({ enabled }: { enabled: boolean }) {
                 newPerDay: draft.newPerDay,
                 sprintWindowDays: draft.sprintWindowDays,
                 interviewDate: draft.interviewDate,
+                targetCompanies: draft.targetCompanies,
               },
             })
           }

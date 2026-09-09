@@ -353,7 +353,33 @@ describe("coach routes", () => {
         sprintWindowDays: 14,
         interviewDate: null,
         targetCompanies: [],
+        knownCompanies: [],
       });
+    });
+
+    it("serves the company roster derived from the bank", async () => {
+      coach.seedProblems({
+        "lc-0001": problem("lc-0001", 1, {
+          company_freq: { google: 0.5, uber: 0.3 },
+        }),
+        "lc-0002": problem("lc-0002", 2, {
+          company_freq: { snowflake: 0.4, google: 0.2 },
+        }),
+      });
+      const { agent } = await signIn();
+      const res = await agent.get("/api/coach/config");
+      expect(res.body.knownCompanies).toEqual(["google", "snowflake", "uber"]);
+
+      const updated = await agent
+        .put("/api/coach/config")
+        .send({ targetCompanies: ["uber", "snowflake"] });
+      expect(updated.status).toBe(200);
+      expect(updated.body.targetCompanies).toEqual(["uber", "snowflake"]);
+      expect(updated.body.knownCompanies).toEqual([
+        "google",
+        "snowflake",
+        "uber",
+      ]);
     });
 
     it("updates a subset and rejects invalid values unchanged", async () => {

@@ -121,13 +121,24 @@ function serializePlan(plan: Plan) {
   };
 }
 
-function serializeConfig(cfg: CoachConfig) {
+function serializeConfig(
+  cfg: CoachConfig,
+  problems: Record<string, Problem>,
+) {
+  // The roster is data, not code: every company the bank carries frequency
+  // data for, so a bank refresh reaches the settings page with no client
+  // change.
+  const known = new Set<string>();
+  for (const p of Object.values(problems)) {
+    for (const company of Object.keys(p.company_freq)) known.add(company);
+  }
   return {
     dailyMinutes: cfg.daily_minutes,
     newPerDay: cfg.new_per_day,
     sprintWindowDays: cfg.sprint_window_days,
     interviewDate: cfg.interview_date,
     targetCompanies: cfg.target_companies,
+    knownCompanies: [...known].sort(),
   };
 }
 
@@ -357,7 +368,11 @@ export function createCoachRouter(
 
   router.get("/config", async (req, res) => {
     try {
-      res.json(serializeConfig(await store.getConfig(user(res).id)));
+      const [cfg, problems] = await Promise.all([
+        store.getConfig(user(res).id),
+        store.loadProblems(),
+      ]);
+      res.json(serializeConfig(cfg, problems));
     } catch (err) {
       req.log?.error({ err }, "Failed to load config");
       res.status(500).json({ error: "Internal server error" });
@@ -385,7 +400,11 @@ export function createCoachRouter(
             : current.interview_date,
         target_companies: patch.targetCompanies ?? current.target_companies,
       };
-      res.json(serializeConfig(await store.putConfig(id, next)));
+      const [saved, problems] = await Promise.all([
+        store.putConfig(id, next),
+        store.loadProblems(),
+      ]);
+      res.json(serializeConfig(saved, problems));
     } catch (err) {
       req.log?.error({ err }, "Failed to update config");
       res.status(500).json({ error: "Internal server error" });

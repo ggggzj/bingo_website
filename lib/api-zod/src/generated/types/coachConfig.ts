@@ -12,4 +12,6 @@ export interface CoachConfig {
   sprintWindowDays: number;
   interviewDate?: string | null;
   targetCompanies: string[];
+  /** Every company the problem bank carries frequency data for, derived from the bank — the settings page renders its multi-select from this, never from a hardcoded list. */
+  knownCompanies: string[];
 }

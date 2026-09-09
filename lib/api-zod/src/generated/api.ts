@@ -327,6 +327,11 @@ export const GetCoachConfigResponse = zod.object({
   sprintWindowDays: zod.number(),
   interviewDate: zod.string().nullish(),
   targetCompanies: zod.array(zod.string()),
+  knownCompanies: zod
+    .array(zod.string())
+    .describe(
+      "Every company the problem bank carries frequency data for, derived from the bank — the settings page renders its multi-select from this, never from a hardcoded list.",
+    ),
 });
 
 /**
@@ -373,6 +378,11 @@ export const UpdateCoachConfigResponse = zod.object({
   sprintWindowDays: zod.number(),
   interviewDate: zod.string().nullish(),
   targetCompanies: zod.array(zod.string()),
+  knownCompanies: zod
+    .array(zod.string())
+    .describe(
+      "Every company the problem bank carries frequency data for, derived from the bank — the settings page renders its multi-select from this, never from a hardcoded list.",
+    ),
 });
 
 /**

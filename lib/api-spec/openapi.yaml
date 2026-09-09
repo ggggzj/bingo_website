@@ -805,7 +805,7 @@ components:
           $ref: "#/components/schemas/CoachAdherence"
     CoachConfig:
       type: object
-      required: [dailyMinutes, newPerDay, sprintWindowDays, targetCompanies]
+      required: [dailyMinutes, newPerDay, sprintWindowDays, targetCompanies, knownCompanies]
       properties:
         dailyMinutes: { type: integer }
         newPerDay: { type: integer }
@@ -814,6 +814,13 @@ components:
         targetCompanies:
           type: array
           items: { type: string }
+        knownCompanies:
+          type: array
+          items: { type: string }
+          description: >-
+            Every company the problem bank carries frequency data for,
+            derived from the bank — the settings page renders its
+            multi-select from this, never from a hardcoded list.
     CoachConfigInput:
       type: object
       properties:
