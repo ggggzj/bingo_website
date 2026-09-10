@@ -403,6 +403,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /coach/insights:
+    get:
+      operationId: getCoachInsights
+      tags: [coach]
+      summary: What to do next, and why
+      description: >-
+        Read-only analysis over the caller's stored state: prioritized
+        guidance, open and cleared knowledge gaps, per-pattern strength,
+        the solved-but-never-graded backlog, and overview counters.
+      responses:
+        "200":
+          description: The current analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoachInsights"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /coach/config:
     get:
       operationId: getCoachConfig
@@ -841,6 +863,98 @@ components:
           type: array
           items: { type: string, maxLength: 40 }
           maxItems: 20
+    CoachGuidanceItem:
+      type: object
+      required: [tone, title, body]
+      properties:
+        tone: { type: string, enum: [critical, warn, info, good] }
+        title: { type: string }
+        body: { type: string }
+    CoachGap:
+      type: object
+      required: [point, problem, hits, survived]
+      properties:
+        point: { type: string }
+        problem:
+          $ref: "#/components/schemas/CoachProblemSummary"
+        hits:
+          type: integer
+          description: How many gradings this exact claim has caught you on.
+        survived:
+          type: integer
+          description: Sessions since it last bit, in which it was not cleared.
+        firstHit: { type: string, nullable: true }
+        lastHit: { type: string, nullable: true }
+    CoachClearedGap:
+      type: object
+      required: [point, problem, clearedAfter]
+      properties:
+        point: { type: string }
+        problem:
+          $ref: "#/components/schemas/CoachProblemSummary"
+        clearedAfter: { type: integer }
+    CoachPatternRow:
+      type: object
+      required:
+        [pattern, total, seen, solid, lapses, gaps, strength, ease, confidence]
+      properties:
+        pattern: { type: string }
+        total: { type: integer }
+        seen: { type: integer }
+        solid: { type: integer }
+        lapses: { type: integer }
+        gaps: { type: integer }
+        strength: { type: number }
+        ease: { type: number }
+        confidence: { type: number }
+    CoachUngradedItem:
+      type: object
+      required: [problem, solvedOn, daysAgo]
+      properties:
+        problem:
+          $ref: "#/components/schemas/CoachProblemSummary"
+        solvedOn: { type: string }
+        daysAgo: { type: integer }
+    CoachOverview:
+      type: object
+      required:
+        [seen, bank, streak, todayAssigned, todayDone, todaySolved, todayStatus]
+      properties:
+        seen: { type: integer }
+        bank: { type: integer }
+        streak: { type: integer }
+        solved7d: { type: integer }
+        todayAssigned: { type: integer }
+        todayDone: { type: integer }
+        todaySolved: { type: integer }
+        todayStatus: { type: string }
+        daysToInterview: { type: integer, nullable: true }
+    CoachInsights:
+      type: object
+      required: [guidance, openGaps, clearedGaps, patterns, ungraded, overview]
+      properties:
+        guidance:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachGuidanceItem"
+        openGaps:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachGap"
+        clearedGaps:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachClearedGap"
+        patterns:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachPatternRow"
+        ungraded:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoachUngradedItem"
+        overview:
+          $ref: "#/components/schemas/CoachOverview"
     CoachToken:
       type: object
       required: [token]

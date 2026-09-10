@@ -12,6 +12,11 @@ import {
   TRACKS,
   applyGrade,
   adherence,
+  guidance,
+  knowledgeGaps,
+  overview,
+  patternStrength,
+  ungraded,
   blankEntry,
   buildPlan,
   dayStatus,
@@ -120,6 +125,20 @@ function serializePlan(plan: Plan) {
     doneToday: plan.done_today,
     solvedToday: plan.solved_today,
     assignedToday: plan.assigned_today,
+  };
+}
+
+function serializeOverview(ov: ReturnType<typeof overview>) {
+  return {
+    seen: ov.seen,
+    bank: ov.bank,
+    streak: ov.streak,
+    solved7d: ov.solved_7d,
+    todayAssigned: ov.today_assigned,
+    todayDone: ov.today_done,
+    todaySolved: ov.today_solved,
+    todayStatus: ov.today_status,
+    daysToInterview: ov.days_to_interview,
   };
 }
 
@@ -365,6 +384,51 @@ export function createCoachRouter(
       });
     } catch (err) {
       req.log?.error({ err }, "Failed to load the log");
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  router.get("/insights", async (req, res) => {
+    const { id } = user(res);
+    const today = utcToday();
+    try {
+      const [problems, reviews, events, config, log] = await Promise.all([
+        store.loadProblems(),
+        store.loadReviews(id),
+        store.loadEvents(id),
+        store.getConfig(id),
+        // A year is enough for the ungraded backlog and adherence; the
+        // heatmap has its own endpoint.
+        store.loadDayLog(id, today, 366),
+      ]);
+      const gaps = knowledgeGaps(problems, reviews, events);
+      res.json({
+        guidance: guidance(problems, reviews, events, log, config, today),
+        openGaps: gaps.open.map((g) => ({
+          point: g.point,
+          problem: problemSummary(g.problem),
+          hits: g.hits,
+          survived: g.survived,
+          firstHit: g.first_hit,
+          lastHit: g.last_hit,
+        })),
+        clearedGaps: gaps.cleared.map((g) => ({
+          point: g.point,
+          problem: problemSummary(g.problem),
+          clearedAfter: g.cleared_after,
+        })),
+        patterns: patternStrength(problems, reviews),
+        ungraded: ungraded(problems, reviews, log, today).map((u) => ({
+          problem: problemSummary(u.problem),
+          solvedOn: u.solved_on,
+          daysAgo: u.days_ago,
+        })),
+        overview: serializeOverview(
+          overview(problems, reviews, log, config, today),
+        ),
+      });
+    } catch (err) {
+      req.log?.error({ err }, "Failed to build insights");
       res.status(500).json({ error: "Internal server error" });
     }
   });

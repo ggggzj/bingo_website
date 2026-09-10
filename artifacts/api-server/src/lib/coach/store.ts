@@ -30,6 +30,11 @@ export interface CoachStore {
 
   getReview(userId: number, problemId: string): Promise<ReviewState | null>;
 
+  /** Every grading the user has, keyed by problem id, oldest first — the
+   * history the analytics read (events are rows here, not an array on the
+   * review state). */
+  loadEvents(userId: number): Promise<Record<string, ReviewEvent[]>>;
+
   /**
    * Persist one grading atomically: upsert the review state, append the
    * event, and replace the day-log entry. A crash must never leave a grade

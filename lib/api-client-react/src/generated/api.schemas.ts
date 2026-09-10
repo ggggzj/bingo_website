@@ -342,6 +342,78 @@ export interface CoachConfigInput {
   targetCompanies?: string[];
 }
 
+export type CoachGuidanceItemTone =
+  (typeof CoachGuidanceItemTone)[keyof typeof CoachGuidanceItemTone];
+
+export const CoachGuidanceItemTone = {
+  critical: "critical",
+  warn: "warn",
+  info: "info",
+  good: "good",
+} as const;
+
+export interface CoachGuidanceItem {
+  tone: CoachGuidanceItemTone;
+  title: string;
+  body: string;
+}
+
+export interface CoachGap {
+  point: string;
+  problem: CoachProblemSummary;
+  /** How many gradings this exact claim has caught you on. */
+  hits: number;
+  /** Sessions since it last bit, in which it was not cleared. */
+  survived: number;
+  firstHit?: string | null;
+  lastHit?: string | null;
+}
+
+export interface CoachClearedGap {
+  point: string;
+  problem: CoachProblemSummary;
+  clearedAfter: number;
+}
+
+export interface CoachPatternRow {
+  pattern: string;
+  total: number;
+  seen: number;
+  solid: number;
+  lapses: number;
+  gaps: number;
+  strength: number;
+  ease: number;
+  confidence: number;
+}
+
+export interface CoachUngradedItem {
+  problem: CoachProblemSummary;
+  solvedOn: string;
+  daysAgo: number;
+}
+
+export interface CoachOverview {
+  seen: number;
+  bank: number;
+  streak: number;
+  solved7d?: number;
+  todayAssigned: number;
+  todayDone: number;
+  todaySolved: number;
+  todayStatus: string;
+  daysToInterview?: number | null;
+}
+
+export interface CoachInsights {
+  guidance: CoachGuidanceItem[];
+  openGaps: CoachGap[];
+  clearedGaps: CoachClearedGap[];
+  patterns: CoachPatternRow[];
+  ungraded: CoachUngradedItem[];
+  overview: CoachOverview;
+}
+
 export interface CoachToken {
   /** Shown exactly once. The server stores only its hash. */
   token: string;

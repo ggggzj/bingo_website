@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, Copy, ExternalLink, Loader2 } from "lucide-react";
+import {
+  Check,
+  Copy,
+  ExternalLink,
+  Loader2,
+  MessageSquareQuote,
+} from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   getGetCoachConfigQueryKey,
   getGetCoachForecastQueryKey,
+  getGetCoachInsightsQueryKey,
   getGetCoachLogQueryKey,
   getGetCoachPlanQueryKey,
   useCreateCoachToken,
   useGetCoachConfig,
   useGetCoachForecast,
+  useGetCoachInsights,
   useGetCoachLog,
   useRevokeCoachToken,
   useSetCoachSolved,
@@ -18,7 +26,10 @@ import {
 } from "@workspace/api-client-react";
 import type {
   CoachConfig,
+  CoachGuidanceItem,
+  CoachInsights,
   CoachLogDay,
+  CoachPatternRow,
   CoachPlan,
   CoachPlanNewItem,
   CoachPlanReviewItem,
@@ -71,6 +82,56 @@ function DifficultyBadge({ value }: { value: string }) {
         ? "bg-red-100 text-red-800"
         : "bg-amber-100 text-amber-800";
   return <span className={`text-xs px-1.5 py-0.5 rounded ${tone}`}>{value}</span>;
+}
+
+/** The browser cannot launch the local Claude Code session that does the
+ * grading, so it hands over the exact sentence that starts it. */
+function GrillPrompt({ num }: { num: number }) {
+  const [copied, setCopied] = useState(false);
+  const prompt = `Grill me on LC ${num}`;
+  return (
+    <button
+      type="button"
+      data-testid={`grill-${num}`}
+      title={`Copy "${prompt}"`}
+      onClick={async () => {
+        // The async clipboard API is unavailable over plain http and in some
+        // embedded views; the textarea trick still works there, and a button
+        // that silently does nothing is worse than either.
+        let ok = false;
+        try {
+          await navigator.clipboard.writeText(prompt);
+          ok = true;
+        } catch {
+          const scratch = document.createElement("textarea");
+          scratch.value = prompt;
+          scratch.setAttribute("readonly", "");
+          scratch.style.position = "fixed";
+          scratch.style.opacity = "0";
+          document.body.appendChild(scratch);
+          scratch.select();
+          try {
+            ok = document.execCommand("copy");
+          } catch {
+            ok = false;
+          }
+          scratch.remove();
+        }
+        if (ok) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
+      }}
+      className="shrink-0 text-xs px-2 py-1 rounded border border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors inline-flex items-center gap-1"
+    >
+      {copied ? (
+        <Check className="w-3 h-3" />
+      ) : (
+        <MessageSquareQuote className="w-3 h-3" />
+      )}
+      {copied ? "Copied" : "Grill me"}
+    </button>
+  );
 }
 
 function ProblemRow({
@@ -137,7 +198,133 @@ function ProblemRow({
           </div>
         )}
       </div>
+      <GrillPrompt num={p.num} />
     </div>
+  );
+}
+
+const TONE_STYLE: Record<string, string> = {
+  critical: "border-red-300 bg-red-50",
+  warn: "border-amber-300 bg-amber-50",
+  info: "border-border bg-muted/40",
+  good: "border-emerald-300 bg-emerald-50",
+};
+
+function GuidancePanel({ items }: { items: CoachGuidanceItem[] }) {
+  if (!items.length) return null;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Do this next</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className={`rounded-md border px-3 py-2 ${TONE_STYLE[item.tone] ?? TONE_STYLE.info}`}
+            data-testid={`guidance-${item.tone}`}
+          >
+            <div className="text-sm font-medium text-foreground">
+              {item.title}
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">{item.body}</p>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function GapsPanel({ insights }: { insights: CoachInsights }) {
+  const open = insights.openGaps;
+  const cleared = insights.clearedGaps;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Knowledge gaps</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {open.length === 0 && cleared.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Nothing recorded yet. Each grilling that catches you on a specific
+            claim lands here, and stays until you explain it unprompted.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {open.map((gap, i) => (
+              <div key={i} className="text-sm" data-testid="gap-open">
+                <span className="text-foreground">{gap.point}</span>
+                <span className="text-muted-foreground text-xs">
+                  {" "}
+                  · LC {gap.problem.num} · caught you{" "}
+                  {gap.hits === 1 ? "once" : `${gap.hits} times`}
+                  {gap.survived > 0 && ` · survived ${gap.survived} session(s)`}
+                </span>
+              </div>
+            ))}
+            {open.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No open gaps — every point you were caught on has been
+                re-explained.
+              </p>
+            )}
+            {cleared.length > 0 && (
+              <p className="text-xs text-muted-foreground pt-1 border-t border-border/60">
+                Cleared: {cleared.map((c) => c.point).join(" · ")}
+              </p>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function PatternsPanel({ rows }: { rows: CoachPatternRow[] }) {
+  const seen = rows.filter((r) => r.seen > 0);
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Pattern strength</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {seen.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Every pattern in the bank appears here once you have been graded on
+            one of its problems — how well it holds, and how much of it you have
+            actually covered.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {seen.map((row) => (
+              <div
+                key={row.pattern}
+                className="flex items-center gap-3 text-sm"
+                data-testid={`pattern-${row.pattern}`}
+              >
+                <span className="w-36 shrink-0 text-muted-foreground truncate">
+                  {row.pattern}
+                </span>
+                <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full bg-primary"
+                    style={{
+                      width: `${Math.round(row.strength * 100)}%`,
+                      // A pattern proved on one problem is not owned yet —
+                      // low confidence reads as a fainter bar.
+                      opacity: 0.35 + 0.65 * row.confidence,
+                    }}
+                  />
+                </div>
+                <span className="w-14 text-right tabular-nums text-xs text-muted-foreground">
+                  {row.seen}/{row.total}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -150,6 +337,10 @@ function PlanPanel({ plan }: { plan: CoachPlan }) {
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: getGetCoachPlanQueryKey() }),
           queryClient.invalidateQueries({ queryKey: getGetCoachLogQueryKey() }),
+          // A tick changes the ungraded backlog, which guidance reads.
+          queryClient.invalidateQueries({
+            queryKey: getGetCoachInsightsQueryKey(),
+          }),
         ]);
       },
       onError: (err) =>
@@ -626,6 +817,15 @@ export default function Coach() {
   const { isLoading: authLoading, isSignedIn } = useAuth();
   const [, navigate] = useLocation();
   const { plan, refused } = useCoachAccess();
+  const insights = useGetCoachInsights({
+    query: {
+      queryKey: getGetCoachInsightsQueryKey(),
+      retry: false,
+      // Only once the plan proved this browser may be here — a refused
+      // visitor should cost one request, not two.
+      enabled: plan.isSuccess,
+    },
+  });
 
   useEffect(() => {
     if (!authLoading && !isSignedIn) navigate("/login");
@@ -663,11 +863,18 @@ export default function Coach() {
         </div>
       </header>
       <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+        {insights.data && <GuidancePanel items={insights.data.guidance} />}
         <PlanPanel plan={plan.data} />
         <div className="grid gap-6 lg:grid-cols-2">
           <ConsistencyPanel enabled />
           <ForecastPanel enabled />
         </div>
+        {insights.data && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            <GapsPanel insights={insights.data} />
+            <PatternsPanel rows={insights.data.patterns} />
+          </div>
+        )}
         <div className="grid gap-6 lg:grid-cols-2">
           <SettingsPanel enabled />
           <TokenPanel />

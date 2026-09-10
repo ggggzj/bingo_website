@@ -23,6 +23,7 @@ import type {
   CoachForecast,
   CoachGradeInput,
   CoachGradeResult,
+  CoachInsights,
   CoachLog,
   CoachPlan,
   CoachSolvedInput,
@@ -1233,6 +1234,82 @@ export function useGetCoachLog<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetCoachLogQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Read-only analysis over the caller's stored state: prioritized guidance, open and cleared knowledge gaps, per-pattern strength, the solved-but-never-graded backlog, and overview counters.
+ * @summary What to do next, and why
+ */
+export const getGetCoachInsightsUrl = () => {
+  return `/api/coach/insights`;
+};
+
+export const getCoachInsights = async (
+  options?: RequestInit,
+): Promise<CoachInsights> => {
+  return customFetch<CoachInsights>(getGetCoachInsightsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetCoachInsightsQueryKey = () => {
+  return [`/api/coach/insights`] as const;
+};
+
+export const getGetCoachInsightsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCoachInsights>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachInsights>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCoachInsightsQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getCoachInsights>>
+  > = ({ signal }) => getCoachInsights({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachInsights>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCoachInsightsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCoachInsights>>
+>;
+export type GetCoachInsightsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary What to do next, and why
+ */
+
+export function useGetCoachInsights<
+  TData = Awaited<ReturnType<typeof getCoachInsights>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getCoachInsights>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCoachInsightsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

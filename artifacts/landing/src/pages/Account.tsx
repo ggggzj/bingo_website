@@ -1,21 +1,27 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { BarChart3, Loader2, LogOut } from "lucide-react";
+import { BarChart3, Dumbbell, Loader2, LogOut } from "lucide-react";
 import { useLogOut } from "@workspace/api-client-react";
 
 import { useAuth, useForgetAuth } from "@/hooks/use-auth";
+import { useCoachAccess } from "@/hooks/use-coach-access";
 import { Button } from "@/components/ui/button";
 
 /**
- * Where an ordinary signed-in person lands.
+ * Where a signed-in person lands: a console over whatever they may actually
+ * use. Two dashboards live behind this login and they answer different
+ * questions — the growth one is about the product's users, the practice one
+ * is about the owner's own interview prep — so they are separate entries
+ * rather than tabs of one thing.
  *
- * There is nothing behind the login for them yet — the product is the extension —
- * so this says who they are and lets them leave, rather than inventing a feature to
- * fill the page. The dashboard link appears only for the owner, and only as a
- * convenience: the server decides, not this check.
+ * Each entry is drawn only for whoever may use it, and in both cases the
+ * server decides: `isOwner` comes from OWNER_EMAIL, and the coach entry
+ * appears only because the coach API answered. A viewer entitled to neither
+ * sees no hint that either exists.
  */
 export default function Account() {
   const { account, isLoading, isSignedIn, isOwner } = useAuth();
+  const { plan, hasAccess: hasCoach } = useCoachAccess();
   const [, navigate] = useLocation();
   const forgetAuth = useForgetAuth();
   const logOut = useLogOut();
@@ -32,9 +38,11 @@ export default function Account() {
     );
   }
 
+  const today = plan.data;
+
   return (
     <div className="min-h-[100dvh] bg-background flex flex-col items-center justify-center px-6 py-16">
-      <div className="w-full max-w-sm text-center">
+      <div className="w-full max-w-md text-center">
         <h1 className="text-2xl font-bold text-foreground mb-1">
           You're signed in
         </h1>
@@ -46,13 +54,47 @@ export default function Account() {
         </p>
 
         <div className="space-y-3">
+          {hasCoach && (
+            <Link
+              href="/coach"
+              data-testid="link-coach-console"
+              className="block rounded-lg border border-border bg-card p-4 text-left hover:border-foreground/30 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <Dumbbell className="w-4 h-4 text-primary shrink-0" />
+                <span className="font-medium text-foreground">
+                  Interview practice
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {today
+                  ? today.assignedToday === 0
+                    ? "Nothing due today — the schedule is clear."
+                    : `Today: ${today.doneToday} of ${today.assignedToday} graded` +
+                      (today.solvedToday > today.doneToday
+                        ? ` · ${today.solvedToday - today.doneToday} solved but not grilled`
+                        : "")
+                  : "Today's plan, review schedule and gaps."}
+              </p>
+            </Link>
+          )}
+
           {isOwner && (
-            <Button asChild variant="outline" className="w-full">
-              <Link href="/dashboard" data-testid="link-dashboard">
-                <BarChart3 className="w-4 h-4" />
-                Growth dashboard
-              </Link>
-            </Button>
+            <Link
+              href="/dashboard"
+              data-testid="link-dashboard"
+              className="block rounded-lg border border-border bg-card p-4 text-left hover:border-foreground/30 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-primary shrink-0" />
+                <span className="font-medium text-foreground">
+                  Growth dashboard
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Installs, active users and registrations for the extension.
+              </p>
+            </Link>
           )}
 
           <Button

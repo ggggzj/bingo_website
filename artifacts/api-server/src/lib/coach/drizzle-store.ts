@@ -73,6 +73,41 @@ export class DrizzleCoachStore implements CoachStore {
     return row ? reviewRowToEngine(row) : null;
   }
 
+  async loadEvents(userId: number): Promise<Record<string, ReviewEvent[]>> {
+    const rows = await this.database
+      .select({
+        problemId: coachReviewsTable.problemId,
+        date: coachReviewEventsTable.date,
+        mode: coachReviewEventsTable.mode,
+        grade: coachReviewEventsTable.grade,
+        intervalDays: coachReviewEventsTable.intervalDays,
+        failedOn: coachReviewEventsTable.failedOn,
+        notes: coachReviewEventsTable.notes,
+        id: coachReviewEventsTable.id,
+      })
+      .from(coachReviewEventsTable)
+      .innerJoin(
+        coachReviewsTable,
+        eq(coachReviewsTable.id, coachReviewEventsTable.reviewId),
+      )
+      .where(eq(coachReviewsTable.userId, userId))
+      // Oldest first: the analytics read history in order.
+      .orderBy(coachReviewEventsTable.date, coachReviewEventsTable.id);
+
+    const out: Record<string, ReviewEvent[]> = {};
+    for (const row of rows) {
+      (out[row.problemId] ??= []).push({
+        date: row.date,
+        mode: row.mode,
+        grade: row.grade as ReviewEvent["grade"],
+        interval_days: row.intervalDays,
+        failed_on: row.failedOn,
+        notes: row.notes,
+      });
+    }
+    return out;
+  }
+
   async saveGrade(
     userId: number,
     state: ReviewState,

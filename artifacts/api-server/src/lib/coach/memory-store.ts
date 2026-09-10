@@ -25,7 +25,11 @@ const key = (userId: number, sub: string) => `${userId}:${sub}`;
 export class InMemoryCoachStore implements CoachStore {
   private problems: Record<string, Problem>;
   private readonly reviews = new Map<string, ReviewState>();
-  readonly events: Array<{ userId: number; event: ReviewEvent }> = [];
+  readonly events: Array<{
+    userId: number;
+    problemId: string;
+    event: ReviewEvent;
+  }> = [];
   private readonly days = new Map<string, DayLogEntry>();
   private readonly configs = new Map<number, CoachConfig>();
   private readonly tokens = new Map<string, StoredToken>();
@@ -63,6 +67,15 @@ export class InMemoryCoachStore implements CoachStore {
     return this.reviews.get(key(userId, problemId)) ?? null;
   }
 
+  async loadEvents(userId: number): Promise<Record<string, ReviewEvent[]>> {
+    const out: Record<string, ReviewEvent[]> = {};
+    for (const { userId: uid, problemId, event } of this.events) {
+      if (uid !== userId) continue;
+      (out[problemId] ??= []).push(event);
+    }
+    return out;
+  }
+
   async saveGrade(
     userId: number,
     state: ReviewState,
@@ -71,7 +84,7 @@ export class InMemoryCoachStore implements CoachStore {
     entry: DayLogEntry,
   ): Promise<void> {
     this.reviews.set(key(userId, state.problem_id), state);
-    this.events.push({ userId, event });
+    this.events.push({ userId, problemId: state.problem_id, event });
     this.days.set(key(userId, day), entry);
   }
 

@@ -342,6 +342,62 @@ describe("coach routes", () => {
     });
   });
 
+  describe("insights", () => {
+    it("is gated like every other coach route", async () => {
+      const signedOut = await request(app).get("/api/coach/insights");
+      expect(signedOut.status).toBe(404);
+      process.env["COACH_EMAILS"] = "someoneelse@example.com";
+      const { agent } = await signIn(ME);
+      expect((await agent.get("/api/coach/insights")).status).toBe(404);
+    });
+
+    it("reports guidance, gaps and patterns after a grading, writing nothing", async () => {
+      const { agent, userId } = await signIn();
+      // Deal the day first, then grade one of its problems — todayDone
+      // counts gradings against today's assignment, as the reference does.
+      const plan = await agent.get("/api/coach/plan");
+      const graded = plan.body.new[0].problem;
+      await agent.post("/api/coach/grade").send({
+        problemId: graded.id,
+        grade: "partial",
+        weakPoints: ["amortized argument"],
+      });
+
+      const res = await agent.get("/api/coach/insights");
+      expect(res.status).toBe(200);
+      expect(res.body.openGaps).toHaveLength(1);
+      expect(res.body.openGaps[0]).toMatchObject({
+        point: "amortized argument",
+        hits: 1,
+      });
+      expect(res.body.openGaps[0].problem.num).toBe(graded.num);
+      expect(res.body.overview).toMatchObject({ seen: 1, todayDone: 1 });
+      expect(res.body.patterns.some((p: { seen: number }) => p.seen === 1)).toBe(
+        true,
+      );
+      expect(res.body.guidance.length).toBeGreaterThan(0);
+
+      // Read-only: a second call changes nothing observable.
+      const before = await coach.getDayEntry(userId, utcToday());
+      const again = await agent.get("/api/coach/insights");
+      expect(again.body).toEqual(res.body);
+      expect(await coach.getDayEntry(userId, utcToday())).toEqual(before);
+      expect(coach.events).toHaveLength(1);
+    });
+
+    it("tells a fresh account how the schedule starts", async () => {
+      const { agent } = await signIn();
+      const res = await agent.get("/api/coach/insights");
+      expect(res.status).toBe(200);
+      expect(res.body.openGaps).toEqual([]);
+      expect(
+        res.body.guidance.some((g: { title: string }) =>
+          g.title.includes("ladder starts"),
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe("config", () => {
     it("first read creates defaults", async () => {
       const { agent } = await signIn();

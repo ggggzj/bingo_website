@@ -2,7 +2,7 @@
 
 ## 1. Engine: analytics port
 
-- [ ] 1.1 Add `lib/coach-engine/src/analytics.ts` porting `analytics.py`'s
+- [x] 1.1 Add `lib/coach-engine/src/analytics.ts` porting `analytics.py`'s
       read-only functions as pure, clock-free code: `knowledgeGaps`,
       `leeches`, `patternStrength`, `ungraded`, `overview`, `guidance`
       (guidance copy close to verbatim). History comes in as review events
@@ -15,7 +15,7 @@
 
 ## 2. API
 
-- [ ] 2.1 Extend the store with an events reader (`loadEvents(userId)`)
+- [x] 2.1 Extend the store with an events reader (`loadEvents(userId)`)
       in both implementations, add `GET /coach/insights` to the OpenAPI
       spec with its schemas, run codegen, and implement the route over
       the engine's analytics behind the existing gate; verify with route
@@ -24,16 +24,16 @@
 
 ## 3. Page and console
 
-- [ ] 3.1 Add the guidance, gaps and pattern-strength panels to
+- [x] 3.1 Add the guidance, gaps and pattern-strength panels to
       `Coach.tsx` (guidance above the plan; zero-data copy in each) and a
       copyable `Grill me on LC N` control on every problem row; verify in
       the browser against seeded data and against a fresh account.
-- [ ] 3.2 Rework `Account.tsx` into the console: one card per dashboard
+- [x] 3.2 Rework `Account.tsx` into the console: one card per dashboard
       the viewer may use, the practice card showing today's progress and
       streak from the coach API; verify in the browser for an allowlisted
       user and for an ordinary one (no entries, no hints).
 
 ## 4. Verification
 
-- [ ] 4.1 Run the full gates — typecheck, build, coach-engine tests
+- [x] 4.1 Run the full gates — typecheck, build, coach-engine tests
       (parity included), api-server tests — and confirm all pass.

@@ -318,6 +318,96 @@ export const GetCoachLogResponse = zod.object({
 });
 
 /**
+ * Read-only analysis over the caller's stored state: prioritized guidance, open and cleared knowledge gaps, per-pattern strength, the solved-but-never-graded backlog, and overview counters.
+ * @summary What to do next, and why
+ */
+export const GetCoachInsightsResponse = zod.object({
+  guidance: zod.array(
+    zod.object({
+      tone: zod.enum(["critical", "warn", "info", "good"]),
+      title: zod.string(),
+      body: zod.string(),
+    }),
+  ),
+  openGaps: zod.array(
+    zod.object({
+      point: zod.string(),
+      problem: zod.object({
+        id: zod.string(),
+        num: zod.number(),
+        title: zod.string(),
+        slug: zod.string(),
+        difficulty: zod.enum(["easy", "medium", "hard"]),
+        patterns: zod.array(zod.string()),
+        neetcodeGroup: zod.string(),
+      }),
+      hits: zod
+        .number()
+        .describe("How many gradings this exact claim has caught you on."),
+      survived: zod
+        .number()
+        .describe("Sessions since it last bit, in which it was not cleared."),
+      firstHit: zod.string().nullish(),
+      lastHit: zod.string().nullish(),
+    }),
+  ),
+  clearedGaps: zod.array(
+    zod.object({
+      point: zod.string(),
+      problem: zod.object({
+        id: zod.string(),
+        num: zod.number(),
+        title: zod.string(),
+        slug: zod.string(),
+        difficulty: zod.enum(["easy", "medium", "hard"]),
+        patterns: zod.array(zod.string()),
+        neetcodeGroup: zod.string(),
+      }),
+      clearedAfter: zod.number(),
+    }),
+  ),
+  patterns: zod.array(
+    zod.object({
+      pattern: zod.string(),
+      total: zod.number(),
+      seen: zod.number(),
+      solid: zod.number(),
+      lapses: zod.number(),
+      gaps: zod.number(),
+      strength: zod.number(),
+      ease: zod.number(),
+      confidence: zod.number(),
+    }),
+  ),
+  ungraded: zod.array(
+    zod.object({
+      problem: zod.object({
+        id: zod.string(),
+        num: zod.number(),
+        title: zod.string(),
+        slug: zod.string(),
+        difficulty: zod.enum(["easy", "medium", "hard"]),
+        patterns: zod.array(zod.string()),
+        neetcodeGroup: zod.string(),
+      }),
+      solvedOn: zod.string(),
+      daysAgo: zod.number(),
+    }),
+  ),
+  overview: zod.object({
+    seen: zod.number(),
+    bank: zod.number(),
+    streak: zod.number(),
+    solved7d: zod.number().optional(),
+    todayAssigned: zod.number(),
+    todayDone: zod.number(),
+    todaySolved: zod.number(),
+    todayStatus: zod.string(),
+    daysToInterview: zod.number().nullish(),
+  }),
+});
+
+/**
  * Creates the row with defaults on first read.
  * @summary The caller's coach settings
  */

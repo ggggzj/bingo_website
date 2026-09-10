@@ -6,3 +6,4 @@ export * from "./scheduler";
 export * from "./selector";
 export * from "./daily";
 export * from "./daylog";
+export * from "./analytics";
