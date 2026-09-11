@@ -155,10 +155,15 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 - **Recharts bars need `isAnimationActive={false}`** here. Its grow-from-zero
   animation never starts when the chart is laid out before its container has a size,
   and the bars render as empty elements.
-- **The daily job feed is deliberately absent from this site.** It is built and
-  running in the extension repo, but the owner asked for it to stay off the website
-  until it is finished — including out of any roadmap or "coming soon" block. Do not
-  add it back without being asked.
+- **The job feed is now welcome on this site. Instruction lifted 2026-09-10** by the
+  owner, in their own words: "解除禁令,网站 /jobs". It replaces the standing rule that
+  had kept the feed off the site — including out of any roadmap or "coming soon" block —
+  until it was finished. The feed is built and running in the extension repo; `/jobs`
+  here is now the surface that serves it, and it is what the website's accounts hold.
+  Ticket: `.harness/backlogs/001-jobs-page-split-pane.md`.
+  **What the lifted rule was protecting has not gone away:** 43 boards means no FAANG and
+  none of the largest H-1B filers, so a search box promising to find Google still cannot
+  keep that promise. Coverage is an open owner decision, not a solved problem.
 - **Pre-existing, not caused by the login work:** `pnpm run build` fails in
   `artifacts/mockup-sandbox`, whose `vite.config.ts` throws unless `PORT` is set.
   `pnpm run build:web` (what Vercel runs) and the api-server build are both fine.
