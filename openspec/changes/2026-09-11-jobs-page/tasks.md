@@ -25,7 +25,7 @@ serves it yet.
 
 Leaves the system working: the site can fetch postings; no page shows them.
 
-- [ ] 2.1 `artifacts/api-server/src/lib/jobs/upstream.ts` — the only place `POSTINGS_TOKEN`
+- [x] 2.1 `artifacts/api-server/src/lib/jobs/upstream.ts` — the only place `POSTINGS_TOKEN`
       is read or sent, mirroring `lib/stats/upstream.ts`. Header not query string, because
       the value is a password. Fails loudly when the variable is unset rather than sending
       an empty token. Errors name the path and the status and never the token.
