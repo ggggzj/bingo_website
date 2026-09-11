@@ -15,7 +15,7 @@ frontend test files that could not run.
 Leaves the system working: the route exists in the spec and in generated code; nothing
 serves it yet.
 
-- [ ] 1.1 `lib/api-spec/openapi.yaml` — `GET /api/jobs`: the eight query parameters with
+- [x] 1.1 `lib/api-spec/openapi.yaml` — `GET /api/jobs`: the eight query parameters with
       their types and bounds (`design.md` §1), and a response of `total` plus an array of
       postings carrying job id, employer, title, url (nullable), location, remote, posted
       date, tier, certified-filing count, last active year, and the nullable `no_sponsor`.

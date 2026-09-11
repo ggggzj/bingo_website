@@ -32,9 +32,11 @@ import type {
   ErrorResponse,
   GetCoachForecastParams,
   GetCoachLogParams,
+  GetJobsParams,
   GetStatsDailyParams,
   GetStatsRegistrationsParams,
   HealthStatus,
+  JobsPage,
   Ok,
   StatsDaily,
   StatsRegistrations,
@@ -524,6 +526,93 @@ export function useGetMe<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetMeQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Proxied from the extension's API. Read-only and identity-free: browsing writes nothing and reads nothing about a user. Every parameter is allowlisted, bounded and re-encoded by this server; an out-of-range value is dropped rather than refused, so the page still renders.
+ * @summary One page of open postings from employers with sponsorship history
+ */
+export const getGetJobsUrl = (params?: GetJobsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/jobs?${stringifiedParams}`
+    : `/api/jobs`;
+};
+
+export const getJobs = async (
+  params?: GetJobsParams,
+  options?: RequestInit,
+): Promise<JobsPage> => {
+  return customFetch<JobsPage>(getGetJobsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetJobsQueryKey = (params?: GetJobsParams) => {
+  return [`/api/jobs`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetJobsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getJobs>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetJobsParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getJobs>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetJobsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getJobs>>> = ({
+    signal,
+  }) => getJobs(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getJobs>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetJobsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getJobs>>
+>;
+export type GetJobsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary One page of open postings from employers with sponsorship history
+ */
+
+export function useGetJobs<
+  TData = Awaited<ReturnType<typeof getJobs>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  params?: GetJobsParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getJobs>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetJobsQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
