@@ -31,19 +31,19 @@ Leaves the system working: the site can fetch postings; no page shows them.
       an empty token. Errors name the path and the status and never the token.
       *Proven by:* `upstream.test.ts::sends the secret as a header`,
       `::throws when the secret is unset`, `::never puts the token in an error`
-- [ ] 2.2 `artifacts/api-server/src/routes/jobs.ts` — the route builds the upstream query
+- [x] 2.2 `artifacts/api-server/src/routes/jobs.ts` — the route builds the upstream query
       itself from an allowlist, one entry per parameter, each named, typed, bounded and
       re-encoded. Anything unrecognised is dropped; an out-of-range value is dropped rather
       than rejected, per the `stats.ts` precedent.
       *Proven by:* `jobs.test.ts::forwards only allowlisted parameters`,
       `::drops an out-of-range limit`, `::drops an unknown parameter`,
       `::cannot be steered to another upstream path`
-- [ ] 2.3 `artifacts/api-server/src/routes/jobs.ts` — text parameters are length-capped and
+- [x] 2.3 `artifacts/api-server/src/routes/jobs.ts` — text parameters are length-capped and
       URL-encoded before they reach the upstream URL, so a quote, an ampersand or a `#`
       cannot change which upstream path is requested.
       *Proven by:* `jobs.test.ts::encodes text parameters`,
       `::rejects oversized text`
-- [ ] 2.4 `artifacts/api-server/src/app.ts` — mount the router under `/api`, beside the
+- [x] 2.4 `artifacts/api-server/src/app.ts` — mount the router under `/api`, beside the
       others. The real route against a fake upstream, the way `stats.ts` is tested.
       *Proven by:* `jobs.test.ts::serves a page through the mounted route`
 

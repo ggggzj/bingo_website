@@ -100,12 +100,16 @@ describe("asking the extension's API for postings", () => {
       async () => new Response("nope", { status: 503 }),
     ) as unknown as (url: string, init: RequestInit) => Promise<Response>;
 
-    const failure = await createUpstreamJobs(fetcher)("/api/postings").catch(
-      (err: unknown) => err as Error,
-    );
+    let failure: Error | undefined;
+    try {
+      await createUpstreamJobs(fetcher)("/api/postings");
+    } catch (err) {
+      failure = err as Error;
+    }
 
-    expect(failure.message).toContain("503");
-    expect(failure.message).toContain("/api/postings");
-    expect(failure.message).not.toContain("the-websites-key");
+    expect(failure).toBeDefined();
+    expect(failure!.message).toContain("503");
+    expect(failure!.message).toContain("/api/postings");
+    expect(failure!.message).not.toContain("the-websites-key");
   });
 });
