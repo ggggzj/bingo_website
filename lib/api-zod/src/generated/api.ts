@@ -75,6 +75,77 @@ export const GetMeResponse = zod.object({
 });
 
 /**
+ * Proxied from the extension's API. Read-only and identity-free: browsing writes nothing and reads nothing about a user. Every parameter is allowlisted, bounded and re-encoded by this server; an out-of-range value is dropped rather than refused, so the page still renders.
+ * @summary One page of open postings from employers with sponsorship history
+ */
+export const getJobsQueryEmployerMax = 100;
+
+export const getJobsQueryTitleMax = 100;
+
+export const getJobsQueryLocationMax = 100;
+
+export const getJobsQueryPostedWithinDaysMax = 365;
+
+export const getJobsQueryLimitMax = 100;
+
+export const getJobsQueryOffsetMin = 0;
+export const getJobsQueryOffsetMax = 10000;
+
+export const GetJobsQueryParams = zod.object({
+  employer: zod.coerce.string().max(getJobsQueryEmployerMax).optional(),
+  title: zod.coerce.string().max(getJobsQueryTitleMax).optional(),
+  location: zod.coerce.string().max(getJobsQueryLocationMax).optional(),
+  remote_only: zod.coerce.boolean().optional(),
+  posted_within_days: zod.coerce
+    .number()
+    .min(1)
+    .max(getJobsQueryPostedWithinDaysMax)
+    .optional(),
+  include_refusals: zod.coerce.boolean().optional(),
+  limit: zod.coerce.number().min(1).max(getJobsQueryLimitMax).optional(),
+  offset: zod.coerce
+    .number()
+    .min(getJobsQueryOffsetMin)
+    .max(getJobsQueryOffsetMax)
+    .optional(),
+});
+
+export const GetJobsResponse = zod.object({
+  total: zod
+    .number()
+    .describe("Roles matching the filters, counted after collapsing copies"),
+  postings: zod.array(
+    zod
+      .object({
+        job_id: zod.number(),
+        employer_name: zod.string(),
+        title: zod.string(),
+        url: zod
+          .string()
+          .nullish()
+          .describe(
+            "Absent when upstream withheld it, which it does for any scheme that is not http or https. A card with no url renders no apply link.",
+          ),
+        location: zod.string().nullish(),
+        is_remote: zod.boolean(),
+        posted_at: zod.string().nullish(),
+        tier: zod.enum(["strong", "weak"]),
+        total_h1b_certified: zod.number(),
+        last_active_year: zod.number().nullish(),
+        no_sponsor: zod
+          .boolean()
+          .nullish()
+          .describe(
+            "true = this posting's text refuses sponsorship. false = its text was read and does not refuse. null = NOBODY HAS READ IT YET, which is not a refusal and must never be rendered as one.",
+          ),
+      })
+      .describe(
+        "One open role. Carries two sponsorship facts that must not be merged: tier \/ total_h1b_certified \/ last_active_year are claims about the EMPLOYER, from certified DOL filings; no_sponsor is a claim about THIS POSTING'S own description. They can disagree for one company.",
+      ),
+  ),
+});
+
+/**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
  * @summary Growth totals (owner only)
  */

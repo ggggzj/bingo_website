@@ -35,6 +35,48 @@ export interface Ok {
   ok: boolean;
 }
 
+export type JobPostingTier =
+  (typeof JobPostingTier)[keyof typeof JobPostingTier];
+
+export const JobPostingTier = {
+  strong: "strong",
+  weak: "weak",
+} as const;
+
+/**
+ * One open role. Carries two sponsorship facts that must not be merged: tier / total_h1b_certified / last_active_year are claims about the EMPLOYER, from certified DOL filings; no_sponsor is a claim about THIS POSTING'S own description. They can disagree for one company.
+ */
+export interface JobPosting {
+  job_id: number;
+  employer_name: string;
+  title: string;
+  /**
+   * Absent when upstream withheld it, which it does for any scheme that is not http or https. A card with no url renders no apply link.
+   * @nullable
+   */
+  url?: string | null;
+  /** @nullable */
+  location?: string | null;
+  is_remote: boolean;
+  /** @nullable */
+  posted_at?: string | null;
+  tier: JobPostingTier;
+  total_h1b_certified: number;
+  /** @nullable */
+  last_active_year?: number | null;
+  /**
+   * true = this posting's text refuses sponsorship. false = its text was read and does not refuse. null = NOBODY HAS READ IT YET, which is not a refusal and must never be rendered as one.
+   * @nullable
+   */
+  no_sponsor?: boolean | null;
+}
+
+export interface JobsPage {
+  /** Roles matching the filters, counted after collapsing copies */
+  total: number;
+  postings: JobPosting[];
+}
+
 export type StatsTotalsReferralSources = { [key: string]: number };
 
 export interface StatsTotals {
@@ -418,6 +460,38 @@ export interface CoachToken {
   /** Shown exactly once. The server stores only its hash. */
   token: string;
 }
+
+export type GetJobsParams = {
+  /**
+   * @maxLength 100
+   */
+  employer?: string;
+  /**
+   * @maxLength 100
+   */
+  title?: string;
+  /**
+   * @maxLength 100
+   */
+  location?: string;
+  remote_only?: boolean;
+  /**
+   * @minimum 1
+   * @maximum 365
+   */
+  posted_within_days?: number;
+  include_refusals?: boolean;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  /**
+   * @minimum 0
+   * @maximum 10000
+   */
+  offset?: number;
+};
 
 export type GetStatsDailyParams = {
   /**

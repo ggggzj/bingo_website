@@ -18,6 +18,8 @@ tags:
     description: Growth dashboard, owner only
   - name: coach
     description: Interview coach, allowlisted users only
+  - name: jobs
+    description: The public job feed
 paths:
   /healthz:
     get:
@@ -160,6 +162,62 @@ paths:
                 $ref: "#/components/schemas/Account"
         "401":
           description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /jobs:
+    get:
+      operationId: getJobs
+      tags: [jobs]
+      summary: One page of open postings from employers with sponsorship history
+      description: >-
+        Proxied from the extension's API. Read-only and identity-free: browsing
+        writes nothing and reads nothing about a user. Every parameter is
+        allowlisted, bounded and re-encoded by this server; an out-of-range value
+        is dropped rather than refused, so the page still renders.
+      parameters:
+        - name: employer
+          in: query
+          required: false
+          schema: { type: string, maxLength: 100 }
+        - name: title
+          in: query
+          required: false
+          schema: { type: string, maxLength: 100 }
+        - name: location
+          in: query
+          required: false
+          schema: { type: string, maxLength: 100 }
+        - name: remote_only
+          in: query
+          required: false
+          schema: { type: boolean }
+        - name: posted_within_days
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 365 }
+        - name: include_refusals
+          in: query
+          required: false
+          schema: { type: boolean }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 100 }
+        - name: offset
+          in: query
+          required: false
+          schema: { type: integer, minimum: 0, maximum: 10000 }
+      responses:
+        "200":
+          description: One page of postings, and how many the filters matched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobsPage"
+        "502":
+          description: The extension's API could not be reached
           content:
             application/json:
               schema:
@@ -572,6 +630,48 @@ components:
     # The three schemas below are owned by the extension's API; this server only
     # forwards them. Keep them in step with the FastAPI response models in that
     # project (main.py: StatsResponse, DailyResponse, RegistrationsResponse).
+    JobsPage:
+      type: object
+      required: [total, postings]
+      properties:
+        total:
+          type: integer
+          description: Roles matching the filters, counted after collapsing copies
+        postings:
+          type: array
+          items:
+            $ref: "#/components/schemas/JobPosting"
+    JobPosting:
+      type: object
+      description: >-
+        One open role. Carries two sponsorship facts that must not be merged:
+        tier / total_h1b_certified / last_active_year are claims about the
+        EMPLOYER, from certified DOL filings; no_sponsor is a claim about THIS
+        POSTING'S own description. They can disagree for one company.
+      required: [job_id, employer_name, title, is_remote, tier, total_h1b_certified]
+      properties:
+        job_id: { type: integer }
+        employer_name: { type: string }
+        title: { type: string }
+        url:
+          type: [string, "null"]
+          description: >-
+            Absent when upstream withheld it, which it does for any scheme that
+            is not http or https. A card with no url renders no apply link.
+        location: { type: [string, "null"] }
+        is_remote: { type: boolean }
+        posted_at: { type: [string, "null"] }
+        tier:
+          type: string
+          enum: [strong, weak]
+        total_h1b_certified: { type: integer }
+        last_active_year: { type: [integer, "null"] }
+        no_sponsor:
+          type: [boolean, "null"]
+          description: >-
+            true = this posting's text refuses sponsorship. false = its text was
+            read and does not refuse. null = NOBODY HAS READ IT YET, which is not
+            a refusal and must never be rendered as one.
     StatsTotals:
       type: object
       required:
