@@ -1,9 +1,10 @@
 ---
 id: 001
 title: A /jobs page on the website, split-pane, with sponsorship evidence where the competitors put a paywall
-status: picked-up
-produced: openspec/changes/2026-09-11-jobs-page/ (bounded change, 4 groups,
-  13 tasks, validates) — awaiting approval
+status: closed
+closed: 2026-09-11 — shipped as openspec/changes/archive/2026-09-11-jobs-page/,
+  13/13 tasks, specs synced to openspec/specs/jobs-page/. Never run against the real
+  upstream: verified with a fake /api/postings, so the first real-data run is still ahead.
 upstream: GET /api/postings, live behind POSTINGS_TOKEN
   (../h1_checker/openspec/changes/archive/2026-09-11-browse-postings/, DECISIONS D-044)
 origin: User request 2026-09-10 — "job feed的页面可以参考图中的样式", with screenshots of

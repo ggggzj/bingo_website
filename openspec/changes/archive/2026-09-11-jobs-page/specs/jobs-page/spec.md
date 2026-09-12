@@ -61,18 +61,29 @@ product came to tag "Sr. Solutions Architect" as entry level.
 - **THEN** postings whose titles contain those words are listed, a posting titled
   "Sr. Solutions Architect" is not listed, and no listed row carries a seniority badge
 
-### Requirement: The sponsorship control offers three choices
+### Requirement: The sponsorship control offers only choices the server can honour
 
-The sponsorship control SHALL offer: everything; hide postings whose description refuses;
-and only employers with filing history. It SHALL default to hiding refusals.
+The sponsorship control SHALL offer: hide postings whose description refuses, and
+everything. It SHALL default to hiding refusals.
 
-The first two narrow on a claim about the posting, the third on a claim about the employer,
-and the labels SHALL NOT blur the two.
+Both narrow on a claim about the posting's own description, and every option SHALL be one
+the request to the server carries.
+
+A third — only employers with filing history — was specified, built, and removed at review.
+Nothing upstream takes a minimum-filings floor, so it could only have filtered the rows
+already fetched, while the result count silently changed from "roles matching your filters"
+to "roles on this page that survived a second filter". A control that narrows what the
+reader can see rather than what they asked for SHALL NOT be offered.
 
 #### Scenario: Default
 - **WHEN** the page is first opened
 - **THEN** postings whose description refuses sponsorship are absent, and postings whose
   description has not been read are present
+
+#### Scenario: Every option reaches the server
+- **WHEN** any sponsorship option is chosen
+- **THEN** the request carries that choice, and no sponsorship filtering is applied to the
+  page after it arrives
 
 ### Requirement: Applying leaves for the employer, and an unsafe link is not rendered
 

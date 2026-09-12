@@ -102,6 +102,22 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 - **Auth routes take an `AuthStore`** rather than importing `db` the way
   `routes/waitlist.ts` does. That seam is what lets the tests run the real routes,
   the real hashing and the real cookies against memory instead of Postgres.
+- **`/jobs` is public and identity-free, and its secret is a third one.** The page reads no
+  session and writes nothing, which is what kept the two-account-systems question out of
+  shipping it. `POSTINGS_TOKEN` is deliberately not `STATS_TOKEN`: one opens the owner's own
+  numbers, the other opens job listings, and sharing a string would mean rotating the
+  website's access locks the owner out of their dashboard. Options were one shared secret,
+  or reusing the owner token; both were rejected for that blast radius.
+- **The jobs proxy forwards an allowlist it builds itself, never the caller's query.** Same
+  rule as `stats.ts`, widened because three parameters are free text typed by strangers:
+  each is named, typed, bounded and re-encoded, unknown keys are dropped, and out-of-range
+  values are dropped rather than refused so a hand-edited URL degrades to a wider page.
+- **Nothing on `/jobs` classifies a posting.** Upstream stores no seniority or category, so
+  the Experience and Category pickers are title searches that label no row. The alternative
+  — inferring from the title — is what makes a competitor's page tag "Sr. Solutions
+  Architect" as Entry-Level. A missing row costs one posting; a wrong badge costs the page
+  its only advantage. For the same reason a null refusal verdict renders nothing: null means
+  no description has been read, not that the employer declines.
 
 ## Product
 
