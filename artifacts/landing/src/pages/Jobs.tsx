@@ -145,6 +145,9 @@ function DetailPane({ posting }: { posting: JobPosting | null }) {
 
 export default function Jobs() {
   const [filters, setFilters] = useState<JobFilters>({});
+  // How many pages have been asked for. Reset whenever the filters change, because
+  // page three of one search is meaningless in another.
+  const [pages, setPages] = useState(1);
   const search = useSearch();
 
   // The selected posting lives in the URL so a role can be linked to and shared, and
@@ -165,18 +168,19 @@ export default function Jobs() {
     ...(remote_only ? { remote_only: true } : {}),
     ...(posted_within_days ? { posted_within_days } : {}),
     ...(include_refusals ? { include_refusals: true } : {}),
-    limit: PAGE_SIZE,
+    limit: PAGE_SIZE * pages,
   });
 
-  const postings: JobPosting[] = data?.postings ?? [];
-
-  // "Only employers with filing history" narrows on the employer's claim, which the
-  // upstream route does not take as a parameter, so it is applied here over the page.
-  const shown = filters.only_with_filings
-    ? postings.filter((p) => p.total_h1b_certified > 0)
-    : postings;
+  const shown: JobPosting[] = data?.postings ?? [];
+  const total = data?.total ?? 0;
+  const hasMore = shown.length < total;
 
   const selected = shown.find((p) => p.job_id === selectedId) ?? null;
+
+  const changeFilters = (next: JobFilters) => {
+    setPages(1);
+    setFilters(next);
+  };
 
   const select = (job_id: number) => {
     const next = new URLSearchParams(search);
@@ -199,8 +203,11 @@ export default function Jobs() {
       <div className="mb-4">
         <FilterRow
           filters={filters}
-          onChange={setFilters}
-          onReset={() => setFilters({})}
+          onChange={changeFilters}
+          onReset={() => {
+            setPages(1);
+            setFilters({});
+          }}
         />
       </div>
 
@@ -209,7 +216,11 @@ export default function Jobs() {
           ? "Loading…"
           : isError
             ? "The job feed could not be reached."
-            : `${(filters.only_with_filings ? shown.length : (data?.total ?? 0)).toLocaleString()} roles`}
+            : hasMore
+              ? // Say both numbers. A bare "8,607 roles" over a list of twenty is a
+                // count that describes something the reader cannot reach.
+                `Showing ${shown.length.toLocaleString()} of ${total.toLocaleString()} roles`
+              : `${total.toLocaleString()} roles`}
       </div>
 
       {/* Stacks below md; each pane scrolls on its own above it. */}
@@ -227,14 +238,26 @@ export default function Jobs() {
               No roles match these filters.
             </div>
           ) : (
-            shown.map((posting) => (
-              <PostingCard
-                key={posting.job_id}
-                posting={posting}
-                selected={posting.job_id === selectedId}
-                onSelect={() => select(posting.job_id)}
-              />
-            ))
+            <>
+              {shown.map((posting) => (
+                <PostingCard
+                  key={posting.job_id}
+                  posting={posting}
+                  selected={posting.job_id === selectedId}
+                  onSelect={() => select(posting.job_id)}
+                />
+              ))}
+              {hasMore ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setPages((n) => n + 1)}
+                  data-testid="load-more"
+                >
+                  Show more roles
+                </Button>
+              ) : null}
+            </>
           )}
         </div>
 

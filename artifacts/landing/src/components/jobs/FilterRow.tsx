@@ -30,12 +30,13 @@ import {
 
 export type JobFilters = {
   employer?: string;
+  /** One search string. The seniority and category pickers both write here — see
+   * ROLE_PRESETS — because upstream has one title parameter and no classifier. */
   title?: string;
   location?: string;
   remote_only?: boolean;
   posted_within_days?: number;
   include_refusals?: boolean;
-  only_with_filings?: boolean;
 };
 
 /** Title searches dressed as a picker. The value IS the search text. */
@@ -62,15 +63,18 @@ const POSTED_OPTIONS: { label: string; days?: number }[] = [
 ];
 
 /**
- * Three options, not a checkbox, because the underlying data has three states.
+ * Two options, both narrowing on a claim about the POSTING's own description.
  *
- * The first two narrow on a claim about the POSTING; the third narrows on a claim
- * about the EMPLOYER. The labels keep them apart on purpose.
+ * A third — "only employers with filing history" — was drafted and cut at review.
+ * Upstream takes no such parameter, so it could only have filtered the page already
+ * loaded: twenty rows out of thousands, with a result count that silently switched
+ * to a different meaning. A control that filters what you can see and not what you
+ * asked for is worse than no control. It comes back when the upstream route can take
+ * a minimum-filings floor — ticket 003 in this repo's backlog.
  */
 const SPONSORSHIP_OPTIONS = [
   { value: "hide-refusals", label: "Hide roles that say no sponsorship" },
   { value: "any", label: "Everything" },
-  { value: "with-filings", label: "Only employers with filing history" },
 ] as const;
 
 type SponsorshipChoice = (typeof SPONSORSHIP_OPTIONS)[number]["value"];
@@ -88,9 +92,7 @@ export function FilterRow({
 }) {
   const sponsorship: SponsorshipChoice = filters.include_refusals
     ? "any"
-    : filters.only_with_filings
-      ? "with-filings"
-      : "hide-refusals";
+    : "hide-refusals";
 
   const set = (patch: Partial<JobFilters>) => onChange({ ...filters, ...patch });
 
@@ -137,17 +139,37 @@ export function FilterRow({
         </SelectContent>
       </Select>
 
-      {/* A title search wearing a picker's clothes. Sends `title`, never a seniority. */}
+      {/* Two pickers, matching the reference filter row — but both are title searches
+          wearing a classifier's clothes. Each sends `title` and neither labels a row.
+          They share one parameter because upstream has one, so choosing in either
+          replaces the other: honest, since there is only one search string to spend. */}
       <Select
         value={filters.title ?? ANY}
         onValueChange={(value) => set({ title: value === ANY ? undefined : value })}
       >
-        <SelectTrigger className="w-44" aria-label="Role">
-          <SelectValue placeholder="Any role" />
+        <SelectTrigger className="w-40" aria-label="Experience">
+          <SelectValue placeholder="Any experience" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={ANY}>Any role</SelectItem>
-          {[...ROLE_PRESETS, ...CATEGORY_PRESETS].map((p) => (
+          <SelectItem value={ANY}>Any experience</SelectItem>
+          {ROLE_PRESETS.map((p) => (
+            <SelectItem key={p.label} value={p.title}>
+              {p.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={filters.title ?? ANY}
+        onValueChange={(value) => set({ title: value === ANY ? undefined : value })}
+      >
+        <SelectTrigger className="w-40" aria-label="Category">
+          <SelectValue placeholder="Any category" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ANY}>Any category</SelectItem>
+          {CATEGORY_PRESETS.map((p) => (
             <SelectItem key={p.label} value={p.title}>
               {p.label}
             </SelectItem>
@@ -157,12 +179,7 @@ export function FilterRow({
 
       <Select
         value={sponsorship}
-        onValueChange={(value) =>
-          set({
-            include_refusals: value === "any",
-            only_with_filings: value === "with-filings",
-          })
-        }
+        onValueChange={(value) => set({ include_refusals: value === "any" })}
       >
         <SelectTrigger className="w-64" aria-label="Sponsorship">
           <SelectValue />
