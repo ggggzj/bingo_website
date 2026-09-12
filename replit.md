@@ -161,6 +161,13 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   until it was finished. The feed is built and running in the extension repo; `/jobs`
   here is now the surface that serves it, and it is what the website's accounts hold.
   Ticket: `.harness/backlogs/001-jobs-page-split-pane.md`.
+  **Shipped 2026-09-11** as `/jobs` — a public, read-only split pane over
+  `GET /api/jobs`, which proxies the extension API's `/api/postings` behind
+  `POSTINGS_TOKEN` (a third secret, not `STATS_TOKEN` and not `FEED_TOKEN`). The page
+  reads no session and writes nothing. Two things on it are load-bearing and easy to
+  break: `no_sponsor` is three-state and `null` must render **nothing** about refusal,
+  and the seniority/category controls are title searches that label no row — see
+  `openspec/changes/archive/…-jobs-page/design.md`.
   **What the lifted rule was protecting has not gone away:** 43 boards means no FAANG and
   none of the largest H-1B filers, so a search box promising to find Google still cannot
   keep that promise. Coverage is an open owner decision, not a solved problem.

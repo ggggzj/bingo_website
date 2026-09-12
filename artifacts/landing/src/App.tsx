@@ -7,6 +7,7 @@ import Login from "@/pages/Login";
 import Account from "@/pages/Account";
 import Coach from "@/pages/Coach";
 import Dashboard from "@/pages/Dashboard";
+import Jobs from "@/pages/Jobs";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -17,6 +18,9 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/account" component={Account} />
+      {/* Public and read-only: no session is read and nothing is written, so there is
+          nothing here to guard. */}
+      <Route path="/jobs" component={Jobs} />
       {/* Not guarded here: the page itself renders NotFound when the server refuses
           its data, so the route existing gives nothing away. */}
       <Route path="/dashboard" component={Dashboard} />

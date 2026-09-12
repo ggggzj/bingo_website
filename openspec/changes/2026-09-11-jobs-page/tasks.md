@@ -51,24 +51,24 @@ Leaves the system working: the site can fetch postings; no page shows them.
 
 Leaves the system working: `/jobs` renders the feed.
 
-- [ ] 3.1 `artifacts/landing/src/pages/Jobs.tsx` + `App.tsx` — the route, the split pane,
+- [x] 3.1 `artifacts/landing/src/pages/Jobs.tsx` + `App.tsx` — the route, the split pane,
       and the site chrome it inherits. Left column of cards, right sticky detail pane.
       Stacks at 320px and never scrolls horizontally.
       *Proven in the browser:* the feed renders against the running dev server; at a 320px
       viewport the panes stack and `document.documentElement.scrollWidth` does not exceed the
       viewport width. Screenshot at both widths.
-- [ ] 3.2 `artifacts/landing/src/pages/Jobs.tsx` — selecting a card swaps the detail pane
+- [x] 3.2 `artifacts/landing/src/pages/Jobs.tsx` — selecting a card swaps the detail pane
       without navigation and writes the posting's id into the URL, so a posting can be
       linked to and the back button behaves.
       *Proven in the browser:* clicking a card changes the detail pane and the address bar
       with no document navigation; reloading that URL opens the same posting.
-- [ ] 3.3 `artifacts/landing/src/components/jobs/SponsorshipEvidence.tsx` — the employer's
+- [x] 3.3 `artifacts/landing/src/components/jobs/SponsorshipEvidence.tsx` — the employer's
       filing count and years, and separately the posting's own refusal. Never merged into
       one badge. `no_sponsor` null renders **nothing**, never "does not sponsor".
       *Proven in the browser:* with upstream seeded so one posting has a refusal, one has a
       null verdict and one has neither, the rendered DOM shows the filings and years on all
       three, the refusal only on the first, and **nothing** about refusal on the null one.
-- [ ] 3.4 `artifacts/landing/src/pages/Jobs.tsx` — the apply button leaves for the
+- [x] 3.4 `artifacts/landing/src/pages/Jobs.tsx` — the apply button leaves for the
       employer's own posting. When upstream withheld the URL the card shows no apply link
       and no substitute. No `dangerouslySetInnerHTML` anywhere on this page.
       *Proven in the browser:* the apply control's href is the employer's URL; a posting
@@ -79,25 +79,25 @@ Leaves the system working: `/jobs` renders the feed.
 
 Leaves the system working: the feed can be narrowed, and the page states its own scope.
 
-- [ ] 4.1 `artifacts/landing/src/components/jobs/FilterRow.tsx` — company, location text,
+- [x] 4.1 `artifacts/landing/src/components/jobs/FilterRow.tsx` — company, location text,
       posted-within, remote, and the sponsorship control, in the shape of the owner's
       reference image. The sponsorship control is a three-option dropdown, not a checkbox,
       because the data has three states.
       *Proven in the browser:* applying each control changes the list and the count together,
       and the network request carries the matching query parameter. The sponsorship control
       offers three options.
-- [ ] 4.2 `artifacts/landing/src/components/jobs/FilterRow.tsx` — the seniority and category
+- [x] 4.2 `artifacts/landing/src/components/jobs/FilterRow.tsx` — the seniority and category
       controls send title searches and set no label on any row. Picking "New grad" sends
       `title=new grad`; a posting titled "Sr. Solutions Architect" is absent from that
       search and carries no seniority badge anywhere.
       *Proven in the browser:* picking "New grad" issues a request carrying `title=new grad`
       and no seniority parameter; with a "Sr. Solutions Architect" posting seeded, it is
       absent from that result and no rendered row carries a seniority badge.
-- [ ] 4.3 `artifacts/landing/src/pages/Jobs.tsx` — the page states what the feed covers and
+- [x] 4.3 `artifacts/landing/src/pages/Jobs.tsx` — the page states what the feed covers and
       what it does not, and where the sponsorship evidence comes from. A requirement, not
       copy: it is what makes the coverage gap a stated scope rather than a defect.
       *Proven in the browser:* the rendered page text states the coverage limit and names the
       source of the filing data.
-- [ ] 4.4 `replit.md` — record that `/jobs` now exists and what it does not cover, in the
+- [x] 4.4 `replit.md` — record that `/jobs` now exists and what it does not cover, in the
       section the lifted instruction already lives in. Never a second document repeating an
       existing one.
