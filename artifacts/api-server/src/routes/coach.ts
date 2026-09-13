@@ -1,7 +1,8 @@
 /**
- * The interview coach's HTTP surface. Every route sits behind the allowlist
- * gate (uniform 404); the scheduling itself is @workspace/coach-engine —
- * pure functions these handlers feed with rows and persist results from.
+ * The interview coach's HTTP surface. Every route sits behind the coach gate
+ * — a resolved caller, or a uniform 404; the scheduling itself is
+ * @workspace/coach-engine — pure functions these handlers feed with rows and
+ * persist results from.
  */
 
 import { Router, type IRouter, type Request, type Response } from "express";
@@ -38,7 +39,6 @@ import type {
   ReviewState,
 } from "@workspace/coach-engine";
 
-import { isCoachUser } from "../lib/auth/coach";
 import { hashToken, newSessionToken } from "../lib/auth/session";
 import type { AuthStore } from "../lib/auth/store";
 import { COACH_USER, coachGate } from "../lib/coach/auth";
@@ -184,7 +184,7 @@ export function createCoachRouter(
       res.status(500).json({ error: "Internal server error" });
       return;
     }
-    if (!signedIn || !isCoachUser(signedIn.email)) {
+    if (!signedIn) {
       res.status(404).json(NOT_FOUND);
       return;
     }

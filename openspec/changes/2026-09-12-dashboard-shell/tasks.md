@@ -20,12 +20,12 @@ Leaves the system working: any signed-in user's browser reaches the coach API. N
 the UI has moved — and because `/account` already probes the plan endpoint to decide whether
 to draw its practice entry, ordinary users see that entry appear the moment this lands.
 
-- [ ] 1.1 `lib/api-spec/openapi.yaml` — the `coach` tag description ("Interview coach,
+- [x] 1.1 `lib/api-spec/openapi.yaml` — the `coach` tag description ("Interview coach,
       allowlisted users only") and the comment block above `/coach/plan` explaining the
       `COACH_EMAILS` allowlist now say what is true: coach routes answer a uniform 404 to
       anyone not signed in, and nothing else. No operation or schema changes.
       **Run codegen in this task** — nothing else regenerates the hooks and Zod schemas.
-- [ ] 1.2 `artifacts/api-server/src/lib/coach/auth.ts` and
+- [x] 1.2 `artifacts/api-server/src/lib/coach/auth.ts` and
       `artifacts/api-server/src/routes/coach.ts` — `coachGate` and `POST /coach/token`
       require a resolved caller and nothing more. Delete
       `artifacts/api-server/src/lib/auth/coach.ts` and its test. Proven by

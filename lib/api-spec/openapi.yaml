@@ -17,7 +17,7 @@ tags:
   - name: stats
     description: Growth dashboard, owner only
   - name: coach
-    description: Interview coach, allowlisted users only
+    description: Interview coach, any signed-in user
   - name: jobs
     description: The public job feed
 paths:
@@ -313,10 +313,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  # Coach routes answer 404 for anyone not signed in and on the COACH_EMAILS
-  # allowlist — the same uniform not-found the stats routes use, so the
-  # feature's existence is not confirmed to probers. The 404s below mean
-  # "not allowed" as much as "no such thing".
+  # Coach routes answer 404 for any caller the server cannot resolve — no
+  # session and no valid personal token — which is the same uniform not-found
+  # the stats routes use, so the feature's existence is not confirmed to
+  # probers. The 404s below mean "not allowed" as much as "no such thing".
+  # Every signed-in user may practise; the rows they read and write are their
+  # own, selected by the id on the session, never by a request parameter.
   /coach/plan:
     get:
       operationId: getCoachPlan
