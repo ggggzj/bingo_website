@@ -53,7 +53,7 @@ product behavior changes.
 Leaves the system working: `/dashboard/growth` and `/dashboard/practice` render inside the
 shell, `/coach` redirects, and the old `/account` entries still lead somewhere real.
 
-- [ ] 3.1 New `artifacts/landing/src/pages/dashboard/` (`Shell.tsx`, `Rail.tsx`,
+- [x] 3.1 New `artifacts/landing/src/pages/dashboard/` (`Shell.tsx`, `Rail.tsx`,
       `views.tsx` — the registry of `design.md` §2) and `artifacts/landing/src/App.tsx` —
       `/dashboard/:view` renders the rail plus the selected view; `/dashboard` and an
       unknown segment redirect to the first entitled view in rail order; `/coach` redirects
