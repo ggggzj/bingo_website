@@ -35,7 +35,7 @@ import type {
 } from "@workspace/api-client-react";
 
 import { useAuth } from "@/hooks/use-auth";
-import { useCoachAccess } from "@/hooks/use-coach-access";
+import { useCoachPlan } from "@/hooks/use-coach-plan";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -853,7 +853,7 @@ function TokenPanel() {
  */
 export default function Coach() {
   const { isLoading: authLoading, isSignedIn } = useAuth();
-  const { plan } = useCoachAccess();
+  const plan = useCoachPlan();
   const insights = useGetCoachInsights({
     query: {
       queryKey: getGetCoachInsightsQueryKey(),

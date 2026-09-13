@@ -95,7 +95,14 @@ cleaner ledger. Group 2 was already committed, so nothing could conflict.
 Leaves the system working: a signed-in visitor on the home page is offered the dashboard,
 not a login.
 
-- [ ] 5.1 `artifacts/landing/src/components/SiteHeader.tsx` — "Dashboard" when signed in,
+**Second deviation.** With `hasAccess` gone, `use-coach-access.ts` answers no question
+about access — it returns a plan query. Kept under that name it would be a file whose name
+is false, so it was renamed to `use-coach-plan.ts` with the export `useCoachPlan`, which
+costs one import line in `Coach.tsx` (group 4's file). A rename is the honest completion of
+"loses its gate half" rather than new behaviour, but it crosses the same rule, so it is
+written down.
+
+- [x] 5.1 `artifacts/landing/src/components/SiteHeader.tsx` — "Dashboard" when signed in,
       "Log in" when not, and no separate Coach link, in both the bar and the mobile sheet.
       Then `artifacts/landing/src/hooks/use-coach-access.ts` loses `hasAccess` and `refused`
       — this is its last consumer — keeping the plan query that the practice entry needs.
