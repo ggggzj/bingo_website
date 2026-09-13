@@ -1,7 +1,8 @@
 ---
 id: 008
 title: One dashboard shell behind the login, with practice open to every signed-in user
-status: open
+status: picked-up
+change: openspec/changes/2026-09-12-dashboard-shell/
 origin: User request 2026-09-12. Stated as "growth 的 dashboard 和 aceleetcode 的 dashboard
   塞进我的 account 中，这两个功能都归到 dashboard 这个总的功能中", then refined across the
   same conversation: the shell is for every signed-in user, growth stays owner-only, and
@@ -29,12 +30,13 @@ makes the next feature a registration rather than a new top-level route.
 The coach's data is already per-user and already cascades with the account.
 `lib/db/src/schema/coach.ts` keys `coach_reviews`, `coach_daily_log`, `coach_config` and
 `coach_api_tokens` on `user_id`; only the NeetCode 150 bank (`coach_problems`) is global,
-and it holds no user data. A user with no config row gets defaults rather than an error —
-`artifacts/api-server/src/lib/coach/drizzle-store.ts:226` returns `defaults` when the
-select finds nothing.
+and it holds no user data. A user with no config row gets defaults rather than an error:
+`getConfig` (`artifacts/api-server/src/lib/coach/drizzle-store.ts:215`) inserts the default
+row with `onConflictDoNothing` and then reads it back, so first contact provisions itself.
+`coach-api`'s spec already requires exactly this.
 
 So "everyone gets their own, starting from zero" needs **no schema change and no
-migration**. Zero state is zero rows.
+migration**. A new user's history is empty and their settings write themselves.
 
 What actually stands in the way is one predicate in two places:
 
