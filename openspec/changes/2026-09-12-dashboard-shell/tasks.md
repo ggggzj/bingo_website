@@ -114,7 +114,7 @@ written down.
 
 Leaves the system working: the documentation stops describing a gate that no longer exists.
 
-- [ ] 6.1 `replit.md` — remove the `COACH_EMAILS` row from the environment table; update
+- [x] 6.1 `replit.md` — remove the `COACH_EMAILS` row from the environment table; update
       "Where things live" for `src/pages/dashboard/` and the landing test setup; append to
       "Architecture decisions" why the allowlist was deleted rather than kept as a kill
       switch (the empty value would invert from "nobody" to "everybody", so an old deploy
