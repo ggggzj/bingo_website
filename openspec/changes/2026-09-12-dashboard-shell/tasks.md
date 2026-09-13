@@ -67,17 +67,25 @@ shell, `/coach` redirects, and the old `/account` entries still lead somewhere r
 
 Leaves the system working: one frame, one sign-out, each view rendering only its content.
 
-- [ ] 4.1 `artifacts/landing/src/pages/Dashboard.tsx` — becomes the growth view: drops its
+**Deviation, recorded rather than hidden.** Task 4.1 also edited
+`artifacts/landing/src/test/setup.ts`, which group 2 owns — the one-file-one-task rule
+says it should not have. jsdom has no `ResizeObserver` and recharts constructs one on
+mount, so every page with a chart threw before rendering anything. The stub is an
+environment gap, global by nature; the alternative that obeyed the rule was importing a
+polyfill for side effects in each chart-bearing test file, which is worse code for a
+cleaner ledger. Group 2 was already committed, so nothing could conflict.
+
+- [x] 4.1 `artifacts/landing/src/pages/Dashboard.tsx` — becomes the growth view: drops its
       own sign-out chrome, keeps every chart and tile. Proven by
       `artifacts/landing/src/pages/Dashboard.test.tsx`: a non-owner still gets the not-found
       page, and the view renders no sign-out control of its own.
-- [ ] 4.2 `artifacts/landing/src/pages/Coach.tsx` — becomes the practice view: drops its own
+- [x] 4.2 `artifacts/landing/src/pages/Coach.tsx` — becomes the practice view: drops its own
       chrome, stops consulting `hasAccess`, and its zero state carries the fact from
       `design.md` §7 — the schedule advances when a grilling grades you, and grilling runs
       locally today. Proven by `artifacts/landing/src/pages/Coach.test.tsx`: a signed-in
       user with no reviews and no day log sees that statement rather than empty panels, and
       sees no control that would let them grade themselves.
-- [ ] 4.3 `artifacts/landing/src/pages/Account.tsx` — reduced to identity, sign-out, and one
+- [x] 4.3 `artifacts/landing/src/pages/Account.tsx` — reduced to identity, sign-out, and one
       entry into the dashboard. Proven by
       `artifacts/landing/src/pages/Account.test.tsx`: a signed-in user sees their email, one
       dashboard entry and a sign-out control — and no per-dashboard entries.
