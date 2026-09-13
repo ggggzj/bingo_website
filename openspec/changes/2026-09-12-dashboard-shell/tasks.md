@@ -39,11 +39,11 @@ to draw its practice entry, ordinary users see that entry appear the moment this
 Leaves the system working: `pnpm --filter @workspace/landing run test` runs and passes. No
 product behavior changes.
 
-- [ ] 2.1 `artifacts/landing/package.json` (Vitest, Testing Library, `jest-dom`, jsdom, MSW
+- [x] 2.1 `artifacts/landing/package.json` (Vitest, Testing Library, `jest-dom`, jsdom, MSW
       — see `design.md` §8; `tsx` stays `catalog:`), `artifacts/landing/vitest.config.ts`,
       `artifacts/landing/src/test/setup.ts`. The setup answers HTTP, never replaces a
       generated hook.
-- [ ] 2.2 `artifacts/landing/src/components/WaitlistForm.test.tsx` — the first real test,
+- [x] 2.2 `artifacts/landing/src/components/WaitlistForm.test.tsx` — the first real test,
       chosen because it exercises what a new frontend setup usually gets wrong rather than
       what this change touches: a component rendering under the query client, a generated
       mutation hook running for real, and a user event. Proves the runner, not the feature.
