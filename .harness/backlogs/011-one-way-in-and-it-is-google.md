@@ -74,9 +74,17 @@ argument for adding to the pile while the plan is to empty it.
   where that disagreement physically lives and this ticket rewrites this page. Changing it
   here without h1_checker's copy only moves the disagreement — `015` says the number lives in
   one place and is read by three.
-- **LinkedIn and Apple are in the picture and are not in this ticket.** Owner's words: Google
-  only, for now. Drawing three buttons and wiring one is a page that lies about what it can
-  do; drawing one is a page that is honest and has room to grow.
+- **The page is the owner's screenshot, and the screenshot is the specification.** Split layout,
+  the case and the trusted-by logos on the left, the way in on the right: provider buttons
+  stacked, a separator reading "Or login with your email", then the address and password. Build
+  that page. Google is the one that works on day one; LinkedIn, Apple and the password are drawn
+  and not yet wired.
+- **This is deliberately NOT the rule the extension's own surface follows.** There, a control that
+  cannot be pressed is left out entirely, because that surface has room for exactly one thing and
+  a dead button on it reads as breakage. Here the opposite holds: this is a full page somebody
+  will come back to, the ways in that are coming are part of what it says about the product, and
+  nine identities already hold passwords and need to see where they will type them. Two surfaces,
+  two answers, and the difference is on purpose.
 - **The extension does not need this page, and that was settled deliberately.** The first
   reading of h1_checker's `sign-in-through-a-window-chrome-owns` had it render a sign-in of its
   own, which would have been a second page to keep in step with this one. The owner chose
