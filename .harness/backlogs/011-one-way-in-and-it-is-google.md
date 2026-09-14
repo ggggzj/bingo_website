@@ -58,9 +58,19 @@ argument for adding to the pile while the plan is to empty it.
 - Somebody with a Google address signs in from this page in one press, and is never sent to
   their inbox — the delivery problem D-038 recorded is not worked around here, it is absent.
 - The page is the shape above: the case on one side, the way in on the other.
-- **The address-and-password area is present and says it is not on yet.** Not deleted: nine
-  identities already hold passwords, and a page that never mentions passwords gives them
-  nothing to recognise when it is switched on.
+- **The address-and-password area is present, drawn, and disabled.** Owner's decision
+  2026-09-13: the fields cannot be focused or typed into, and one short line beside them says it
+  is coming. **Not** a field that accepts typing and then refuses on submit — a box you can type
+  in is a box you believe works, and being refused after typing reads as breakage rather than as
+  "not built yet". Same for the LinkedIn and Apple controls.
+  Not deleted either: nine identities already hold passwords, and a page that never mentions
+  passwords gives them nothing to recognise when it is switched on.
+- **Do not wire it to `/auth/login`, even though that would work.** The endpoint is live and those
+  nine could sign in through it today — which makes this the cheapest line of code on the page and
+  the wrong one. The owner removed the password path from the product on 2026-09-13
+  (`../h1_checker/.harness/backlogs/015`); a working password box here quietly puts it back, and
+  the rule it would need — how long, which characters — is exactly the argument that decision
+  ended.
 - The Google button is Google's own, rendered by Google's library. Nothing in this repo
   draws one — a hand-drawn Google button asking for a Google address is the shape of a
   phishing page even when the intent is honest.
