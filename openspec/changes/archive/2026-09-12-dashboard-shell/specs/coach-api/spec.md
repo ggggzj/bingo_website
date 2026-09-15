@@ -1,6 +1,6 @@
 # coach-api — spec delta (dashboard-shell)
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Coach access is a session, refused uniformly
 Access to every coach endpoint SHALL be limited to callers the server can
@@ -27,6 +27,8 @@ config would then open the coach silently.
 - **WHEN** a signed-in user calls any coach endpoint
 - **THEN** the rows read and written are those of the caller resolved from
   the session or token, and no request parameter can select another user
+
+## MODIFIED Requirements
 
 ### Requirement: Personal API tokens for browserless access
 A signed-in user SHALL be able to create a personal API token via the
@@ -73,15 +75,14 @@ leaving the row unchanged.
 
 ## REMOVED Requirements
 
-### Requirement: Unset allowlist closes the feature
-The scenario "`COACH_EMAILS` is unset and any user calls any coach endpoint →
-the uniform 404" is removed with the variable itself. The property it
-protected — that a misconfiguration fails closed rather than open — no longer
-has a variable to protect: access is now a session, and a caller the server
-cannot resolve still gets the uniform 404.
-
-### Requirement: Tokens do not bypass the allowlist
-Removed with the allowlist. A token remains bound to one user, revocable, and
-cascades away with the account, so the narrower property that scenario tested
-— a token cannot outlive the reason it was issued — is still carried by the
-rotation and revocation scenarios above.
+### Requirement: Coach access is an env allowlist, closed by default
+Renamed and rewritten as "Coach access is a session, refused uniformly" above.
+The allowlist existed to keep the coach shut while it was in development; the
+owner ended that phase on 2026-09-12. Its two scenarios go with it. "Unset
+allowlist closes the feature": the property it protected — a misconfiguration
+fails closed — no longer has a variable to protect; a caller the server
+cannot resolve still gets the uniform 404. "Tokens do not bypass the
+allowlist" (in the tokens requirement): a token remains bound to one user,
+revocable, and cascades away with the account, so the narrower property — a
+token cannot outlive the reason it was issued — is still carried by the
+rotation and revocation scenarios.

@@ -10,7 +10,13 @@ that requirement was protecting — a viewer entitled to neither seeing no hint
 that either exists — is carried forward in `dashboard-shell`'s rail
 requirement, unchanged.
 
-## MODIFIED Requirements
+### Requirement: The page hides itself from non-allowlisted visitors
+Renamed and rewritten as "The practice view is reached through the shell, not
+hidden" below. There is no longer a signed-in visitor to hide from; what the
+original protected — not confirming the feature's existence to probers —
+survives as the anonymous 404 and the login redirect.
+
+## ADDED Requirements
 
 ### Requirement: The practice view is reached through the shell, not hidden
 The practice view SHALL be available to any signed-in user, rendered inside
@@ -31,6 +37,8 @@ the feature's existence to probers — survives as the anonymous 404.
 #### Scenario: Anonymous visitor
 - **WHEN** a signed-out visitor opens `/dashboard/practice`
 - **THEN** they are sent to the login page and learn nothing about the feature
+
+## MODIFIED Requirements
 
 ### Requirement: The coach page leads with what to do next
 Unchanged except for the zero state. With no grading history, each panel SHALL
