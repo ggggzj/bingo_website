@@ -68,7 +68,9 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 - **The logged-in area:** `artifacts/landing/src/pages/dashboard/` — `Shell.tsx` (the
   frame: identity, sign-out, the rail), `Rail.tsx`, and `views.tsx`, which is the
   registry the router and the rail both read. `Dashboard.tsx` and `Coach.tsx` are the
-  two views it lists; neither is a route any more.
+  two views it lists; neither is a route any more. `PracticeStatus.tsx` is the one line
+  the rail draws under the practice entry — today's graded-of-assigned — and the only
+  thing in the rail that fetches.
 - **Site chrome:** `artifacts/landing/src/components/SiteHeader.tsx` and
   `SiteFooter.tsx`. The header carries one door into the account — `/dashboard` when
   signed in, `/login` when not.
@@ -133,6 +135,15 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   know is a stale address and redirects to the first entitled view; a segment this viewer
   may not use is a refusal and renders not-found **standing alone**, with no frame around
   it — a frame would confirm there is something here to be refused.
+- **The rail shows today's practice progress, through the registry.** The old
+  account-page entry printed "Today: 2 of 5 graded · 1 solved but not grilled"; the
+  shell dropped it unasked, and the owner asked for it back (2026-09-15). Two ways to
+  do it: let `Rail.tsx` call the plan query, or give each registry entry an optional
+  `Status` component and let the rail render the slot. The second, because the first
+  makes the rail the second place that knows what the practice view is made of, which
+  is the thing `views.tsx` exists to prevent. The line is visible only to a viewer with
+  two views — the rail is not drawn for one — which is right: a single-view viewer is
+  already standing on the practice view, and its own panel shows the same numbers.
 - **The switcher is a rail rather than a dropdown.** Asked for as a dropdown, decided as a
   rail (owner, 2026-09-12) on the reference they supplied: a rail still reads at six
   entries and a dropdown does not, and the stated reason for the shell is that more views

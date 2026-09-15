@@ -36,6 +36,36 @@ viewer SHALL see no entry, and no hint, for a view they may not use.
 - **WHEN** a signed-in non-owner opens the dashboard
 - **THEN** nothing on the page names or links the growth view
 
+### Requirement: The practice entry carries today's progress
+The rail's practice entry SHALL show today's live state beneath its label —
+graded-of-assigned, and how many are solved but not yet grilled — rather than
+the bare word. When nothing is assigned today it SHALL say so. While the plan
+is still loading, or the coach API refuses, the entry SHALL show the label
+alone rather than a placeholder or an error. This carries forward what the old
+account-page entry showed, so that a viewer looking at another view can see
+where today's practice stands without switching to it.
+
+The rail reaches that state through the registry — a view entry may declare a
+status component — never by the rail itself knowing about the coach. Because
+the rail is not drawn for a viewer with a single view, the line is seen by
+viewers who have somewhere else to be; a single-view viewer is already on the
+practice view, which shows the same numbers in its own panel.
+
+#### Scenario: Progress under the practice entry
+- **WHEN** the owner opens `/dashboard/growth` with 5 problems assigned today,
+  2 graded and 3 solved
+- **THEN** the practice rail entry reads "Today: 2 of 5 graded · 1 solved but
+  not grilled"
+
+#### Scenario: Nothing due
+- **WHEN** the owner opens the dashboard and nothing is assigned today
+- **THEN** the practice rail entry says nothing is due today
+
+#### Scenario: The plan is refused
+- **WHEN** the coach API answers 404 to the plan request
+- **THEN** the practice rail entry shows its label and no progress line, and
+  nothing on the page reads as an error
+
 ### Requirement: One view is not a choice
 A viewer entitled to exactly one view SHALL be shown that view with no
 switcher control rendered at all — not a one-item rail, and not a disabled

@@ -63,6 +63,22 @@ shell, `/coach` redirects, and the old `/account` entries still lead somewhere r
       a non-owner opening `/dashboard/growth` gets the ordinary not-found page; `/coach`
       lands on practice.
 
+**Third deviation, and a late one.** Task 3.2 was added on 2026-09-15, after every
+other task had shipped, when the owner was asked the question in the session residue
+("the practice entry lost its live progress") and answered "add it back". It edits
+`Rail.tsx` and `views.tsx`, both created by 3.1, which the one-file-one-task rule forbids.
+Same reasoning as the first two: the rule guards against two tasks racing for a file, and
+3.1 had been committed for three days. Recorded rather than hidden.
+
+- [x] 3.2 `artifacts/landing/src/pages/dashboard/views.tsx` gains an optional status
+      component per entry; `Rail.tsx` renders it beneath the label; new
+      `artifacts/landing/src/pages/dashboard/PracticeStatus.tsx` owns the plan query and
+      the wording the old account card used. Proven by
+      `artifacts/landing/src/pages/dashboard/PracticeStatus.test.tsx`: an owner on the
+      growth view sees "Today: 2 of 5 graded · 1 solved but not grilled" under the
+      practice entry; with nothing assigned the entry says nothing is due; a 404 from the
+      plan leaves the label alone and no error text on the page.
+
 ## 4. The views move in
 
 Leaves the system working: one frame, one sign-out, each view rendering only its content.

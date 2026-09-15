@@ -3,6 +3,7 @@ import { BarChart3, Dumbbell } from "lucide-react";
 
 import Coach from "@/pages/Coach";
 import Dashboard from "@/pages/Dashboard";
+import { PracticeStatus } from "@/pages/dashboard/PracticeStatus";
 
 /** What the shell knows about the person looking at it. */
 export type Viewer = {
@@ -22,6 +23,12 @@ export type DashboardView = {
    * view's address without entitlement gives the same answer it always did.
    */
   entitled: (viewer: Viewer) => boolean;
+  /**
+   * A line the rail draws beneath the label, for a view whose state a person
+   * on another view wants to know. The view owns whatever query that takes;
+   * the rail owns only the slot.
+   */
+  Status?: ComponentType;
   Component: ComponentType;
 };
 
@@ -49,6 +56,7 @@ export const VIEWS: DashboardView[] = [
     blurb: "Today's plan, review schedule and gaps.",
     icon: Dumbbell,
     entitled: (viewer) => viewer.isSignedIn,
+    Status: PracticeStatus,
     Component: Coach,
   },
 ];

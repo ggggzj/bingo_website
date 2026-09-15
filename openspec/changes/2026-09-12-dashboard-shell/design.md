@@ -28,6 +28,15 @@ entry, not a route plus a rail item plus a redirect that can disagree with each 
 This is the whole reason the shell exists. If a later feature needs a second place that
 lists views, the registry has failed and the fix is to delete that place.
 
+**A view may carry a status line (added 2026-09-15).** The owner asked, when the
+shell was already built, to keep the live progress the old account-page practice
+entry showed. The rail cannot read the plan query itself without becoming the second
+place that knows what the practice view is made of. So the registry entry grew one
+optional field, a status component, and the rail renders whatever a view declares
+beneath its label. The practice entry's status component owns the plan query; the
+rail owns nothing but the slot. The query key is the one the practice view uses, so
+react-query serves both from one fetch.
+
 ## 3. What an entitlement decides, and what it does not
 
 `isOwner` comes from the server (`GET /api/auth/me`). `use-auth.ts` already states the
