@@ -441,7 +441,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 text-base font-semibold text-primary hover:underline"
             data-testid="link-footer-cta-chrome"
           >
-            Or add it to Chrome now — it is free
+            Add it to Chrome now — it is free
             <ArrowRight className="w-4 h-4" />
           </a>
         </div>

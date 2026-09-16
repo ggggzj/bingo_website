@@ -34,7 +34,10 @@ describe("the home page's closing section", () => {
 
     const cta = await screen.findByTestId("link-footer-cta-chrome");
     expect(cta).toHaveAttribute("href", CHROME_STORE_URL);
-    expect(cta).toHaveTextContent("Or add it to Chrome now");
+    expect(cta).toHaveTextContent("Add it to Chrome now");
+    // "Or" was the other half of "leave your email, or add it to Chrome". With the
+    // form gone it referred to nothing, so the removal has to take it too.
+    expect(cta.textContent?.trimStart().startsWith("Or")).toBe(false);
 
     expect(screen.queryByTestId("input-waitlist-email")).not.toBeInTheDocument();
     expect(
