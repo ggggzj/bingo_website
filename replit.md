@@ -56,7 +56,7 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 - **API contract, source of truth:** `lib/api-spec/openapi.yaml`. Edit it, then run the
   codegen script — `lib/api-client-react/src/generated` and `lib/api-zod/src/generated`
   are generated and should never be edited by hand.
-- **DB schema, source of truth:** `lib/db/src/schema/` (`waitlist.ts`, `auth.ts`).
+- **DB schema, source of truth:** `lib/db/src/schema/` (`auth.ts`, `coach.ts`).
 - **Auth:** `artifacts/api-server/src/lib/auth/` — `password.ts` (scrypt),
   `session.ts` (cookie + token hashing), `owner.ts` (who the owner is),
   `store.ts` (the storage interface) with `drizzle-store.ts` and `memory-store.ts`.
@@ -148,9 +148,13 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   rail (owner, 2026-09-12) on the reference they supplied: a rail still reads at six
   entries and a dropdown does not, and the stated reason for the shell is that more views
   are coming.
-- **Auth routes take an `AuthStore`** rather than importing `db` the way
-  `routes/waitlist.ts` does. That seam is what lets the tests run the real routes,
-  the real hashing and the real cookies against memory instead of Postgres.
+- **Auth routes take an `AuthStore`** rather than importing `db` themselves. That seam
+  is what lets the tests run the real routes, the real hashing and the real cookies
+  against memory instead of Postgres. It used to be stated against a counter-example —
+  `routes/waitlist.ts` reached for `db` directly — and with that route deleted
+  (2026-09-15) there is no counter-example left: no route imports `db`, only the store
+  implementations do. The seam is now how this server reaches the database, not one
+  route's better habit.
 - **`/jobs` is public and identity-free, and its secret is a third one.** The page reads no
   session and writes nothing, which is what kept the two-account-systems question out of
   shipping it. `POSTINGS_TOKEN` is deliberately not `STATS_TOKEN`: one opens the owner's own
@@ -167,14 +171,24 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   Architect" as Entry-Level. A missing row costs one posting; a wrong badge costs the page
   its only advantage. For the same reason a null refusal verdict renders nothing: null means
   no description has been read, not that the employer declines.
+- **The mailing list was removed, not hidden (2026-09-15).** The home page ended with a
+  "Hear about what comes next" email box that posted to `POST /api/waitlist` and wrote a
+  row nothing ever read. `select count(*) from waitlist` against production returned
+  **0** — not one address in four months, including the owner's own. Three sizes were on
+  the table: hide the section, remove the feature but keep the table, or remove it down
+  to the table. The third, because the second's only argument is protecting collected
+  data and there is none. Hiding it would have left a dead route, a dead contract path
+  and a dead table for the next reader to identify as dead. The production table is
+  dropped by hand with one `drop table waitlist;`, deliberately not
+  `pnpm --filter @workspace/db run push`, which reconciles the whole schema and would
+  carry any drift along with it.
 
 ## Product
 
 - A landing page for the **BingoCareer** Chrome extension: what the four badges
   mean, which four job boards it runs on, how the 60-second trial and the
-  email-plus-five-questions unlock work, and where the DOL data comes from. Plus a
-  waitlist form, which is a mailing list only — it is a different database from the
-  extension's own email registration and does not unlock anything.
+  email-plus-five-questions unlock work, and where the DOL data comes from. It closes
+  with one link to the Chrome Web Store.
 - Email-and-password accounts: create one, sign in, sign out. `/account` says who you
   are, lets you leave, and offers one way into the dashboard.
 - `/dashboard` — the logged-in area: a frame with a rail listing the views this viewer

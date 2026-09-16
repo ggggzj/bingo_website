@@ -82,7 +82,7 @@ there is no such path.
 Leaves the system working: the documentation and the code comments stop pointing at
 files that do not exist.
 
-- [ ] 5.1 `replit.md` — three places. "DB schema, source of truth" drops `waitlist.ts`
+- [x] 5.1 `replit.md` — three places. "DB schema, source of truth" drops `waitlist.ts`
       from its file list. The auth-store architecture decision cites `routes/waitlist.ts`
       as the counter-example of a route that reaches for `db` directly; it needs a route
       that still exists (`routes/jobs.ts` does the same thing) or the clause removed. The
@@ -90,7 +90,7 @@ files that do not exist.
       "Architecture decisions" why the feature was removed rather than hidden: zero rows
       after four months, nothing reading the table, and a dead form as the last thing a
       visitor sees.
-- [ ] 5.2 `artifacts/api-server/src/lib/auth/store.ts` — the doc comment names the
+- [x] 5.2 `artifacts/api-server/src/lib/auth/store.ts` — the doc comment names the
       waitlist route as the thing auth deliberately does not do. Same fix as in
       `replit.md`: name a route that exists, or drop the comparison. No interface or
       behavior change; the auth tests are untouched and must stay green.

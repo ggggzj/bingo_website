@@ -1,10 +1,10 @@
 /**
  * What the auth routes need from storage, and nothing else.
  *
- * The routes take one of these rather than importing `db` the way the waitlist route
- * does. Auth is the part of this server worth testing hardest, and a seam is what
- * lets the tests run the real routes, the real hashing and the real cookies against
- * memory instead of against a Postgres that has to be running and reset.
+ * The routes take one of these rather than importing `db` themselves. Auth is the part
+ * of this server worth testing hardest, and a seam is what lets the tests run the real
+ * routes, the real hashing and the real cookies against memory instead of against a
+ * Postgres that has to be running and reset.
  */
 
 export type UserRecord = {
