@@ -99,7 +99,7 @@ files that do not exist.
 
 Leaves the system working: the schema describes the database the code actually uses.
 
-- [ ] 6.1 Delete `lib/db/src/schema/waitlist.ts` and its `export * from "./waitlist"`
+- [x] 6.1 Delete `lib/db/src/schema/waitlist.ts` and its `export * from "./waitlist"`
       line in `lib/db/src/schema/index.ts`. Proven by `pnpm run typecheck` and the full
       api-server suite — `store.contract.test.ts` imports `@workspace/db/schema` as a
       namespace and would fail to compile against a broken index.
