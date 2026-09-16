@@ -50,7 +50,7 @@ test in it.
 Leaves the system working: nothing references the form, and the suite that proves the
 harness works is green without it.
 
-- [ ] 3.1 Delete `artifacts/landing/src/components/WaitlistForm.tsx` and
+- [x] 3.1 Delete `artifacts/landing/src/components/WaitlistForm.tsx` and
       `artifacts/landing/src/components/WaitlistForm.test.tsx`. Proven by the full
       landing suite (`pnpm --filter @workspace/landing run test`) and `pnpm run
       typecheck` — an import left behind anywhere fails the typecheck, which is the whole
