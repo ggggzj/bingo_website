@@ -10,8 +10,6 @@ servers:
 tags:
   - name: health
     description: Health operations
-  - name: waitlist
-    description: Waitlist operations
   - name: auth
     description: Sign-up and sign-in
   - name: stats
@@ -34,37 +32,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
-  /waitlist:
-    post:
-      operationId: joinWaitlist
-      tags: [waitlist]
-      summary: Join the waitlist
-      description: Submit an email address to join the waitlist
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/WaitlistInput"
-      responses:
-        "201":
-          description: Successfully joined waitlist
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/WaitlistEntry"
-        "409":
-          description: Email already on waitlist
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "422":
-          description: Invalid email
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /auth/register:
     post:
       operationId: register
@@ -581,27 +548,6 @@ components:
           type: string
       required:
         - status
-    WaitlistInput:
-      type: object
-      required:
-        - email
-      properties:
-        email:
-          type: string
-          format: email
-    WaitlistEntry:
-      type: object
-      required:
-        - id
-        - email
-        - createdAt
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-        createdAt:
-          type: string
     Credentials:
       type: object
       required: [email, password]

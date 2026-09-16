@@ -61,7 +61,7 @@ harness works is green without it.
 Leaves the system working: the contract, the generated clients and the server agree that
 there is no such path.
 
-- [ ] 4.1 `lib/api-spec/openapi.yaml` — remove the `/waitlist` path, the `waitlist` tag
+- [x] 4.1 `lib/api-spec/openapi.yaml` — remove the `/waitlist` path, the `waitlist` tag
       from the tag list, and the `WaitlistInput` and `WaitlistEntry` schemas. Leave
       `ErrorResponse` alone; thirty other responses reference it. **Run codegen in this
       task** — nothing else regenerates the hooks and Zod schemas. Proven by: no file

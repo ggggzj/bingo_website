@@ -61,5 +61,3 @@ export * from "./statsRegistrationRow";
 export * from "./statsRegistrations";
 export * from "./statsTotals";
 export * from "./statsTotalsReferralSources";
-export * from "./waitlistEntry";
-export * from "./waitlistInput";

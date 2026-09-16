@@ -16,14 +16,6 @@ export const HealthCheckResponse = zod.object({
 });
 
 /**
- * Submit an email address to join the waitlist
- * @summary Join the waitlist
- */
-export const JoinWaitlistBody = zod.object({
-  email: zod.string().email(),
-});
-
-/**
  * Creates an account and signs the browser in.
  * @summary Create an account
  */
