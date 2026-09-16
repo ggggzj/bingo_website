@@ -36,7 +36,7 @@ Leaves the system working: no product behavior changes at all. This group exists
 that no commit in this change has a test suite without a real generated-mutation-hook
 test in it.
 
-- [ ] 2.1 New `artifacts/landing/src/pages/Login.test.tsx` — takes over what
+- [x] 2.1 New `artifacts/landing/src/pages/Login.test.tsx` — takes over what
       `WaitlistForm.test.tsx` was chosen to prove (`dashboard-shell` tasks.md 2.2): a
       component under the query client, a generated mutation hook issuing a real request
       through the custom fetch mutator, and a typed user event. Two cases, the same pair
