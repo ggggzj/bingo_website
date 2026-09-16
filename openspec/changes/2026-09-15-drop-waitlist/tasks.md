@@ -68,7 +68,7 @@ there is no such path.
       under `lib/api-client-react/src/generated` or `lib/api-zod/src/generated` matches
       `waitlist` case-insensitively, and `pnpm run typecheck` passes across the
       workspace.
-- [ ] 4.2 `artifacts/api-server/src/routes/index.ts` — drop the `waitlistRouter` import
+- [x] 4.2 `artifacts/api-server/src/routes/index.ts` — drop the `waitlistRouter` import
       and its `router.use("/waitlist", …)` mount; delete
       `artifacts/api-server/src/routes/waitlist.ts`. Proven by new
       `artifacts/api-server/src/routes/index.test.ts`, which mounts the real aggregate
