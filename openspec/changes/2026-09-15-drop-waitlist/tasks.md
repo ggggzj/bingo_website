@@ -20,7 +20,7 @@ Leaves the system working: the home page ends with the Chrome call to action and
 else changes. `WaitlistForm.tsx` still exists and still compiles; it is now imported by
 nobody, which is the state group 3 cleans up.
 
-- [ ] 1.1 `artifacts/landing/src/pages/Home.tsx` — the last section loses its heading,
+- [x] 1.1 `artifacts/landing/src/pages/Home.tsx` — the last section loses its heading,
       both paragraphs and `<WaitlistForm />`, and the `WaitlistForm` import goes with
       them. The Chrome link stays and becomes the section's content rather than a
       footnote under a form, so it is laid out as the closing action (drop the `mt-10`
