@@ -1,6 +1,6 @@
 ---
 id: 015
-title: Sign in with Google — the only way a new account is made here
+title: Sign in with Google, beside the email form rather than instead of it
 status: open
 origin: ROADMAP.md 第一步 3 — owner 2026-09-17: "网页的登录用 google sign in/sign up（目前先
   只支持 google sign in），一个 google 的邮箱就是一个账户". The reason is measured, not
@@ -16,9 +16,14 @@ blocks: .harness/backlogs/014 (/go/<job_id> reading a session), and everything i
 
 ## What ships
 
-`/login` offers one control: **Sign in with Google**. A Google address that has never been here
-gets an account; one that has been here signs in. Same button, no "register" tab — "一个 google
-的邮箱就是一个账户" means the distinction is invisible to the person.
+`/login` leads with **Sign in with Google**: a Google address that has never been here gets an
+account, one that has been here signs in, same button — "一个 google 的邮箱就是一个账户" means
+the distinction is invisible to the person.
+
+Beneath it, **the email form stays, both tabs**. That is the 2026-09-17 answer to a contradiction
+this ticket raised and could not resolve on its own: a recovery path nobody can reach is not a
+recovery path. Google is the front door; the form is the door that still opens when Google's
+configuration is wrong.
 
 The home page redesign (left intro, right sign-in) is ROADMAP 第一步 4 and a separate ticket.
 This one changes `/login`, the auth routes, and the schema line they need.
@@ -55,11 +60,11 @@ Each is small; together they are the ticket, and none can be skipped.
    (`DECOY_HASH`, line 37) so a password-less account is not detectable by how fast it is
    refused. This is the one line in the ticket where a mistake is a vulnerability rather than a
    bug, and it needs its own test.
-4. **`routes/auth.ts:88` `POST /auth/register`** — password sign-up closes. Its `isOwner(email)`
-   reservation exists because "sign-up is open and addresses are unverified"; with Google the
-   address is proven by Google, so a stranger cannot claim `OWNER_EMAIL` at all. Keep the
-   reservation while the route exists; the proposal decides whether the route goes (410) or
-   simply loses its UI — see decision 2.
+4. **`routes/auth.ts:88` `POST /auth/register`** — stays open (decision 2), and so does its
+   `isOwner(email)` reservation. That reservation is now load-bearing in a second way: with the
+   form still reachable, `OWNER_EMAIL` remains an address a stranger would otherwise be able to
+   claim, exactly as the comment there says. Nothing about this route changes; it is listed here
+   because the first draft closed it.
 
 ## What must not regress
 
@@ -81,7 +86,11 @@ Each is small; together they are the ticket, and none can be skipped.
 - A Google address that has never signed in here ends up with an account and a session, in one
   click, with no mail and no password.
 - The same address signing in again lands on the same account — never a second row.
-- The owner signs in with their USC Google account and sees the growth dashboard.
+- The owner signs in with their USC Google account and sees the growth dashboard, **and their
+  password still works** afterwards — the exemption above, with a test.
+- `/login` shows the Google button and the email form together, and both work.
+- An address that has a password account and then arrives through Google behaves exactly as the
+  proposal's collision rule says, with a test per branch of it.
 - An account with no password cannot be signed into by guessing at `POST /auth/login`, and
   refusing it takes as long as refusing anyone else.
 - A tampered, expired, or wrong-`aud` ID token is refused with nothing created.
@@ -97,17 +106,33 @@ Recorded so `/pickup` does not re-open them. The reasoning behind each stays bel
 
 1. **One Google client.** Add `https://bingocareer.com` as an authorized JavaScript origin to
    the extension's existing client; do not create a second. `aud` is still checked.
-2. **Email + password: hidden, not removed.** `/login` shows only Google. `POST /auth/register`
-   closes. `POST /auth/login` stays as a route.
+2. **Email + password stays visible, both tabs** (revised the same evening — see below).
+   `POST /auth/login` and `POST /auth/register` both stay. Google is first on the page; the
+   form is second.
 3. **The owner's password account stays**, `set-owner-password` unchanged.
 4. **Sign-in lands on `/jobs`.**
 
-One consequence of 2 that the proposal must design rather than discover: if the password form
-is gone from `/login`, the owner needs *some* way to reach the route they are keeping as a
-recovery path. A hidden link, a query parameter (`/login?password=1`), or nothing in the UI at
-all and a documented `curl` — all three are defensible; the ticket does not choose, but the
-proposal must, because "we kept the fallback" and "nobody can reach the fallback" cannot both
-be true.
+### The collision two doors create, and it is not cosmetic
+
+With both doors open, one address can arrive twice: somebody registers `alice@gmail.com` with a
+password, and later that address signs in with Google. The proposal must say what happens, and
+the honest framing is that **the two doors prove different things**. Google proves the address.
+`POST /auth/register` does not — sign-up here is open and unverified, which is the whole reason
+the route reserves `OWNER_EMAIL` in the first place (`routes/auth.ts:99`).
+
+So a password account on `alice@gmail.com` is only a *claim* on that address, and it may have
+been made by somebody else. Three ways to land it:
+
+- **Sign in to the existing account, and clear its password.** The proven claim wins: the person
+  Google vouched for keeps the account, and whoever set the password loses the way in. Cheap,
+  and it leaves nobody stranded. **Exempt `OWNER_EMAIL`** — that password is a deliberate
+  recovery path (decision 3) and must survive the owner signing in with Google.
+- **Sign in to the existing account, leave the password alone.** Simplest, and it means an
+  unverified password and a verified Google login share one account forever.
+- **Refuse the Google sign-in.** Safe, and a dead end the person cannot fix themselves.
+
+Recommended: the first. Whatever is chosen, it is a security decision and belongs in the
+proposal with its reasoning, not in an implementation detail.
 
 ## The reasoning behind each, kept
 
@@ -117,7 +142,8 @@ be true.
    client keeps the two services' tokens unusable on each other — which matters less once
    `.harness/backlogs/012` makes them one account anyway. Recommended: **add the origin to the
    existing client**, and still check `aud`.
-**2. What happens to email + password on this site.** Recommended: the `/login` UI shows only
+**2. What happens to email + password on this site.** *(Superseded the same evening: the owner
+chose to show both tabs. Kept because the fallback reasoning still holds.)* Recommended: the `/login` UI shows only
    Google; `POST /auth/register` is closed; `POST /auth/login` **stays** — it is the owner's way
    in if Google is ever misconfigured, and it is what the nine password identities on the
    extension side will use after the merge. Removing it entirely is the alternative and it
