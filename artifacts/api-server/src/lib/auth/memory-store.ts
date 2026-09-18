@@ -26,6 +26,15 @@ export class InMemoryAuthStore implements AuthStore {
   }
 
   async createUser(email: string, passwordHash: string): Promise<UserRecord> {
+    return this.insert(email, passwordHash);
+  }
+
+  async createPasswordlessUser(email: string): Promise<UserRecord> {
+    return this.insert(email, null);
+  }
+
+  /** Both creation paths, so the duplicate-address collision cannot drift between them. */
+  private insert(email: string, passwordHash: string | null): UserRecord {
     if (this.users.has(email)) {
       throw new Error(`duplicate email: ${email}`);
     }
@@ -63,8 +72,11 @@ export class InMemoryAuthStore implements AuthStore {
     this.lastLoginAt.set(userId, at);
   }
 
-  /** Plant an account directly, the way the owner's is created outside the sign-up form. */
-  seedUser(email: string, passwordHash: string): UserRecord {
+  /**
+   * Plant an account directly, the way the owner's is created outside the sign-up
+   * form. `null` plants one with no password.
+   */
+  seedUser(email: string, passwordHash: string | null): UserRecord {
     const user: UserRecord = { id: this.nextId++, email, passwordHash };
     this.users.set(email, user);
     return user;

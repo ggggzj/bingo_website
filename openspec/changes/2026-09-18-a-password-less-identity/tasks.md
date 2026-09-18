@@ -5,10 +5,13 @@ Three groups, each leaving the system working end to end. Tests are Vitest + sup
 
 ## 1. The column stops insisting
 
-Leaves the system working: the declaration allows a null, every reader still receives a string
-because nothing writes one yet.
+> **Correction, made during the run.** This group does **not** leave the system working on its
+> own: dropping `.notNull()` makes drizzle infer `string | null`, which fails `toRecord`'s row
+> type at `drizzle-store.ts` lines 27, 35 and 67. That failure is the point — it is the
+> compiler finding every reader, exactly as `design.md` §2 says it should — but it means 1.1
+> and group 2 are one landing, not two, and they were committed together.
 
-- [ ] 1.1 `lib/db/src/schema/auth.ts` — drop `.notNull()` from `passwordHash`, and replace the
+- [x] 1.1 `lib/db/src/schema/auth.ts` — drop `.notNull()` from `passwordHash`, and replace the
       comment above it: the column is nullable because an identity proven by Google has no
       password, and the database this repo is merging into already permits it. Name
       `.harness/backlogs/018` as the ticket that moves those rows, so the next reader knows why
@@ -18,16 +21,16 @@ because nothing writes one yet.
 
 Leaves the system working: types and both stores agree with the column; no behaviour changes.
 
-- [ ] 2.1 `artifacts/api-server/src/lib/auth/store.ts` — `UserRecord.passwordHash` becomes
+- [x] 2.1 `artifacts/api-server/src/lib/auth/store.ts` — `UserRecord.passwordHash` becomes
       `string | null`. Add a way to create a user with no password, **separate from**
       `createUser` rather than an optional parameter (design §2), documented with why it is
       separate.
-- [ ] 2.2 `artifacts/api-server/src/lib/auth/drizzle-store.ts` — `toRecord`'s row type follows,
+- [x] 2.2 `artifacts/api-server/src/lib/auth/drizzle-store.ts` — `toRecord`'s row type follows,
       and the new creation path. Nothing else in this file should need to change; if the
       compiler asks for more, that is a reader worth reading before silencing.
-- [ ] 2.3 `artifacts/api-server/src/lib/auth/memory-store.ts` — the same, keeping the in-memory
+- [x] 2.3 `artifacts/api-server/src/lib/auth/memory-store.ts` — the same, keeping the in-memory
       shape identical to the drizzle one so the tests keep proving the same thing.
-- [ ] 2.4 `pnpm run typecheck` passes with no `as` casts and no non-null assertions added. An
+- [x] 2.4 `pnpm run typecheck` passes with no `as` casts and no non-null assertions added. An
       assertion here would put the comfortable lie back one layer down.
 
 ## 3. Pin what is already true, so a refactor cannot quietly undo it

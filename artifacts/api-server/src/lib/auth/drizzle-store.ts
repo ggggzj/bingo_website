@@ -12,7 +12,7 @@ import type { AuthStore, UserRecord } from "./store";
 function toRecord(row: {
   id: number;
   email: string;
-  passwordHash: string;
+  passwordHash: string | null;
 }): UserRecord {
   return { id: row.id, email: row.email, passwordHash: row.passwordHash };
 }
@@ -31,6 +31,14 @@ export class DrizzleAuthStore implements AuthStore {
     const [row] = await db
       .insert(usersTable)
       .values({ email, passwordHash })
+      .returning();
+    return toRecord(row!);
+  }
+
+  async createPasswordlessUser(email: string): Promise<UserRecord> {
+    const [row] = await db
+      .insert(usersTable)
+      .values({ email, passwordHash: null })
       .returning();
     return toRecord(row!);
   }
