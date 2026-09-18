@@ -11,7 +11,7 @@ blocked-by: .harness/backlogs/012 (this repo's half of one account) and its coun
   irreplaceable and must live beside the surviving `users` table, and there are two of those today.
   Also .harness/backlogs/008 — the tracker is a view in that rail.
 counterpart: none for v1 (the site is the only writer). v2 — the extension writing APPLIED — is
-  ../h1_checker/.harness/backlogs/019-notice-an-application-being-submitted.md (written 2026-09-17).
+  ../h1_checker/.harness/backlogs/020-notice-an-application-being-submitted.md (written 2026-09-17).
 ---
 
 ## How a row is born and how it moves — grounded 2026-09-17
@@ -55,7 +55,7 @@ cards they opened but never moved. Add Application and Export CSV in v1 — a tr
 leave is a tracker people trust; Import CSV later. Five columns, REJECTED hidden by default as
 Simplify does. Every move is an event row (`017`). Nothing here needs a new permission anywhere.
 
-**v2 — the extension writes APPLIED.** Written up as `../h1_checker/.harness/backlogs/019`: the ATS
+**v2 — the extension writes APPLIED.** Written up as `../h1_checker/.harness/backlogs/020`: the ATS
 origins go in `optional_host_permissions` and are granted from a click (the Indeed/Dice/Glassdoor
 pattern, so no install goes dark), one verified detector per site, `POST /api/my/applications` as
 the paired identity, consent toggle off by default. Blocked by 015 and 014.
