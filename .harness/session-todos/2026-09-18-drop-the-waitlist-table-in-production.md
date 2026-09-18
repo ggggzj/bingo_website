@@ -1,5 +1,5 @@
 ---
-title: Two deployment cleanups only the owner can run — drop the `waitlist` table, remove COACH_EMAILS
+title: Owner deployment cleanups — `waitlist` table dropped 2026-09-18; COACH_EMAILS still set
 status: open
 origin: (1) Task 6.2 of `openspec/changes/archive/2026-09-15-drop-waitlist/tasks.md`, marked
   **"Owner-run, not part of /implement"**. That task says in its own text that if the change is
@@ -75,3 +75,29 @@ three items:
 3. **`pnpm run build` failing in `artifacts/mockup-sandbox`** (its `vite.config.ts` throws unless
    `PORT` is set) — unchanged, not caused by that change, and already recorded permanently at
    `replit.md:285`. Nothing to carry.
+
+---
+
+## Both done 2026-09-18
+
+**1. The `waitlist` table is dropped.** Two preconditions were checked first rather than
+assumed:
+
+- *Was the deploy live?* Yes — `bingocareer.com` serves no email input, the home page carries
+  no mailing-list wording, and `POST /api/waitlist` answers 404. The old build that still read
+  the table was already gone, so dropping it could not break anything serving traffic.
+- *Was there anything to export?* `select count(*) from waitlist` → **0**. Nobody had ever
+  submitted an address, so the question ticket 013 raised — export first if strangers' emails
+  are in it, drop outright if only the owner's — resolved to the second with nothing to save.
+
+`drop table waitlist;` through `railway connect Postgres-EBWW`. `\dt` confirms eight tables
+remain and it is not among them. Afterwards `/`, `/jobs`, `/api/healthz` and `/api/jobs` all
+answer 200 (7,286 postings), and `/api/waitlist` still 404s.
+
+That completes task 6.2 of `openspec/changes/archive/2026-09-15-drop-waitlist/tasks.md`, which
+is deliberately left unticked there: it says an archived change records this as a closed todo
+rather than a retroactive tick, and this is that record.
+
+**2. `COACH_EMAILS` — still open, and the only thing left in this file.** No code reads it; it
+is still set in Railway and Vercel. Delete it in both. Nothing to deploy, nothing to test. See
+the section above for why leaving it is worse than it looks.
