@@ -1,7 +1,12 @@
 ---
 id: 019
 title: The list the owner applies from, rebuilt every morning — 2027 new-grad SDE, one person
-status: open
+status: picked-up
+change: openspec/changes/2026-09-18-the-new-grad-list-behind-the-login/
+  Covers the view, the early-career filter, the three-state location and the last-seen
+  marker. **Left open on this ticket as that change's declared non-goals:** the per-row
+  note and the USC alumni import (they need a table of their own, and the alumni half
+  cannot be generated at all — D-012).
 origin: Owner request 2026-09-18 — "login 我的账号之后，有一个 dashboard 是专门给我自己用的…
   我现在在 apply 美国境内的 27ng 的 entry level 的 SDE…希望这个 dashboard 可以告诉我可以 apply
   哪些岗位，然后每天根据岗位的放出来进行实时的更新". Reference form supplied by the owner:
@@ -9,7 +14,7 @@ origin: Owner request 2026-09-18 — "login 我的账号之后，有一个 dashb
   spreadsheet an agent built for them on 09-11/09-13, which is the thing this replaces.
 counterpart: ../h1_checker/.harness/backlogs/026-find-the-boards-ourselves-instead-of-knowing-43.md
   (written 2026-09-18, the data half) and ../h1_checker/.harness/backlogs/022-workday-as-the-fourth-provider.md
-blocked-by: ../h1_checker/.harness/backlogs/026 first, then 022. 023 is the one that matters (it discovers the boards; the owner ruled out building on their spreadsheet):
+blocked-by: ../h1_checker/.harness/backlogs/026 first, then 022. 026 is the one that matters (it discovers the boards; the owner ruled out building on their spreadsheet):
   without it this page shows 14 rows from 3 employers. Deliberately **not** blocked by
   018/015 (one account) — see "Why this one is not blocked".
 grounded: 2026-09-18 — every number below was measured off the owner's spreadsheet, this
