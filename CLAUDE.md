@@ -4,8 +4,10 @@ The outer loop for the website repo. The **inner loop** — how each unit of wor
 is owned by `replit.md` ("User preferences": build test-first, review pass on repo
 standards + only-what-was-asked, update replit.md, explain in plain language) and is not
 restated here. Read `replit.md` first; stack, layout, architecture decisions and gotchas
-are authoritative there. Product direction is **not local**: the roadmap lives in the
-extension repo, routed by the workspace router (`../CLAUDE.md`). Proposal/tasks rules
+are authoritative there. Product direction for the website is `ROADMAP.md` in this repo
+(owner decision 2026-09-17; before that it lived in `../h1_checker/GROWTH_PLAN.md`, which
+still owns product-wide strategy, the compliance lines and the audience question, and wins
+on those). Proposal/tasks rules
 live in `openspec/config.yaml`.
 
 ## Rules
@@ -14,8 +16,8 @@ live in `openspec/config.yaml`.
 Scan `.harness/backlogs/`, `.harness/session-todos/`, `.harness/plans/inprogress/` and
 `openspec/changes/` (non-archive); report what is pending and ask which to continue. An
 empty scan means "nothing to pick up" — never invent work. When the backlog is empty,
-new work comes from the product roadmap via the workspace router: ask the user which
-item to pull; never pull one yourself.
+new work comes from `ROADMAP.md` (website) or `../h1_checker/GROWTH_PLAN.md`
+(product-wide): ask the user which item to pull; never pull one yourself.
 
 **Then check whether another session is already here, before writing anything.** Run
 `git worktree list`; compare HEAD against the snapshot this session started with; look
@@ -61,7 +63,8 @@ tickets that an `add -A` would take along with it.
 ### 2. New feature work
 Do not write code from a feature request. Write it as a ticket in `.harness/backlogs/`
 (`status:`, `origin:`, acceptance criteria). `origin:` cites the roadmap line
-(`../h1_checker/GROWTH_PLAN.md` …) or the user's request. The user runs `/pickup`; stop
+(`ROADMAP.md` §3 … or `../h1_checker/GROWTH_PLAN.md` …) or the user's request. The user
+runs `/pickup`; stop
 at the proposal and wait for approval — never proceed past that gate alone.
 
 ### 3. Bugs enter through a different door

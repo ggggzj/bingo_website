@@ -13,8 +13,10 @@ context: |
     decisions, the working loop (its "User preferences" section), and gotchas. A
     proposal that reverses a recorded architecture decision must name it and say why;
     never silently contradict one.
-  - ../CLAUDE.md (the workspace router) and the extension repo's roadmap files own
-    product direction; this repo has no local roadmap by design.
+  - ROADMAP.md (this repo) owns website direction — what is built, in what order, with
+    what gates (owner decision 2026-09-17). ../h1_checker/GROWTH_PLAN.md still owns
+    product-wide strategy, the compliance lines and the audience question, and wins on
+    those. ../CLAUDE.md (the workspace router) says which repo a ticket lives in.
 
   Boundaries that shape proposals here:
   - The API contract is lib/api-spec/openapi.yaml; after editing it, codegen must run —
