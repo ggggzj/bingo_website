@@ -1,10 +1,12 @@
 ---
-title: Drop the production `waitlist` table — the one task drop-waitlist could not tick itself
+title: Two deployment cleanups only the owner can run — drop the `waitlist` table, remove COACH_EMAILS
 status: open
-origin: Task 6.2 of `openspec/changes/archive/2026-09-15-drop-waitlist/tasks.md`, marked
+origin: (1) Task 6.2 of `openspec/changes/archive/2026-09-15-drop-waitlist/tasks.md`, marked
   **"Owner-run, not part of /implement"**. That task says in its own text that if the change is
   archived before the owner has run it, it becomes a session todo rather than a tick. The change
-  was archived 2026-09-18; this is that todo.
+  was archived 2026-09-18; this is that todo. (2) Item 2 of
+  `2026-09-12-dashboard-shell-residue.md`, carried here on 2026-09-18 when that file was deleted —
+  its other two items were resolved (see below).
 ---
 
 **摘要:** 代码已经不再引用 `waitlist` 表了，表还在生产库里。**等网站的 API 部署上线之后**，由
@@ -34,3 +36,39 @@ in it are the mailing-list signups; `.harness/backlogs/013` recorded what was de
 or the addresses exported, it has to happen before the table does.
 
 Tick nothing when this is done. Delete this file.
+
+---
+
+# 2. Remove `COACH_EMAILS` from the deployment
+
+The practice view is open to every signed-in user, and **no code reads `COACH_EMAILS` any
+more** — `artifacts/api-server/src/lib/coach/auth.ts:9` says so in a comment, and `replit.md`
+lists it only as a recorded decision ("deleted, not turned into a kill switch"). The variable is
+still sitting in the Railway and Vercel environments.
+
+Harmless today, misleading in six months — and misleading in a specific way worth naming: its
+old meaning was *unset = nobody may practise*. A stale variable with that history, found by
+somebody later, reads as a switch that still does something.
+
+Delete it in both environments. Nothing to deploy, nothing to test.
+
+---
+
+## What the deleted residue file resolved, recorded so nobody re-opens it
+
+`.harness/session-todos/2026-09-12-dashboard-shell-residue.md` was deleted on 2026-09-18. Its
+three items:
+
+1. **"The practice rail entry lost its live progress"** — it did not, in the end. The
+   requirement is in `openspec/specs/dashboard-shell/spec.md` ("The practice entry carries
+   today's progress"), implemented as `artifacts/landing/src/pages/dashboard/PracticeStatus.tsx`,
+   and pinned by `PracticeStatus.test.tsx` asserting the exact string
+   `"Today: 2 of 5 graded · 1 solved but not grilled"`. The rail reaches it through the view
+   registry rather than by knowing about the coach, which answers the residue's own worry about
+   the rail depending on a view's data. The note was written before the work landed and nobody
+   went back to strike it. **The owner confirmed 2026-09-18 that the current behaviour is what
+   they wanted.**
+2. Carried above.
+3. **`pnpm run build` failing in `artifacts/mockup-sandbox`** (its `vite.config.ts` throws unless
+   `PORT` is set) — unchanged, not caused by that change, and already recorded permanently at
+   `replit.md:285`. Nothing to carry.
