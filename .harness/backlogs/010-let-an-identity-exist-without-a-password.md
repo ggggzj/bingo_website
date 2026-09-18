@@ -1,7 +1,11 @@
 ---
 id: 010
 title: Let an identity exist without a password, because Google sign-in makes one
-status: open
+status: picked-up
+produced: openspec/changes/2026-09-18-a-password-less-identity/ — proposal drafted 2026-09-18,
+  awaiting owner approval. Grounding found both halves of this ticket's stated risk already
+  handled (verifyPassword refuses unreadable values; the call site guards with ?? DECOY_HASH),
+  so the change pins them with tests instead of adding defensive code.
 origin: Owner decision 2026-09-13, recorded in
   ../h1_checker/.harness/backlogs/015-one-account-on-both-surfaces.md — one database, the
   extension's survives, password-less identities allowed. This is the website half; the

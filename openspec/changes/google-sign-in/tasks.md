@@ -12,6 +12,10 @@ Same split the jobs-page change used, for the same reason.
 
 ## 1. A password-less identity becomes representable
 
+> **Moved out 2026-09-18.** This group is now its own change,
+> `openspec/changes/2026-09-18-a-password-less-identity/`, picked up from
+> `.harness/backlogs/010`. Whatever survives of this change must not do it twice.
+
 Leaves the system working: the column and the types admit a null, nothing creates one yet, and
 every existing behaviour is unchanged.
 
