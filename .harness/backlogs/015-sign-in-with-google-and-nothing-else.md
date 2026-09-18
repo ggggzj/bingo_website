@@ -1,7 +1,8 @@
 ---
 id: 015
 title: Sign in with Google, beside the email form rather than instead of it
-status: open
+status: picked-up
+produced: openspec/changes/google-sign-in/ — proposal drafted 2026-09-17, awaiting owner approval
 origin: ROADMAP.md 第一步 3 — owner 2026-09-17: "网页的登录用 google sign in/sign up（目前先
   只支持 google sign in），一个 google 的邮箱就是一个账户". The reason is measured, not
   aesthetic: every mailed step in this funnel dies (48 verification mails → 2 opened; 60
