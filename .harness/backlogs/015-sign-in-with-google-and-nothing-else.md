@@ -153,6 +153,28 @@ chose to show both tabs. Kept because the fallback reasoning still holds.)* Reco
 **4. What a person sees on the way in.** Straight to `/jobs` is the roadmap's answer; confirm,
 since it decides whether this ticket touches routing at all.
 
+## The fallback has no backup, and that is a separate ticket
+
+Recorded 2026-09-17 while comparing this page against simplify.jobs' — theirs carries "Forgot
+your password?", "Remember this device" and a reCAPTCHA; ours carries none of the three.
+
+Only the first matters yet, and it matters *because* of decision 2: **there is no password
+reset anywhere in this repo.** `routes/auth.ts` serves register, login, logout and `/me`;
+`AuthStore` has no reset method; `replit.md` says outright that for the owner's account "there
+is no reset flow". So the recovery path this ticket deliberately keeps is itself unrecoverable —
+a forgotten password means `set-owner-password` on a terminal.
+
+Not fixed here, and not a gap in this ticket: a reset flow means sending mail, and **this
+service cannot send mail at all** — no Resend, no sender of any kind, no token table. All of it
+exists next door (`../h1_checker`: `email_verifications`, `mailer.py`), and
+`.harness/backlogs/012` moves this site onto that database. Building a second sender here and
+discarding it at the merge is the same work twice.
+
+So: after 012, not before. Its own ticket then, and it would also answer the question this one
+parked — whether a verified password account and a Google sign-in on one address are a merge
+rather than a takeover (see the collision section above). Mail verification proves exactly what
+Google proves: control of the inbox. It is the right answer at the wrong time.
+
 ## Notes for whoever picks this up
 
 1. **Not trivial by rule 6**: auth, sessions, `lib/db/src/schema/`, `openapi.yaml`, more than one
