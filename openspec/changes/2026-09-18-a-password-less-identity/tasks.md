@@ -58,7 +58,7 @@ Leaves the system working: types and both stores agree with the column; no behav
 
 ## 4. Say what changed
 
-- [ ] 4.1 `replit.md` — under Architecture decisions: the column is nullable, why (a Google
+- [x] 4.1 `replit.md` — under Architecture decisions: the column is nullable, why (a Google
       identity has no password, and the surviving database already permits it), and that the
       two mechanisms which make it safe are `verifyPassword`'s refusal of unreadable values and
       `?? DECOY_HASH` at the call site — with the note that removing either is what the new
