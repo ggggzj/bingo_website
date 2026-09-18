@@ -10,7 +10,18 @@
 export type UserRecord = {
   id: number;
   email: string;
-  passwordHash: string;
+  /**
+   * Null for an identity that has no password — one proven by Google rather than
+   * typed. Nullable here and not only in the column, so the compiler is the thing
+   * that finds every reader rather than a null arriving at one at runtime.
+   *
+   * Two mechanisms already make an absent hash safe, and neither was written for
+   * this case: `verifyPassword` refuses any stored value it cannot read, and
+   * `routes/auth.ts` passes `?? DECOY_HASH` so an absent one never reaches it and
+   * the refusal still costs a full scrypt. Removing either is what
+   * `password.test.ts` and `auth.test.ts` now exist to catch.
+   */
+  passwordHash: string | null;
 };
 
 export interface AuthStore {
@@ -18,6 +29,14 @@ export interface AuthStore {
   findUserByEmail(email: string): Promise<UserRecord | null>;
 
   createUser(email: string, passwordHash: string): Promise<UserRecord>;
+
+  /**
+   * An identity with no password, for a sign-in that proves an address some other
+   * way. Separate from `createUser` rather than an optional parameter: a forgotten
+   * argument would silently create an account nobody can sign into with a password,
+   * and being unable to is something a caller must ask for rather than omit.
+   */
+  createPasswordlessUser(email: string): Promise<UserRecord>;
 
   createSession(
     userId: number,

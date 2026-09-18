@@ -19,7 +19,13 @@ export const usersTable = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   // scrypt, in the self-describing form written by the api-server's password module.
-  passwordHash: text("password_hash").notNull(),
+  //
+  // Nullable, because an identity proven by Google has no password at all — that is the
+  // point of signing in that way, and the database this repo is merging into
+  // (`.harness/backlogs/018`) already permits it. Until that merge and until Google
+  // sign-in lands (`.harness/backlogs/011`), nothing here writes a null; the column is
+  // declared for rows that are coming, not for rows that are here.
+  passwordHash: text("password_hash"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastLoginAt: timestamp("last_login_at"),
 });

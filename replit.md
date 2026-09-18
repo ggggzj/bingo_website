@@ -13,7 +13,11 @@ dashboard that only the owner can see.
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
+- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only). **The
+  nullable `password_hash` needs one of these to reach a real database.** Safe in this
+  direction — dropping a NOT NULL touches no data and every existing row has a password —
+  but run it deliberately, against a database you have confirmed: `.harness/backlogs/007`
+  exists because this command does not say which one it is about to change.
 - `pnpm --filter @workspace/api-server run set-owner-password` — create or change the owner's account (see below)
 
 ### Environment
@@ -206,6 +210,25 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   explain it in plain language.
 - The dashboard was explicitly asked to be on this site behind a login, not run
   locally: "只有我的邮箱和密码log进去之后，才能看到dashboard".
+
+- **`users.password_hash` is nullable, and nothing writes a null yet.** An identity
+  proven by Google has no password at all, and the database this repo is merging into
+  (`.harness/backlogs/018`) already permits one — so the column was relaxed ahead of the
+  rows rather than after them. `UserRecord.passwordHash` is `string | null` too, not just
+  the column: that is what makes the compiler the thing that finds every reader.
+  `createPasswordlessUser` is a separate store method rather than an optional argument to
+  `createUser`, so an account nobody can sign into with a password is something a caller
+  asks for and cannot omit by accident.
+
+  **Two mechanisms make an absent hash safe, and neither was written for it.**
+  `verifyPassword` refuses any stored value it cannot read, on its first two lines, never
+  throwing; and `routes/auth.ts` passes `?? DECOY_HASH`, so an absent hash never reaches
+  it and the refusal still costs a full scrypt. `password.test.ts` and the "an identity
+  with no password" block in `auth.test.ts` exist to catch the removal of either — both
+  were verified by breaking the guard and watching them fail. What they **cannot** catch
+  is `?? ""` in place of the decoy: that still refuses, but immediately, which leaks by
+  timing which addresses signed up with Google. The comment at the call site carries that
+  reason for exactly this reason.
 
 ## Gotchas
 

@@ -14,6 +14,12 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { hashPassword } from "../lib/auth/password";
 import { InMemoryAuthStore } from "../lib/auth/memory-store";
+import {
+  SESSION_COOKIE,
+  hashToken,
+  newSessionToken,
+  sessionExpiry,
+} from "../lib/auth/session";
 import { createAuthRouter } from "./auth";
 
 const PASSWORD = "correct horse battery staple";
@@ -194,6 +200,94 @@ describe("the address is the account", () => {
       .send({ email: "me@example.com", password: "short" });
 
     expect(answer.status).toBe(422);
+  });
+});
+
+describe("an identity with no password", () => {
+  /* Signing in with Google produces one, and after `.harness/backlogs/018` merges the
+     two databases this repo will hold rows that have never had a password. Nothing
+     creates one here yet — these tests exist because the two mechanisms that make such
+     a row safe were both written for a different reason, and neither says so. A
+     refactor that "simplifies" either passes every other test in this file. */
+
+  let store: InMemoryAuthStore;
+
+  beforeEach(() => {
+    store = new InMemoryAuthStore();
+  });
+
+  /** Local to this block: the other `signUp` is scoped to the one above it. */
+  async function register(app: Express, email: string) {
+    const created = await request(app)
+      .post("/api/auth/register")
+      .send({ email, password: PASSWORD });
+    expect(created.status).toBe(201);
+  }
+
+  it("a password-less account is refused exactly like a wrong password", async () => {
+    /* Asserted against each other rather than against a literal 401: what matters is
+       that the two are indistinguishable, so whatever one answers the other must too.
+       If they ever diverge, the login box tells a stranger which addresses signed up
+       with Google. */
+    const app = testApp(store);
+    await store.createPasswordlessUser("google@example.com");
+    await register(app, "typed@example.com");
+
+    const againstNoPassword = await request(app)
+      .post("/api/auth/login")
+      .send({ email: "google@example.com", password: PASSWORD });
+    const againstWrongPassword = await request(app)
+      .post("/api/auth/login")
+      .send({ email: "typed@example.com", password: "not the password" });
+
+    expect(againstNoPassword.status).toBe(againstWrongPassword.status);
+    expect(againstNoPassword.body).toEqual(againstWrongPassword.body);
+    expect(againstNoPassword.headers["set-cookie"]).toBeUndefined();
+  });
+
+  it("no password is not an empty password either", async () => {
+    const app = testApp(store);
+    await store.createPasswordlessUser("google@example.com");
+
+    for (const password of ["", " ", "null", "undefined"]) {
+      const answer = await request(app)
+        .post("/api/auth/login")
+        .send({ email: "google@example.com", password });
+      expect(answer.status).toBe(401);
+    }
+  });
+
+  it("a password-less identity is a working identity", async () => {
+    /* It cannot sign in with a password, and that is the only thing it cannot do. The
+       session a Google sign-in will hand it has to behave like any other, so this
+       plants one directly — there is no route that mints one yet. */
+    const app = testApp(store);
+    const user = await store.createPasswordlessUser("google@example.com");
+    expect(user.passwordHash).toBeNull();
+
+    expect(await store.findUserByEmail("google@example.com")).toMatchObject({
+      id: user.id,
+      email: "google@example.com",
+      passwordHash: null,
+    });
+
+    const token = newSessionToken();
+    await store.createSession(user.id, hashToken(token), sessionExpiry(new Date()));
+
+    const me = await request(app)
+      .get("/api/auth/me")
+      .set("Cookie", `${SESSION_COOKIE}=${token}`);
+
+    expect(me.status).toBe(200);
+    expect(me.body).toMatchObject({ email: "google@example.com" });
+    expect(me.body).not.toHaveProperty("passwordHash");
+  });
+
+  it("still refuses a second account on an address that already has one", async () => {
+    await store.createPasswordlessUser("google@example.com");
+    await expect(
+      store.createUser("google@example.com", await hashPassword(PASSWORD)),
+    ).rejects.toThrow(/duplicate/);
   });
 });
 
