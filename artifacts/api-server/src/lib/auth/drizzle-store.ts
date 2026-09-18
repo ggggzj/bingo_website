@@ -28,19 +28,33 @@ export class DrizzleAuthStore implements AuthStore {
   }
 
   async createUser(email: string, passwordHash: string): Promise<UserRecord> {
+    return this.insert(email, passwordHash);
+  }
+
+  async createPasswordlessUser(email: string): Promise<UserRecord> {
+    return this.insert(email, null);
+  }
+
+  /**
+   * Both creation paths, for the reason `memory-store` gives for sharing its own:
+   * two implementations of one insert are two places for the duplicate-address
+   * behaviour to drift apart.
+   *
+   * The empty check replaces a `!`. `.returning()` on a successful single-row
+   * insert always yields one, so this branch is unreachable — but saying so with
+   * an assertion tells the compiler to stop looking, in the one file whose job is
+   * to stop passing comfortable lies upwards.
+   */
+  private async insert(
+    email: string,
+    passwordHash: string | null,
+  ): Promise<UserRecord> {
     const [row] = await db
       .insert(usersTable)
       .values({ email, passwordHash })
       .returning();
-    return toRecord(row!);
-  }
-
-  async createPasswordlessUser(email: string): Promise<UserRecord> {
-    const [row] = await db
-      .insert(usersTable)
-      .values({ email, passwordHash: null })
-      .returning();
-    return toRecord(row!);
+    if (!row) throw new Error("insert returned no row");
+    return toRecord(row);
   }
 
   async createSession(
