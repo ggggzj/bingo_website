@@ -1,6 +1,6 @@
 ---
 title: The column is declared nullable and the database is not — guard the gap before ticket 011 lands
-status: open
+status: done
 origin: review-board finding 1 on `2026-09-18-a-password-less-identity` (verdict Approve; the
   `production` lens recorded `mixed` for exactly this). Captured as residue rather than fixed in
   that change, per CLAUDE.md rule 4.
@@ -44,3 +44,34 @@ column that would reject the write.
 ticket that makes running the push safe in the first place. It is not a blocker for this, but
 this is the second time in a week that a change has had to write "run the push deliberately,
 against a database you have confirmed" in prose because the tool will not say it.
+
+---
+
+## Closed 2026-09-18 — the gap is shut, by hand
+
+`alter table users alter column password_hash drop not null;` run through
+`railway connect Postgres-EBWW`. Verified in the same session with `\d users`: the Nullable
+column for `password_hash` is now blank where `id`, `email` and `created_at` still read
+`not null`. `\dt` confirms `waitlist` is untouched — nine tables, including it.
+
+So the hazard this todo was written for is gone: ticket 011 can create a password-less row
+whenever it ships, and the deployed database will accept it.
+
+**Two things were learned on the way, and both are now in `replit.md` rather than only here:**
+
+- **`pnpm --filter @workspace/db run push` cannot reach production from a laptop at all.**
+  `railway run` supplies the service's own `DATABASE_URL`, whose host is
+  `postgres-ebww.railway.internal` — resolvable only from inside Railway. It fails with
+  `ENOTFOUND` before opening a connection, which is safe but reads like a bug rather than a
+  design. Two attempts were spent on it before switching approach.
+- **Which made the better tool the obvious one anyway.** One `alter table` changes one column;
+  push would have reconciled the whole schema and offered to drop `waitlist` in the same
+  breath, which is exactly what the other todo says not to do.
+
+### What is still not built, and it is no longer urgent
+
+The guard this todo proposed — an auth contract test against a real scratch Postgres, the shape
+`lib/coach/store.contract.test.ts` already uses via `COACH_TEST_DATABASE_URL` — does not exist.
+It would catch *future* divergence between `lib/db/src/schema/` and a deployed database, not
+just this one. Worth a backlog ticket if that divergence ever bites again; not worth one on the
+strength of a hazard that has been closed.

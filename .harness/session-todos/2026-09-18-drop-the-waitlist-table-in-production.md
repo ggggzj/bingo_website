@@ -23,7 +23,10 @@ railway connect Postgres-EBWW
 drop table waitlist;
 ```
 
-**Not `pnpm --filter @workspace/db run push`.** The proposal gives the reason: push reconciles the
+**Not `pnpm --filter @workspace/db run push`** — and as of 2026-09-18 that is not merely
+undesirable but impossible from a laptop: the `DATABASE_URL` Railway supplies names an internal
+host that only resolves inside their network, so push dies on `ENOTFOUND`. The reason it was
+undesirable stands anyway: The proposal gives the reason: push reconciles the
 whole schema, and letting it drop a table is a much wider blast radius than one statement — the
 same reason `.harness/backlogs/007` exists.
 

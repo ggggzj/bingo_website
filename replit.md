@@ -13,11 +13,26 @@ dashboard that only the owner can see.
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only). **The
-  nullable `password_hash` needs one of these to reach a real database.** Safe in this
-  direction — dropping a NOT NULL touches no data and every existing row has a password —
-  but run it deliberately, against a database you have confirmed: `.harness/backlogs/007`
-  exists because this command does not say which one it is about to change.
+- `pnpm --filter @workspace/db run push` — push DB schema changes. **Dev only, and not by
+  preference — it cannot reach production at all.** Measured 2026-09-18: `railway run` hands
+  it `DATABASE_URL=postgres://…@postgres-ebww.railway.internal`, a hostname that resolves
+  only from inside Railway's network, so from a laptop it dies on `ENOTFOUND` before opening
+  a connection. Nothing is changed when it does; the failure is safe, just opaque.
+
+  **To change the production schema, connect and run the statement:**
+
+  ```
+  railway connect Postgres-EBWW       # opens psql through the public proxy
+  alter table users alter column password_hash drop not null;
+  ```
+
+  That is how `password_hash` was made nullable in production on 2026-09-18. One statement
+  beats `push` here for a second reason beyond reachability: push reconciles the *whole*
+  schema, and `waitlist` is currently in the database but not in `lib/db/src/schema/`, so a
+  successful push would also offer to drop it — see
+  `.harness/session-todos/2026-09-18-drop-the-waitlist-table-in-production.md` for why that
+  table is dropped by hand instead. `.harness/backlogs/007` exists because push does not say
+  which database it is about to change.
 - `pnpm --filter @workspace/api-server run set-owner-password` — create or change the owner's account (see below)
 
 ### Environment
