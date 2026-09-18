@@ -1,8 +1,12 @@
 ---
 id: 015
 title: Sign in with Google — the only control on the page, with the email routes kept out of sight
-status: picked-up
-produced: openspec/changes/google-sign-in/ — proposal drafted 2026-09-17, awaiting owner approval
+status: blocked
+produced: openspec/changes/google-sign-in/ — proposal drafted 2026-09-17. **Do not implement.**
+blocked-by: .harness/session-todos/2026-09-17-reconcile-two-plans-for-google-sign-in.md — the
+  branch implement/2026-09-15-drop-waitlist carries tickets 010 and 011 covering this same work,
+  from an owner decision of 2026-09-13 this ticket did not know about. Reconcile the numbers and
+  the two plans after that branch lands, then implement once.
 origin: ROADMAP.md 第一步 3 — owner 2026-09-17: "网页的登录用 google sign in/sign up（目前先
   只支持 google sign in），一个 google 的邮箱就是一个账户". The reason is measured, not
   aesthetic: every mailed step in this funnel dies (48 verification mails → 2 opened; 60

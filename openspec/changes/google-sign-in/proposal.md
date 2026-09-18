@@ -1,5 +1,14 @@
 # Proposal — google-sign-in
 
+> **On hold, 2026-09-17.** `/implement` was run and refused at its overlap check: the branch
+> `implement/2026-09-15-drop-waitlist` carries tickets 010 and 011 covering this same work, from
+> an owner decision of 2026-09-13 that this proposal did not know about, grounded against
+> h1_checker's already-deployed `POST /auth/google`. Nothing was built. Reconcile per
+> `.harness/session-todos/2026-09-17-reconcile-two-plans-for-google-sign-in.md` before any
+> implementation. §3 (the collision rule), §4 (the null-hash finding) and §8 (the unlinked
+> fallback) are what this side contributes to whichever plan survives; §1 understates what
+> already exists next door.
+
 ## Why
 
 Every way into an identity on this site runs through a typed password, and the funnel's own
