@@ -107,6 +107,9 @@ importers:
       express-rate-limit:
         specifier: ^8.6.2
         version: 8.6.2(express@5.2.1)
+      jose:
+        specifier: ^6.2.12
+        version: 6.2.12
       pino:
         specifier: ^9
         version: 9.14.0
@@ -158,7 +161,7 @@ importers:
         version: 4.21.0
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@25.3.5)(jsdom@30.0.1(@noble/hashes@1.8.0))(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.11(@types/node@25.3.5)(jiti@2.6.1)(jsdom@30.0.1(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(tsx@4.21.0)(yaml@2.8.2)
 
   artifacts/landing:
     devDependencies:
@@ -269,7 +272,7 @@ importers:
         version: 10.4.1
       '@testing-library/jest-dom':
         specifier: ^7.0.1
-        version: 7.0.1(@testing-library/dom@10.4.1)(vitest@4.1.11(@types/node@25.3.5)(jsdom@30.0.1(@noble/hashes@1.8.0))(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)))
+        version: 7.0.1(@testing-library/dom@10.4.1)(vitest@4.1.11(@types/node@25.3.5)(jiti@2.6.1)(jsdom@30.0.1(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(tsx@4.21.0)(yaml@2.8.2))
       '@testing-library/react':
         specifier: ^16.3.3
         version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -365,7 +368,7 @@ importers:
         version: 7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@25.3.5)(jsdom@30.0.1(@noble/hashes@1.8.0))(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.11(@types/node@25.3.5)(jiti@2.6.1)(jsdom@30.0.1(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(tsx@4.21.0)(yaml@2.8.2)
       wouter:
         specifier: ^3.3.5
         version: 3.9.0(react@19.1.0)
@@ -582,7 +585,7 @@ importers:
     devDependencies:
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@25.3.5)(jsdom@30.0.1(@noble/hashes@1.8.0))(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.1.11(@types/node@25.3.5)(jiti@2.6.1)(jsdom@30.0.1(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(tsx@4.21.0)(yaml@2.8.2)
 
   lib/db:
     dependencies:
@@ -3355,6 +3358,9 @@ packages:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
+  jose@6.2.12:
+    resolution: {integrity: sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw==}
+
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
@@ -4377,7 +4383,6 @@ packages:
       '@vitest/ui': 4.1.11
       happy-dom: '*'
       jsdom: '*'
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -6057,7 +6062,7 @@ snapshots:
       picocolors: 1.1.1
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.1)(vitest@4.1.11(@types/node@25.3.5)(jsdom@30.0.1(@noble/hashes@1.8.0))(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)))':
+  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.1)(vitest@4.1.11(@types/node@25.3.5)(jiti@2.6.1)(jsdom@30.0.1(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@adobe/css-tools': 4.5.0
       '@testing-library/dom': 10.4.1
@@ -6067,7 +6072,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
     optionalDependencies:
-      vitest: 4.1.11(@types/node@25.3.5)(jsdom@30.0.1(@noble/hashes@1.8.0))(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
+      vitest: 4.1.11(@types/node@25.3.5)(jiti@2.6.1)(jsdom@30.0.1(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(tsx@4.21.0)(yaml@2.8.2)
 
   '@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
@@ -7054,6 +7059,8 @@ snapshots:
 
   jiti@2.6.1: {}
 
+  jose@6.2.12: {}
+
   joycon@3.1.1: {}
 
   js-tokens@4.0.0: {}
@@ -8034,7 +8041,7 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vitest@4.1.11(@types/node@25.3.5)(jsdom@30.0.1(@noble/hashes@1.8.0))(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)):
+  vitest@4.1.11(@types/node@25.3.5)(jiti@2.6.1)(jsdom@30.0.1(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       '@vitest/expect': 4.1.11
       '@vitest/mocker': 4.1.11(msw@2.15.0(@types/node@25.3.5)(typescript@5.9.3))(vite@7.3.2(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
@@ -8060,7 +8067,17 @@ snapshots:
       '@types/node': 25.3.5
       jsdom: 30.0.1(@noble/hashes@1.8.0)
     transitivePeerDependencies:
+      - jiti
+      - less
+      - lightningcss
       - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
 
   w3c-xmlserializer@5.0.0:
     dependencies:

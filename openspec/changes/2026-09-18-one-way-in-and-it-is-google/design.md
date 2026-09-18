@@ -182,3 +182,21 @@ changes approximately never.
 
 The implementation fails with a stated message when `GOOGLE_CLIENT_ID` is unset rather than
 accepting an unverifiable token.
+
+## 10. Decided during the run, because §1–§9 did not
+
+**`jose`, not `google-auth-library` and not hand-rolled.** The design said what to check and
+never said what with. Three candidates: hand-rolled RS256 over `node:crypto`'s JWK import
+(~50 lines, and the lines are alg confusion, `kid` selection and base64url edges — the class of
+code that is wrong for years); `google-auth-library`, official and matching h1_checker's Python
+`google-auth`, but heavier and pulling `gaxios`/`gcp-metadata`; and `jose`, pure JS, which does
+JWKS fetching with rotation, issuer, audience and expiry in one call. `jose` was chosen.
+
+The repo's stated reason for `node:crypto` over bcrypt/argon2 is native modules and esbuild —
+`jose` is pure JavaScript with no `.node` binary anywhere in its tree (checked), and
+`build.mjs` bundles dependencies rather than externalising them, so it carries no build cost.
+
+**Both spellings of the issuer are accepted.** §3 names only `https://accounts.google.com`.
+Google's documentation says an ID token's `iss` is that **or** the bare `accounts.google.com`,
+so accepting one would refuse valid tokens. The constant in `google.ts` carries both and says
+why; this is a correction to §3, not a widening of it.

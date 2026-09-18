@@ -21,6 +21,7 @@
     "drizzle-orm": "catalog:",
     "express": "^5",
     "express-rate-limit": "^8.6.2",
+    "jose": "^6.2.12",
     "pino": "^9",
     "pino-http": "^10",
     "zod": "catalog:"

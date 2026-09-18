@@ -13,14 +13,14 @@ task 4.4 is a browser check and task 5.2 is the owner's.
 
 Leaves the system working: the verifier exists and is tested; no route calls it yet.
 
-- [ ] 1.1 `artifacts/api-server/src/lib/auth/google.ts` — a `GoogleTokenVerifier` interface and
+- [x] 1.1 `artifacts/api-server/src/lib/auth/google.ts` — a `GoogleTokenVerifier` interface and
       its real implementation: read Google's discovery document for `jwks_uri`, fetch and cache
       the keys, verify RS256, and check `iss`, `aud` against `GOOGLE_CLIENT_ID`, `exp`, and
       `email_verified` (`design.md` §3). It returns verified claims or refuses; it never throws
       a raw library error at a route. An unset `GOOGLE_CLIENT_ID` refuses and logs the missing
       configuration. Pass the audience **explicitly** — it is the check that is skipped silently
       when the argument is left off.
-- [ ] 1.2 `artifacts/api-server/src/lib/auth/google.test.ts` — the checks above, against locally
+- [x] 1.2 `artifacts/api-server/src/lib/auth/google.test.ts` — the checks above, against locally
       minted tokens signed with a throwaway key pair, never against Google. Tests:
       `a tampered payload is refused`, `the wrong aud is refused`, `an expired token is
       refused`, `email_verified false is refused`, `a missing client id is refused`,
