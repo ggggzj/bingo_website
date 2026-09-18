@@ -75,14 +75,23 @@ the outside.
 - **WHEN** any password is posted for an address whose account has no password
 - **THEN** the response is 401 with the same body as a wrong password, and a password hash was still computed
 
-### Requirement: The email form stays, both tabs
+### Requirement: The sign-in page offers Google and nothing else
 
-`/login` SHALL continue to offer email sign-in and email sign-up beside the Google control.
-`POST /auth/register` SHALL continue to refuse an address listed in `OWNER_EMAIL` with the same
-answer a taken address gets.
+`/login` SHALL render the Google control and no email or password fields, and SHALL link to no
+other way of signing in. The email routes SHALL remain served and unchanged, and the form SHALL
+remain reachable at an address the page does not link to, so that the recovery path kept by
+decision is a path somebody can actually walk.
 
-#### Scenario: Password sign-in still works
-- **WHEN** an account with a password signs in through the form
+#### Scenario: Opening the sign-in page
+- **WHEN** `/login` is opened
+- **THEN** the Google control is the only sign-in control, and no password field is rendered
+
+#### Scenario: The fallback, reached deliberately
+- **WHEN** `/login?password=1` is opened and an account with a password signs in through it
+- **THEN** it succeeds exactly as it did before this change
+
+#### Scenario: Password sign-in still works at the route
+- **WHEN** `POST /auth/login` is called with correct credentials
 - **THEN** it succeeds exactly as before this change
 
 #### Scenario: The owner's address cannot be registered

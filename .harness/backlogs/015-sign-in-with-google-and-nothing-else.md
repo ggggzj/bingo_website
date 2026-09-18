@@ -1,6 +1,6 @@
 ---
 id: 015
-title: Sign in with Google, beside the email form rather than instead of it
+title: Sign in with Google — the only control on the page, with the email routes kept out of sight
 status: picked-up
 produced: openspec/changes/google-sign-in/ — proposal drafted 2026-09-17, awaiting owner approval
 origin: ROADMAP.md 第一步 3 — owner 2026-09-17: "网页的登录用 google sign in/sign up（目前先
@@ -21,10 +21,13 @@ blocks: .harness/backlogs/014 (/go/<job_id> reading a session), and everything i
 account, one that has been here signs in, same button — "一个 google 的邮箱就是一个账户" means
 the distinction is invisible to the person.
 
-Beneath it, **the email form stays, both tabs**. That is the 2026-09-17 answer to a contradiction
-this ticket raised and could not resolve on its own: a recovery path nobody can reach is not a
-recovery path. Google is the front door; the form is the door that still opens when Google's
-configuration is wrong.
+**Nothing else is on the page.** No email field, no password field, no tabs — owner, 2026-09-17:
+"sign in 的界面上只有 sign in with google".
+
+The email routes stay served, and stay **reachable without being shown**: `/login?password=1`
+renders the form, and nothing anywhere links to it. That is this ticket's answer to the
+contradiction it raised — a recovery path nobody can reach is not a recovery path, and a
+recovery path on the front page is not "only Google". A URL you have to know satisfies both.
 
 The home page redesign (left intro, right sign-in) is ROADMAP 第一步 4 and a separate ticket.
 This one changes `/login`, the auth routes, and the schema line they need.
@@ -107,9 +110,9 @@ Recorded so `/pickup` does not re-open them. The reasoning behind each stays bel
 
 1. **One Google client.** Add `https://bingocareer.com` as an authorized JavaScript origin to
    the extension's existing client; do not create a second. `aud` is still checked.
-2. **Email + password stays visible, both tabs** (revised the same evening — see below).
-   `POST /auth/login` and `POST /auth/register` both stay. Google is first on the page; the
-   form is second.
+2. **Google is the only control on the page** (revised twice on 2026-09-17: hidden → visible →
+   hidden with a way in). `POST /auth/login` and `POST /auth/register` both stay served, and the
+   form is reachable at `/login?password=1`, linked from nowhere.
 3. **The owner's password account stays**, `set-owner-password` unchanged.
 4. **Sign-in lands on `/jobs`.**
 

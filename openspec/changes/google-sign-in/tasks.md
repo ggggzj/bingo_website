@@ -78,17 +78,18 @@ it yet.
 
 Leaves the system working: somebody can sign in with Google in a browser.
 
-- [ ] 5.1 `artifacts/landing/src/pages/Login.tsx` — Google's button above the existing tabs,
-      which stay exactly as they are. On success, forget the cached "who am I" and navigate to
-      `/jobs` (owner decision). The response's "this account now signs in with Google" is shown
-      rather than swallowed.
-- [ ] 5.2 `artifacts/landing/src/pages/Login.tsx` — when `VITE_GOOGLE_CLIENT_ID` is unset, the
-      button is not rendered at all and the form stands alone; a control that cannot work is
-      worse than no control.
+- [ ] 5.1 `artifacts/landing/src/pages/Login.tsx` — the Google control becomes the page: the
+      tabs, the fields and the form come off the default view. On success, forget the cached
+      "who am I" and navigate to `/jobs` (owner decision). The response's "this account now signs
+      in with Google" is shown rather than swallowed.
+- [ ] 5.2 `artifacts/landing/src/pages/Login.tsx` — `?password=1` renders the existing form,
+      unchanged and unlinked (design §8). When `VITE_GOOGLE_CLIENT_ID` is unset the Google control
+      is not rendered at all and the form is shown instead — a control that cannot work is worse
+      than no control, and a page with neither is a dead end.
 - [ ] 5.3 Verify in the browser against the dev server: sign in with Google end to end, confirm
-      the session cookie and that `/account` names the address, confirm the email form still
-      signs in, check the console and network for errors, and capture a screenshot of the page
-      at 320px and at desktop width.
+      the session cookie and that `/account` names the address; confirm `/login` shows no password
+      field and `/login?password=1` does and still signs in; check the console and network for
+      errors; capture a screenshot at 320px and at desktop width.
 
 ## 6. Say what changed
 

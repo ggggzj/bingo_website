@@ -142,3 +142,32 @@ design and changes approximately never.
 
 The implementation should fail with a stated message when `GOOGLE_CLIENT_ID` is unset, rather
 than rendering a button that cannot work.
+
+## 8. Where the kept fallback lives, now that the page will not show it
+
+The owner asked three times for this in three shapes, and the third resolves the first two:
+hide the form (morning), show it because a hidden fallback is unreachable (evening), hide it
+again but keep the routes (later). The unreachability objection did not go away; it needs an
+answer rather than a reversal.
+
+**Chosen: `/login?password=1` renders the form on the same page, and nothing links to it.**
+
+- The page is what the owner asked for: one Google control, no fields.
+- The fallback is real, not notional. When Google's configuration is wrong — the app still in
+  Testing, an origin not yet added, a client id typo'd into one of its two environment variables
+  — the owner types eight characters onto a URL they already have open and signs in with the
+  password `set-owner-password` gave them.
+- It is one component and one conditional, not a second route, a second page or a second form.
+
+Two alternatives, and why not:
+
+- **Nothing in the UI, use `curl`.** The session is a cookie; a cookie obtained on a terminal
+  has to be pasted into a browser by hand to be worth anything. That is not a recovery path, it
+  is a story about one.
+- **A small "sign in another way" link.** Honest and discoverable — and it puts email and
+  password back on the sign-in page, which is the thing being removed.
+
+This is **not** a security boundary and the implementation must not treat it as one. The routes
+are rate-limited and answer 401 the same either way; the query parameter hides a form from
+people who are not looking for it, and nothing more. Anyone who reads the page's JavaScript can
+find it, and that is fine — an attacker who wanted the password endpoint never needed the form.

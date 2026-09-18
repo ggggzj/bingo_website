@@ -34,16 +34,19 @@ repo's change lists as an explicit non-goal of its own work.
 - **Verification sits behind its own small seam**, for the reason `AuthStore` exists: the suite
   runs the real route, the real cookie and the real session against memory, and it must not
   reach Google to do it.
-- **`/login` gains the Google button above the form it already has.** Both tabs stay
-  (owner, 2026-09-17): a recovery path nobody can reach is not a recovery path.
+- **`/login` shows the Google control and nothing else.** The email and password fields come off
+  the page (owner, 2026-09-17: "sign in 的界面上只有 sign in with google"). Both routes stay
+  served, and the form stays reachable at **`/login?password=1`**, linked from nowhere — because a
+  recovery path nobody can reach is not a recovery path. See `design.md` §8.
 - **An address that arrives through both doors resolves one way, and it is a security decision
   rather than a merge** — see `design.md` §3. Google proves the address; open sign-up does not.
 - **`lib/api-spec/openapi.yaml`** gains the route, with codegen run in the same task.
 
 ## Non-goals
 
-- **Removing email and password.** Both routes stay and both tabs stay visible. Closing
-  `POST /auth/register` was the first draft's plan and the owner reversed it the same day.
+- **Removing the email routes.** `POST /auth/login` and `POST /auth/register` stay exactly as
+  they are, tested and served. What changes is that the page stops linking to them. Closing
+  `/auth/register` was an earlier draft's plan and the owner reversed it.
 - **Password reset.** There is none in this repo and this change does not add one. A reset means
   sending mail and this service cannot send mail at all — no sender, no token table. Both exist
   in `../h1_checker`, and `.harness/backlogs/012` moves this site onto that database, so building
