@@ -78,6 +78,16 @@ Pin:
 - an account **with** a password is unaffected.
 
 Do not pin timing. "The refusal takes as long as a real check" is the property that matters and
-a wall-clock assertion for it is a flaky test on shared CI. The structural guarantee — that the
-same `verifyPassword` call happens on both paths — is what the first test above actually
-checks, and it is the one that would break if someone removed `?? DECOY_HASH`.
+a wall-clock assertion for it is a flaky test on shared CI.
+
+**Corrected during the run, because the first draft of this paragraph was wrong.** It claimed
+the first test "would break if someone removed `?? DECOY_HASH`". Probed: replacing the decoy
+with `""` keeps every test green, because an empty string is refused too — just refused
+*immediately*, before any hashing. So the tests pin the **behaviour** (a password-less account
+is refused exactly like a wrong password, and letting one in fails loudly — verified by
+breaking it) and do **not** pin the **timing**.
+
+That gap is real and is not closed by a test. What closes it as far as it can be closed is the
+comment at the call site, which now names the decoy specifically and says why `""` is not the
+same thing — the reason sits where the edit would be made rather than in a test that would stay
+green through it.

@@ -35,21 +35,24 @@ Leaves the system working: types and both stores agree with the column; no behav
 
 ## 3. Pin what is already true, so a refactor cannot quietly undo it
 
-Leaves the system working: no production code changes in this group.
+> **Deviation, made during the run.** This group said "no production code changes". It makes
+> one: the comment at `routes/auth.ts:138` gains a paragraph. Probing showed the tests cannot
+> see the difference between `?? DECOY_HASH` and `?? ""` — both refuse, only one costs the
+> full scrypt — so the reason has to sit where the edit would be made. No behaviour changed.
 
-- [ ] 3.1 `artifacts/api-server/src/lib/auth/password.test.ts` — `verifyPassword` returns
+- [x] 3.1 `artifacts/api-server/src/lib/auth/password.test.ts` — `verifyPassword` returns
       `false` and does not throw for an empty stored value, and for a couple of other
       unreadable ones. Test: `an unreadable stored value is refused rather than thrown`.
       Comment it with *why* this matters now: once the type allows null, `?? DECOY_HASH` is the
       only thing between this function and a null, and both are easy to "simplify".
-- [ ] 3.2 `artifacts/api-server/src/routes/auth.test.ts` — signing in with any password against
+- [x] 3.2 `artifacts/api-server/src/routes/auth.test.ts` — signing in with any password against
       a password-less account answers **the same status and the same body** as a wrong password
       against a real one, asserted against each other rather than against a literal. Test:
       `a password-less account is refused exactly like a wrong password`.
-- [ ] 3.3 `artifacts/api-server/src/routes/auth.test.ts` — a password-less user round-trips
+- [x] 3.3 `artifacts/api-server/src/routes/auth.test.ts` — a password-less user round-trips
       through the store: created, found by email, and reached through a live session, with
       `/auth/me` answering normally. Test: `a password-less identity is a working identity`.
-- [ ] 3.4 Run both suites. Existing behaviour for accounts **with** a password is unchanged —
+- [x] 3.4 Run both suites. Existing behaviour for accounts **with** a password is unchanged —
       that is the regression this group's green run proves, and it is why no existing test is
       edited.
 

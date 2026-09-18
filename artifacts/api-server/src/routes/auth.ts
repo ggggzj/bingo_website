@@ -138,7 +138,16 @@ export function createAuthRouter(store: AuthStore): IRouter {
       /* Hash even when there is nobody to compare against. Checking a password costs
          about a tenth of a second and saying "no such person" costs nothing, and that
          difference is readable over the network — it would turn this endpoint back
-         into the account-enumeration tool the single 401 above is meant to close. */
+         into the account-enumeration tool the single 401 above is meant to close.
+
+         `??` now covers a second case: an identity with no password at all, which a
+         Google sign-in produces. It must cost the same tenth of a second, or the box
+         tells a stranger which addresses signed up with Google.
+
+         The decoy specifically, not `""`. An empty string is refused too, but it is
+         refused immediately — `verifyPassword` rejects an unreadable value before it
+         hashes anything. `auth.test.ts` cannot see that difference and stays green if
+         you make it, which is why this paragraph is here rather than only in a test. */
       const matched = await verifyPassword(
         parsed.data.password,
         user?.passwordHash ?? DECOY_HASH,
