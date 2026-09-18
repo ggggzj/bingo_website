@@ -19,6 +19,16 @@ before starting the next.
       `Robotics Systems Engineering Manager` ✗.
 - [ ] 1.2 Same test file: the exclusions are applied **after** the terms and win, proven by a
       title that satisfies both.
+- [ ] 1.3 Same module: the class-year rule (D3), with `2027` as an exported constant rather
+      than a literal in a condition. A title naming a year other than the target is excluded;
+      a title naming the target is flagged for the sort; a title naming no year passes
+      untouched.
+      **Test:** same test file — `Software Engineer New Grad - December 2026` ✗,
+      `Software Engineer - University Hire 2027` ✓ and flagged,
+      `Entry Level Java Developer Associate` ✓ and not flagged. And one that pins the
+      proportion this rule rests on: a title with no year is **not** excluded, which is 97% of
+      the owner's own list and the single assumption most likely to be broken by a careless
+      edit.
 
 ## 2. Decide what a location means, and admit when it cannot be read
 
@@ -53,11 +63,13 @@ before starting the next.
       — the entry is absent from a non-owner's rail.
 - [ ] 4.2 New `artifacts/landing/src/pages/dashboard/NewGradList.tsx`: rows carrying employer,
       title, location, posted date, days since posted, the employer's filing count and tier,
-      and the posting's own refusal where one was read. Ordered newest first. No badge, no
-      score, no deadline.
+      and the posting's own refusal where one was read. **Ordered: titles naming the target
+      class first, then newest first**, with each row showing why it sorted where it did. No
+      badge, no score, no deadline.
       **Test:** `artifacts/landing/src/pages/dashboard/NewGradList.test.tsx` — a posting with
       no refusal verdict renders nothing about refusing, matching what
-      `openspec/specs/jobs-page/spec.md` already requires of the public page.
+      `openspec/specs/jobs-page/spec.md` already requires of the public page; and a
+      2027-titled posting sorts above a newer one that names no year, with its reason shown.
 - [ ] 4.3 Same component: a header naming the gap — how many boards feed this and that
       company-owned sites (TikTok, ByteDance, Amazon, Apple, Google) are not among them.
       **Test:** same file — the gap sentence is present with no postings and with postings.
@@ -75,7 +87,8 @@ before starting the next.
 ## 6. Say what changed
 
 - [ ] 6.1 `replit.md`: the working loop's update, and an "Architecture decisions" entry for D1
-      (the fan-out, and that it is deleted when `016` moves the query upstream) and D4 (the
-      marker's table, and why not `localStorage`).
+      (the fan-out, and that it is deleted when `016` moves the query upstream), D3 (the class
+      year fences and sorts but never filters — 8 of the owner's 376 titles name a year) and
+      D5 (the marker's table, and why not `localStorage`).
 - [ ] 6.2 `.harness/backlogs/019`: status and a pointer to this change. The note and the alumni
       import stay open on the ticket — they are this change's non-goals, not its leftovers.

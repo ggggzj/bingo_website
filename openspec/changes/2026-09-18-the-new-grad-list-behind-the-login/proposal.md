@@ -38,6 +38,15 @@ Three measurements decide what this change is, all taken 2026-09-18:
   disjunction of early-career title terms intersected with a software-role test and minus a
   seniority exclusion list — not a substring. It runs in `api-server` over several upstream
   queries, merged and de-duplicated by `job_id`.
+- **A class-year rule**, because the owner's requirement is *2027*, not *early career*.
+  Measured against their 376 US rows: **8 titles name 2027**, one names 2026, and **367 — 97%
+  — name no year at all**. Filtering on `2027` would hand them an eight-row page and throw
+  away `Entry Level Java Developer Associate` and every other req opened for their class
+  without saying so. So the year is a **fence and a sort, never the filter**: a title naming a
+  year that is not 2027 is excluded, a title naming 2027 sorts to the top, and a title naming
+  no year is listed. This is the rule the owner's own spreadsheet arrived at — its P0 band is
+  *"标题明确写 2027 start/new grad…这种坑位填满就关"*, a ranking, while its list is everything
+  early-career.
 - **A last-seen marker**, so "new since your last visit" is a recorded fact rather than a
   guess that a refresh or a second device can contradict.
 - **`lib/api-spec/openapi.yaml` gains the route**, and codegen runs in the same task that

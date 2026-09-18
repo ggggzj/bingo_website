@@ -65,7 +65,40 @@ not between one term and twelve.
 The term list itself is data, not logic: one exported constant with the owner's own vocabulary
 in it, so widening it later is an edit rather than a refactor.
 
-## D3 — Location is three states, because the data has three
+## D3 — The class year is a fence and a sort, never the filter
+
+The owner's words are *"我要美国境内的 2027 ng 的 sde 岗位"*. Taken literally that is a
+`2027` title match, and taken literally it is wrong: of their own 376 US rows, **8 titles
+contain 2027**, 1 contains 2026, and **367 contain no year**.
+
+`Entry Level Java Developer Associate`, `Associate Software Engineer - Pega`,
+`Software Engineering Associate` — none names a class, all are reqs open for it. A US
+new-grad posting usually does not state the year, so a year filter is not a narrower version
+of this list, it is a different and nearly empty one.
+
+**The rule, in three parts:**
+
+| Title says | Then |
+|---|---|
+| a year that is not 2027 (`December 2026`, and `2028` when it appears) | **excluded** |
+| `2027` | listed, and **sorted first** |
+| no year | listed |
+
+The exclusion is the part worth having: a `New Grad - December 2026` req belongs to the class
+before the owner's, and listing it wastes the scarcest thing they have, which is the attention
+to open one more tab.
+
+The sort is the honest form of urgency. These postings publish no deadline — the owner's own
+method sheet established that by reading TikTok's, Citadel's and Adobe's raw JDs, and TikTok
+says outright that applications are reviewed on a rolling basis. So a req that names a class
+is a fixed-size opening that closes when full, which is an **observed property of the
+posting**, not a prediction about the reader. It sorts; it does not score. The row SHALL show
+why it sorted where it did, the way the owner's sheet put its reason in column 2.
+
+**Not hardcoded.** `2027` is one exported constant beside the term list, because this page
+outlives one hiring season and the fix should be an edit rather than a grep.
+
+## D4 — Location is three states, because the data has three
 
 `BrowseQuery` has no country (`../h1_checker/.harness/backlogs/011`, still open). The location
 string is whatever the provider wrote.
@@ -82,7 +115,7 @@ already trust disagree in no case.
 The marked rows are the honest part. `016`'s note records that 24% of the live feed was
 outside the US; a page that quietly guessed would hand the owner that error as certainty.
 
-## D4 — "New since last visit" is stored, or it is not a fact
+## D5 — "New since last visit" is stored, or it is not a fact
 
 `first_seen_at` says when we first saw a posting. "Since **you** last looked" needs the other
 timestamp, and it has to survive a reload, a second device, and a refresh that must not consume

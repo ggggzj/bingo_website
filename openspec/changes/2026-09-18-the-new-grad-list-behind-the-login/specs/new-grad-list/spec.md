@@ -47,6 +47,32 @@ Internship postings SHALL be excluded. That list is a different product with its
 - **WHEN** the upstream holds a posting titled `Software Engineering Intern`
 - **THEN** it is not listed
 
+### Requirement: The class year excludes and orders, and never filters
+
+A posting whose title names a class year other than the target SHALL be absent. A posting
+whose title names the target year SHALL be listed and SHALL sort above postings that do not.
+**A posting whose title names no year SHALL be listed.**
+
+The target year SHALL be configuration, not a literal in a condition.
+
+Ordering SHALL show its reason on the row. Naming a class year is a property of the posting —
+a fixed opening that closes when filled — and SHALL NOT be rendered as urgency, a score, or a
+deadline. These postings publish no deadline.
+
+#### Scenario: A posting for the previous class
+- **WHEN** the upstream holds a posting titled `Software Engineer New Grad - December 2026`
+  and the target year is 2027
+- **THEN** it is not listed
+
+#### Scenario: A posting naming no class year
+- **WHEN** the upstream holds a posting titled `Entry Level Java Developer Associate`
+- **THEN** it is listed
+
+#### Scenario: Ordering
+- **WHEN** a posting titled `Software Engineer - University Hire 2027` was posted before one
+  titled `Associate Software Engineer`
+- **THEN** the 2027 posting is listed first, and the row states that its title names the class
+
 ### Requirement: A location that cannot be read is marked, never assumed
 
 Each posting SHALL resolve to exactly one of: reads as US, cannot be read, plainly elsewhere.
