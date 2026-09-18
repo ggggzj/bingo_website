@@ -1,0 +1,139 @@
+---
+id: 015
+title: Sign in with Google — the only way a new account is made here
+status: open
+origin: ROADMAP.md 第一步 3 — owner 2026-09-17: "网页的登录用 google sign in/sign up（目前先
+  只支持 google sign in），一个 google 的邮箱就是一个账户". The reason is measured, not
+  aesthetic: every mailed step in this funnel dies (48 verification mails → 2 opened; 60
+  addresses → 5 credentialed → 4 profiles, `../h1_checker/.harness/prd/email-capture-funnel.md`).
+  Google returns an address already proven, in one click, with no message to open.
+counterpart: ../h1_checker/.harness/backlogs/014-sign-in-with-google.md — the extension's own
+  Google sign-in, on the pairing page. Different origin, different service; that change lists
+  "Google on the website" as an explicit non-goal. Neither blocks the other.
+blocks: .harness/backlogs/014 (/go/<job_id> reading a session), and everything in ROADMAP 第二步
+  that needs to know who is looking.
+---
+
+## What ships
+
+`/login` offers one control: **Sign in with Google**. A Google address that has never been here
+gets an account; one that has been here signs in. Same button, no "register" tab — "一个 google
+的邮箱就是一个账户" means the distinction is invisible to the person.
+
+The home page redesign (left intro, right sign-in) is ROADMAP 第一步 4 and a separate ticket.
+This one changes `/login`, the auth routes, and the schema line they need.
+
+## The expensive half is already done
+
+| | |
+|---|---|
+| Google client, non-sensitive scopes (`email`, `profile`, `openid`) | exists for the extension: `1069740098250-jg66jfblauhtkk6hg497fuukbpqd9vdd`, JS origin `h1bchecker-production.up.railway.app` |
+| Google review | **not required** for non-sensitive scopes — only the Testing → Production switch in the console |
+| Redirect URI | none needed; the ID token comes back to the page's own JavaScript |
+| Client secret | none — the server verifies the token against Google's public keys |
+| Cookie/origin trouble | none: Vercel rewrites `/api/*` to Railway, so the browser sees one origin (`bingocareer.com`) and the session cookie lands where it already does |
+| `isOwner()` | configuration keyed on the address (`lib/auth/owner.ts`), so the owner signing in with their USC Google account keeps the dashboard with no change |
+
+Verified against Google's own documentation on 2026-09-12 by the counterpart ticket, not from
+memory: issuer `https://accounts.google.com`, keys at the `jwks_uri` in the discovery document,
+RS256. **Read the discovery document rather than hardcoding the JWKS URL** — a rotated key
+behind a stale URL is an outage nothing in this repo would explain.
+
+## The four places the code says a password is mandatory
+
+Each is small; together they are the ticket, and none can be skipped.
+
+1. **`lib/db/src/schema/auth.ts:22`** — `passwordHash: text(...).notNull()`. A Google identity
+   has no password. This is the same line `.harness/backlogs/012` needs for the account merge;
+   **it lands here**, and 012 inherits it rather than doing it twice.
+2. **`lib/auth/store.ts`** — `UserRecord.passwordHash: string`, and `createUser(email, hash)`
+   takes a hash. Both need to admit "no password": the type becomes nullable and the store
+   gains a way to create a password-less user. `drizzle-store.ts` and `memory-store.ts` both
+   implement it, so both change.
+3. **`routes/auth.ts:123` `POST /auth/login`** — with a nullable hash, a null must be an
+   explicit refusal, never a crash and never a pass. It must also still spend the decoy scrypt
+   (`DECOY_HASH`, line 37) so a password-less account is not detectable by how fast it is
+   refused. This is the one line in the ticket where a mistake is a vulnerability rather than a
+   bug, and it needs its own test.
+4. **`routes/auth.ts:88` `POST /auth/register`** — password sign-up closes. Its `isOwner(email)`
+   reservation exists because "sign-up is open and addresses are unverified"; with Google the
+   address is proven by Google, so a stranger cannot claim `OWNER_EMAIL` at all. Keep the
+   reservation while the route exists; the proposal decides whether the route goes (410) or
+   simply loses its UI — see decision 2.
+
+## What must not regress
+
+- **Not being the owner answers 404, never 403.** Unchanged, and the new route must not leak
+  who is who either.
+- **The page is never believed about who somebody is.** The ID token is verified server-side and
+  the address is read from verified claims, never from the request body. A forged or expired
+  token is refused, and there is a test that posts one.
+- **`aud` is checked** against this deployment's configured client id. Whichever client is used
+  (decision 1), a token minted for a different application is not a sign-in here.
+- **Sessions stay rows.** The new route ends in the same `startSession` the others use — opaque
+  cookie value, SHA-256 in `sessions`, revocable.
+- **The AuthStore seam holds.** Tests run the real routes against memory. Google verification
+  goes behind its own small seam for the same reason — the suite must not reach Google, and
+  "mock the network" is not this repo's style.
+
+## What done looks like
+
+- A Google address that has never signed in here ends up with an account and a session, in one
+  click, with no mail and no password.
+- The same address signing in again lands on the same account — never a second row.
+- The owner signs in with their USC Google account and sees the growth dashboard.
+- An account with no password cannot be signed into by guessing at `POST /auth/login`, and
+  refusing it takes as long as refusing anyone else.
+- A tampered, expired, or wrong-`aud` ID token is refused with nothing created.
+- `lib/api-spec/openapi.yaml` gains the route and **codegen runs in the same task** — nothing
+  else regenerates the hooks.
+- Tests: the real route, the real cookie, against memory and a fake verifier; plus the null-hash
+  login refusal and the forged-token refusal above.
+- `replit.md` gains the env row (`GOOGLE_CLIENT_ID`) and the decision, in its own sections.
+
+## Decisions — all four taken 2026-09-17 ("都按照你建议的来")
+
+Recorded so `/pickup` does not re-open them. The reasoning behind each stays below.
+
+1. **One Google client.** Add `https://bingocareer.com` as an authorized JavaScript origin to
+   the extension's existing client; do not create a second. `aud` is still checked.
+2. **Email + password: hidden, not removed.** `/login` shows only Google. `POST /auth/register`
+   closes. `POST /auth/login` stays as a route.
+3. **The owner's password account stays**, `set-owner-password` unchanged.
+4. **Sign-in lands on `/jobs`.**
+
+One consequence of 2 that the proposal must design rather than discover: if the password form
+is gone from `/login`, the owner needs *some* way to reach the route they are keeping as a
+recovery path. A hidden link, a query parameter (`/login?password=1`), or nothing in the UI at
+all and a documented `curl` — all three are defensible; the ticket does not choose, but the
+proposal must, because "we kept the fallback" and "nobody can reach the fallback" cannot both
+be true.
+
+## The reasoning behind each, kept
+
+
+**1. One Google client or two.** Adding `https://bingocareer.com` to the extension's existing
+   client is one console field and gives both surfaces one consent-screen identity. A second
+   client keeps the two services' tokens unusable on each other — which matters less once
+   `.harness/backlogs/012` makes them one account anyway. Recommended: **add the origin to the
+   existing client**, and still check `aud`.
+**2. What happens to email + password on this site.** Recommended: the `/login` UI shows only
+   Google; `POST /auth/register` is closed; `POST /auth/login` **stays** — it is the owner's way
+   in if Google is ever misconfigured, and it is what the nine password identities on the
+   extension side will use after the merge. Removing it entirely is the alternative and it
+   deletes the fallback.
+**3. Whether the owner's account keeps its password** (`set-owner-password`). Recommended yes,
+   unchanged — it costs nothing and it is the recovery path.
+**4. What a person sees on the way in.** Straight to `/jobs` is the roadmap's answer; confirm,
+since it decides whether this ticket touches routing at all.
+
+## Notes for whoever picks this up
+
+1. **Not trivial by rule 6**: auth, sessions, `lib/db/src/schema/`, `openapi.yaml`, more than one
+   file. Full change flow, failing tests first.
+2. **Two console actions are the owner's, not code**: the JS origin (decision 1) and moving the
+   app from Testing to Production. Until the second one, only listed test users can sign in and
+   the failure reads like a bug.
+3. **The Gmail-dots gotcha in `replit.md` gets smaller here.** Google returns the account's own
+   canonical address, so the dotted spellings that `OWNER_EMAIL` cannot match do not arise from
+   this path. It stays true for anything still typed by hand.
