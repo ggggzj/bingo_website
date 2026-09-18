@@ -96,7 +96,7 @@ Leaves the system working: somebody can sign in with Google in a browser.
 
 ## 5. Say what changed, and what only the owner can do
 
-- [ ] 5.1 `replit.md` — `GOOGLE_CLIENT_ID` / `VITE_GOOGLE_CLIENT_ID` in Environment. Under
+- [x] 5.1 `replit.md` — `GOOGLE_CLIENT_ID` / `VITE_GOOGLE_CLIENT_ID` in Environment. Under
       Architecture decisions: the ID-token flow rather than the redirect flow and why; the
       address rather than `sub` and what it costs; the collision rule with its `OWNER_EMAIL`
       exemption and the un-revoked sessions limit. Under Gotchas: `/login?password=1` is the
