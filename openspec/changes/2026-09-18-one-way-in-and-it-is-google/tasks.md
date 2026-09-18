@@ -64,25 +64,32 @@ it yet.
 
 ## 4. The page
 
+> **What 4.5 found, and it was a real defect.** The first draft passed Google's button a
+> hardcoded `width: 320`. At a 320px viewport the column's `px-6` padding put the page at
+> 368px and gave it a horizontal scrollbar — which `openspec/specs/jobs-page/spec.md`
+> forbids and which this page has no more right to. The width is now measured off the
+> column and clamped to Google's 400px ceiling. jsdom cannot measure layout, so the browser
+> check is the only thing that could have caught it and the only thing that guards it.
+
 Leaves the system working: somebody can sign in with Google in a browser.
 
-- [ ] 4.1 `artifacts/landing/index.html` — load `https://accounts.google.com/gsi/client`, with a
+- [x] 4.1 `artifacts/landing/index.html` — load `https://accounts.google.com/gsi/client`, with a
       `preconnect` beside the two font origins already there. First external script on the page;
       there is no CSP to widen (`design.md` §6).
-- [ ] 4.2 `artifacts/landing/src/pages/Login.tsx` — the split page: the product's case and its
+- [x] 4.2 `artifacts/landing/src/pages/Login.tsx` — the split page: the product's case and its
       trusted-by strip on the left, Google's own rendered button alone on the right. The tabs,
       the fields and `MIN_PASSWORD_LENGTH`'s use come off the default view. On success, forget
       the cached "who am I" and navigate to `/jobs`; show the "this account now signs in with
       Google" line when the response carries it.
-- [ ] 4.3 `artifacts/landing/src/pages/Login.tsx` — `?password=1` renders the existing form,
+- [x] 4.3 `artifacts/landing/src/pages/Login.tsx` — `?password=1` renders the existing form,
       unchanged and unlinked; an unset `VITE_GOOGLE_CLIENT_ID` renders the form instead of a
       dead button (`design.md` §5, §6).
-- [ ] 4.4 `artifacts/landing/src/pages/Login.test.tsx` — it currently proves the form; rewrite it
+- [x] 4.4 `artifacts/landing/src/pages/Login.test.tsx` — it currently proves the form; rewrite it
       for the new default view. Tests: `the sign-in page offers no password field`,
       `?password=1 renders the form`, `no client id falls back to the form`. **Do not delete the
       form's existing coverage** — move it under the `?password=1` case, or the fallback ships
       untested.
-- [ ] 4.5 Verify in a browser against the dev server: `/login` shows one Google button and no
+- [x] 4.5 Verify in a browser against the dev server: `/login` shows one Google button and no
       password field, `/login?password=1` shows the form and still signs in, console and network
       clean, screenshots at 320px and desktop. **The Google round trip itself cannot be verified
       until 5.2 is done** — say so in the report rather than implying it was tested.
