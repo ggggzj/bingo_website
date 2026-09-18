@@ -4,16 +4,21 @@ import { SiGooglechrome } from "react-icons/si";
 import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { useCoachAccess } from "@/hooks/use-coach-access";
+import { useAuth } from "@/hooks/use-auth";
 import { CHROME_STORE_URL } from "@/lib/links";
 
 /**
  * The home page is one long document, so the nav is anchors into it plus the two
- * things that leave: the store listing and the login.
+ * things that leave: the store listing and one door into the account.
  *
- * Log in is hidden below `sm` and appears in the hamburger sheet instead. Three
- * items plus the hamburger do not fit a 320px bar — the same reason the store
- * button shortens its label there.
+ * That door is "Dashboard" for someone signed in and "Log in" for everyone
+ * else, never both. It used to be "Log in" unconditionally, which invited a
+ * signed-in visitor to sign in again; the coach link that sat beside it is gone
+ * because there is no longer an allowlist to be on.
+ *
+ * The door is hidden below `sm` and appears in the hamburger sheet instead.
+ * Three items plus the hamburger do not fit a 320px bar — the same reason the
+ * store button shortens its label there.
  */
 const SECTIONS = [
   { href: "#badges", label: "Badges" },
@@ -24,9 +29,12 @@ const SECTIONS = [
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
-  // Shares the /coach page's query key, so this adds no request of its own;
-  // for anyone the server refuses it stays false and no link ever appears.
-  const { hasAccess: showCoach } = useCoachAccess();
+  // Shares the query key every page uses for "who am I", so this adds no
+  // request of its own.
+  const { isSignedIn } = useAuth();
+  const door = isSignedIn
+    ? { href: "/dashboard", label: "Dashboard", testId: "dashboard" }
+    : { href: "/login", label: "Log in", testId: "login" };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/85 backdrop-blur-md border-b border-border/60">
@@ -59,21 +67,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {showCoach && (
-            <Link
-              href="/coach"
-              className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2"
-              data-testid="link-coach"
-            >
-              Coach
-            </Link>
-          )}
           <Link
-            href="/login"
+            href={door.href}
             className="hidden sm:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2"
-            data-testid="link-login"
+            data-testid={`link-${door.testId}`}
           >
-            Log in
+            {door.label}
           </Link>
 
           <Button asChild size="sm" className="h-9 px-4">
@@ -121,23 +120,13 @@ export function SiteHeader() {
                 {section.label}
               </a>
             ))}
-            {showCoach && (
-              <Link
-                href="/coach"
-                onClick={() => setMenuOpen(false)}
-                className="py-2 text-sm font-medium text-foreground"
-                data-testid="link-mobile-coach"
-              >
-                Coach
-              </Link>
-            )}
             <Link
-              href="/login"
+              href={door.href}
               onClick={() => setMenuOpen(false)}
               className="py-2 text-sm font-medium text-foreground"
-              data-testid="link-mobile-login"
+              data-testid={`link-mobile-${door.testId}`}
             >
-              Log in
+              {door.label}
             </Link>
           </nav>
         </div>

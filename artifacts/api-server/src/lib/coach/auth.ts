@@ -1,15 +1,20 @@
 /**
  * Who is calling a coach route. Two credentials are accepted — the browser
  * session cookie, or a personal bearer token (the local grill bridge) — and
- * both then pass the COACH_EMAILS allowlist. Everyone else gets the same
- * uniform 404 the stats routes use, so probing never confirms the feature
- * exists. Removal from the allowlist wins over any credential: a still-live
- * token stops working the moment the email leaves COACH_EMAILS.
+ * being resolved by either one is the whole of the entitlement: every
+ * signed-in user may practise, on their own rows. A caller the server cannot
+ * resolve gets the same uniform 404 the stats routes use, so probing never
+ * confirms the feature exists.
+ *
+ * There is no allowlist any more. `COACH_EMAILS` gated this while the coach
+ * was in development and was deleted, not inverted, when that phase ended:
+ * an inverted variable would make the same empty value mean "everybody"
+ * where it used to mean "nobody", so restoring an old deployment config
+ * would open the coach silently.
  */
 
 import type { NextFunction, Request, Response } from "express";
 
-import { isCoachUser } from "../auth/coach";
 import { hashToken } from "../auth/session";
 import type { AuthStore } from "../auth/store";
 import { currentUser } from "../../routes/auth";
@@ -40,9 +45,10 @@ export async function currentCoachUser(
 export const COACH_USER = "coachUser";
 
 /**
- * Gate middleware: resolves the caller, applies the allowlist, and answers
- * a uniform 404 otherwise. Handlers behind it read the user from
- * `res.locals[COACH_USER]`.
+ * Gate middleware: resolves the caller and answers a uniform 404 when it
+ * cannot. Handlers behind it read the user from `res.locals[COACH_USER]`,
+ * which is also the only place a user id comes from — no coach route takes
+ * one as a parameter, so no caller can ask for another user's rows.
  */
 export function coachGate(authStore: AuthStore, coachStore: CoachStore) {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +60,7 @@ export function coachGate(authStore: AuthStore, coachStore: CoachStore) {
       res.status(500).json({ error: "Internal server error" });
       return;
     }
-    if (!user || !isCoachUser(user.email)) {
+    if (!user) {
       res.status(404).json({ error: "Not found" });
       return;
     }

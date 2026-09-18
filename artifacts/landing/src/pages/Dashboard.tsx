@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
-import { Loader2, LogOut } from "lucide-react";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   getGetStatsDailyQueryKey,
@@ -9,10 +8,9 @@ import {
   useGetStatsDaily,
   useGetStatsRegistrations,
   useGetStatsTotals,
-  useLogOut,
 } from "@workspace/api-client-react";
 
-import { useAuth, useForgetAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import NotFound from "@/pages/not-found";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,19 +65,19 @@ function day(value: string | null | undefined): string {
 }
 
 /**
- * The growth dashboard, for the owner alone.
+ * The growth view, for the owner alone. Rendered inside the dashboard shell,
+ * which owns identity, sign-out and the switcher — this file draws numbers.
  *
  * Every number here comes from the extension's API by way of this site's server,
  * which is where the shared secret lives — nothing on this page holds a credential.
  * A visitor who is not the owner gets 404 from those endpoints, so this renders the
- * ordinary not-found page: no hint that there was a dashboard to be refused.
+ * ordinary not-found page: no hint that there was a dashboard to be refused. The
+ * shell's rail hides this view from non-owners, but that is a convenience; this
+ * refusal is the one that decides.
  */
 export default function Dashboard() {
   const [days, setDays] = useState<number>(30);
   const { isLoading: authLoading, isSignedIn } = useAuth();
-  const [, navigate] = useLocation();
-  const forgetAuth = useForgetAuth();
-  const logOut = useLogOut();
 
   // 404 is the ordinary answer for anyone who is not the owner, so retrying it three
   // times only delays the not-found page. Nothing is asked for until the server has
@@ -101,13 +99,11 @@ export default function Dashboard() {
     },
   });
 
-  useEffect(() => {
-    if (!authLoading && !isSignedIn) navigate("/login");
-  }, [authLoading, isSignedIn, navigate]);
-
+  // Sending a signed-out visitor to the login page is the shell's job; this
+  // view is only ever rendered inside it.
   if (authLoading || (isSignedIn && totals.isLoading)) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center">
+      <div className="min-h-64 flex items-center justify-center">
         <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
       </div>
     );
@@ -121,7 +117,7 @@ export default function Dashboard() {
     // fault, and only the owner can be seeing it, so it can say so.
     if (totals.error.status === 404) return <NotFound />;
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center px-6">
+      <div className="min-h-64 flex items-center justify-center px-6">
         <p className="text-sm text-muted-foreground text-center max-w-sm">
           {totals.error.data?.error ??
             "The stats service could not be reached."}
@@ -135,31 +131,8 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-[100dvh] bg-background">
-      <header className="border-b border-border bg-white">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <span className="font-semibold text-foreground">Growth Dashboard</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            data-testid="button-signout"
-            onClick={() =>
-              logOut.mutate(undefined, {
-                onSettled: async () => {
-                  await forgetAuth();
-                  navigate("/login");
-                },
-              })
-            }
-          >
-            <LogOut className="w-4 h-4" />
-            Sign out
-          </Button>
-        </div>
-      </header>
-
-      <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
+    <div className="space-y-8">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
           <Tile value={totals.data?.total_clients ?? 0} label="Installs, all time" />
           <Tile value={totals.data?.weekly_active ?? 0} label="Active this week" />
           <Tile
@@ -303,7 +276,6 @@ export default function Dashboard() {
             </Table>
           </CardContent>
         </Card>
-      </main>
     </div>
   );
 }

@@ -8,6 +8,8 @@ dashboard that only the owner can see.
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port from `PORT`; 8080 on Replit)
 - `pnpm --filter @workspace/landing run dev` — run the web app (port from `PORT`; 5173 locally)
 - `pnpm --filter @workspace/api-server run test` — the auth and dashboard-gate tests
+- `pnpm --filter @workspace/landing run test` — the web app's tests (Vitest + Testing
+  Library + jsdom, with MSW answering HTTP; see "Where things live")
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -20,7 +22,6 @@ dashboard that only the owner can see.
 |---|---|---|
 | `DATABASE_URL` | api-server, db | Postgres connection string |
 | `OWNER_EMAIL` | api-server | Which account may see the growth dashboard. Comma-separated, read case-insensitively. **Unset means nobody** — the dashboard is closed, not open. |
-| `COACH_EMAILS` | api-server | Which accounts may use the interview coach (`/api/coach/*`) while it is in development. Same rules as `OWNER_EMAIL`: comma-separated, case-insensitive, **unset means nobody**. |
 | `STATS_API_BASE_URL` | api-server | Origin of the extension's API, e.g. `https://h1bchecker-production.up.railway.app` |
 | `STATS_TOKEN` | api-server | Must match `STATS_TOKEN` on that server. Server-side only; never sent to a browser. |
 | `TRUST_PROXY` | api-server | Proxies in front of us. Defaults to 1 in production, 0 elsewhere — see Gotchas. |
@@ -55,7 +56,7 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 - **API contract, source of truth:** `lib/api-spec/openapi.yaml`. Edit it, then run the
   codegen script — `lib/api-client-react/src/generated` and `lib/api-zod/src/generated`
   are generated and should never be edited by hand.
-- **DB schema, source of truth:** `lib/db/src/schema/` (`waitlist.ts`, `auth.ts`).
+- **DB schema, source of truth:** `lib/db/src/schema/` (`auth.ts`, `coach.ts`).
 - **Auth:** `artifacts/api-server/src/lib/auth/` — `password.ts` (scrypt),
   `session.ts` (cookie + token hashing), `owner.ts` (who the owner is),
   `store.ts` (the storage interface) with `drizzle-store.ts` and `memory-store.ts`.
@@ -63,9 +64,20 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 - **Dashboard data:** `artifacts/api-server/src/routes/stats.ts` is the gate;
   `src/lib/stats/upstream.ts` is the only file that reads or sends `STATS_TOKEN`.
 - **Web pages:** `artifacts/landing/src/pages/` — `Home.tsx`, `Login.tsx`,
-  `Account.tsx`, `Dashboard.tsx`; `src/hooks/use-auth.ts` asks the server who you are.
+  `Account.tsx`, `Jobs.tsx`; `src/hooks/use-auth.ts` asks the server who you are.
+- **The logged-in area:** `artifacts/landing/src/pages/dashboard/` — `Shell.tsx` (the
+  frame: identity, sign-out, the rail), `Rail.tsx`, and `views.tsx`, which is the
+  registry the router and the rail both read. `Dashboard.tsx` and `Coach.tsx` are the
+  two views it lists; neither is a route any more. `PracticeStatus.tsx` is the one line
+  the rail draws under the practice entry — today's graded-of-assigned — and the only
+  thing in the rail that fetches.
 - **Site chrome:** `artifacts/landing/src/components/SiteHeader.tsx` and
-  `SiteFooter.tsx`. The header is the only way into `/login` from the home page.
+  `SiteFooter.tsx`. The header carries one door into the account — `/dashboard` when
+  signed in, `/login` when not.
+- **Web tests:** `artifacts/landing/src/test/` — `server.ts` (the MSW server; handlers
+  live in each test), `setup.ts` (lifecycle, `jest-dom`, and a `ResizeObserver` stub
+  jsdom lacks), `render.tsx` (the app's providers plus an in-memory location, so a test
+  can start at a path and assert where a redirect landed).
 - **Outbound URLs:** `artifacts/landing/src/lib/links.ts` — the Chrome Web Store
   listing and the privacy policy. The privacy policy is served by the *extension's*
   API (`GET /privacy` on Railway), not by this site.
@@ -99,9 +111,50 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   and `output/employer_aliases.csv`, and the DOL data is refreshed quarterly by
   hand. Check a claim against the extension repo before adding it — that page is
   read by people deciding whether to trust the badge.
-- **Auth routes take an `AuthStore`** rather than importing `db` the way
-  `routes/waitlist.ts` does. That seam is what lets the tests run the real routes,
-  the real hashing and the real cookies against memory instead of Postgres.
+- **`COACH_EMAILS` was deleted, not turned into a kill switch.** Opening practice to
+  every signed-in user left the variable gating nothing. Keeping it as an off switch was
+  considered and rejected because the semantics would **invert**: an unset
+  `COACH_EMAILS` used to mean *nobody may practise*, and a kill-switch version makes the
+  same empty value mean *everybody*, so restoring an old deployment config would open
+  the coach silently. If one is ever wanted it must be a differently-named variable
+  whose default points the safe way. Closing practice again is a one-line change to
+  `lib/coach/auth.ts`, which is cheaper than owning a variable that means the opposite
+  of what it used to.
+- **Opening practice needed no migration, because the coach was never single-tenant.**
+  `coach_reviews`, `coach_daily_log`, `coach_config` and `coach_api_tokens` have keyed on
+  `user_id` and cascaded with the account since the engine landed, and `getConfig`
+  provisions a defaults row on first read. A new user's empty state is just their
+  absence of rows. The only thing in the way was one predicate in two places.
+- **Entitlement draws the rail; the server still refuses.** `views.tsx` decides what a
+  viewer is offered, but each view keeps its own server-side refusal — `/dashboard/growth`
+  renders the ordinary not-found page for a non-owner because `/api/stats` answers 404,
+  exactly as it did when it was its own route. The rail is a convenience, never a
+  boundary, and its test proves the point by claiming owner and still being refused.
+- **A view is a path segment, and the shell keeps two refusals apart.** `?view=` and
+  component state both lose linkability and reload-survival. A segment the app does not
+  know is a stale address and redirects to the first entitled view; a segment this viewer
+  may not use is a refusal and renders not-found **standing alone**, with no frame around
+  it — a frame would confirm there is something here to be refused.
+- **The rail shows today's practice progress, through the registry.** The old
+  account-page entry printed "Today: 2 of 5 graded · 1 solved but not grilled"; the
+  shell dropped it unasked, and the owner asked for it back (2026-09-15). Two ways to
+  do it: let `Rail.tsx` call the plan query, or give each registry entry an optional
+  `Status` component and let the rail render the slot. The second, because the first
+  makes the rail the second place that knows what the practice view is made of, which
+  is the thing `views.tsx` exists to prevent. The line is visible only to a viewer with
+  two views — the rail is not drawn for one — which is right: a single-view viewer is
+  already standing on the practice view, and its own panel shows the same numbers.
+- **The switcher is a rail rather than a dropdown.** Asked for as a dropdown, decided as a
+  rail (owner, 2026-09-12) on the reference they supplied: a rail still reads at six
+  entries and a dropdown does not, and the stated reason for the shell is that more views
+  are coming.
+- **Auth routes take an `AuthStore`** rather than importing `db` themselves. That seam
+  is what lets the tests run the real routes, the real hashing and the real cookies
+  against memory instead of Postgres. It used to be stated against a counter-example —
+  `routes/waitlist.ts` reached for `db` directly — and with that route deleted
+  (2026-09-15) there is no counter-example left: no route imports `db`, only the store
+  implementations do. The seam is now how this server reaches the database, not one
+  route's better habit.
 - **`/jobs` is public and identity-free, and its secret is a third one.** The page reads no
   session and writes nothing, which is what kept the two-account-systems question out of
   shipping it. `POSTINGS_TOKEN` is deliberately not `STATS_TOKEN`: one opens the owner's own
@@ -118,18 +171,33 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   Architect" as Entry-Level. A missing row costs one posting; a wrong badge costs the page
   its only advantage. For the same reason a null refusal verdict renders nothing: null means
   no description has been read, not that the employer declines.
+- **The mailing list was removed, not hidden (2026-09-15).** The home page ended with a
+  "Hear about what comes next" email box that posted to `POST /api/waitlist` and wrote a
+  row nothing ever read. `select count(*) from waitlist` against production returned
+  **0** — not one address in four months, including the owner's own. Three sizes were on
+  the table: hide the section, remove the feature but keep the table, or remove it down
+  to the table. The third, because the second's only argument is protecting collected
+  data and there is none. Hiding it would have left a dead route, a dead contract path
+  and a dead table for the next reader to identify as dead. The production table is
+  dropped by hand with one `drop table waitlist;`, deliberately not
+  `pnpm --filter @workspace/db run push`, which reconciles the whole schema and would
+  carry any drift along with it.
 
 ## Product
 
 - A landing page for the **BingoCareer** Chrome extension: what the four badges
   mean, which four job boards it runs on, how the 60-second trial and the
-  email-plus-five-questions unlock work, and where the DOL data comes from. Plus a
-  waitlist form, which is a mailing list only — it is a different database from the
-  extension's own email registration and does not unlock anything.
-- Email-and-password accounts: create one, sign in, sign out. Nothing sits behind the
-  login for an ordinary user yet — `/account` says who they are and lets them leave.
-- `/dashboard` — installs, active users, checks, registered emails and referral
-  channels for the extension. Visible to `OWNER_EMAIL` only.
+  email-plus-five-questions unlock work, and where the DOL data comes from. It closes
+  with one link to the Chrome Web Store.
+- Email-and-password accounts: create one, sign in, sign out. `/account` says who you
+  are, lets you leave, and offers one way into the dashboard.
+- `/dashboard` — the logged-in area: a frame with a rail listing the views this viewer
+  may use, and the selected view beside it. A view is a path segment.
+  - `/dashboard/growth` — installs, active users, checks, registered emails and
+    referral channels for the extension. `OWNER_EMAIL` only.
+  - `/dashboard/practice` — the interview coach: today's plan, review schedule, gaps
+    and pattern strength. **Any signed-in user**, each on their own rows.
+    `/coach` redirects here.
 
 ## User preferences
 
@@ -145,6 +213,13 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   generated hooks; nothing else regenerates them.
 - **Generated query hooks demand a `queryKey`** when you pass any query option. Pass
   the matching `getXxxQueryKey(params)` helper rather than inventing one.
+- **After `pnpm --filter <pkg> add`, run a plain `pnpm install` at the root.** A filtered
+  add relinks only that package. Adding jsdom and msw to `landing` changed vitest's peer
+  resolution, so pnpm rebuilt it under a new `.pnpm` hash — and `api-server`'s `vitest`
+  symlink went on pointing at the old directory, which no longer existed. Its whole suite
+  died with `Cannot find module .../vitest/vitest.mjs`, in a package nothing had touched.
+  The root install repairs every link; verified 2026-09-12. Same mechanism as the `tsx`
+  rule below, arriving from the other direction.
 - **`tsx` must stay `catalog:`** in every package. A second version of it changes
   vite's peer-resolution hash, which gives other packages two incompatible copies of
   vite's types and breaks their typecheck with an unrelated-looking error.
@@ -187,6 +262,16 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   **What the lifted rule was protecting has not gone away:** 43 boards means no FAANG and
   none of the largest H-1B filers, so a search box promising to find Google still cannot
   keep that promise. Coverage is an open owner decision, not a solved problem.
+- **Practice is open to everyone, but grading is not.** Grades move `due`, `ease` and
+  `state`, and they only ever arrive at `POST /coach/grade` from a local grilling session
+  holding a personal token — never from a control on the page, because self-grading is
+  what the system exists to prevent. So a user without a local AceLeetcode install gets
+  today's problems, a solved checkbox and a copyable prompt, and **is never scheduled a
+  review**. This shipped knowingly (owner, 2026-09-12); the practice view's zero state
+  says so on the first day. Closing it is
+  `.harness/backlogs/009-grill-me-in-the-browser-without-paying-for-it.md`, and the hard
+  part there is not the cost — it is what makes such a grade worth the same as a local
+  one. Do not close it by adding a grading control to the browser.
 - **Pre-existing, not caused by the login work:** `pnpm run build` fails in
   `artifacts/mockup-sandbox`, whose `vite.config.ts` throws unless `PORT` is set.
   `pnpm run build:web` (what Vercel runs) and the api-server build are both fine.

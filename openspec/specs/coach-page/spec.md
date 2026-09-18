@@ -2,24 +2,27 @@
 
 ## Purpose
 
-The interview coach's face: a `/coach` page where the candidate sees today's
-plan, ticks solved problems, watches their consistency and review load, and
-manages the grill-bridge token — while non-allowlisted visitors see only the
-ordinary not-found page.
+The interview coach's face: the practice view at `/dashboard/practice`, where
+any signed-in user sees today's plan, ticks solved problems, watches their
+consistency and review load, and manages the grill-bridge token — while an
+anonymous visitor is sent to log in and learns nothing.
 
 ## Requirements
 
-### Requirement: The page hides itself from non-allowlisted visitors
-`/coach` SHALL be routed unguarded. A visitor who is not signed in SHALL be
-sent to the login page; a signed-in user whose plan request answers 404
-SHALL see the site's ordinary not-found page, indistinguishable from a
-route that does not exist. The header's "Coach" link SHALL appear only
-when the coach API has answered successfully for the current user.
+### Requirement: The practice view is reached through the shell, not hidden
+The practice view SHALL be available to any signed-in user, rendered inside
+the dashboard shell at `/dashboard/practice`. An anonymous visitor SHALL be
+sent to the login page. The uniform not-found answer for anyone the coach API
+refuses SHALL remain, so a caller learns nothing about what exists from the
+shape of the refusal.
 
-#### Scenario: Signed-in but not allowlisted
-- **WHEN** a signed-in, non-allowlisted user opens `/coach`
-- **THEN** they see the standard not-found page and no coach content or
-  hint of it in the navigation
+#### Scenario: An ordinary signed-in user reaches practice
+- **WHEN** a signed-in user who has never practiced opens `/dashboard/practice`
+- **THEN** they see their own plan for today, dealt from an empty history
+
+#### Scenario: Anonymous visitor
+- **WHEN** a signed-out visitor opens `/dashboard/practice`
+- **THEN** they are sent to the login page and learn nothing about the feature
 
 ### Requirement: Today's plan is visible and tickable
 The page SHALL render the plan from `GET /coach/plan`: reviews first (mode,
@@ -87,34 +90,29 @@ never store the plaintext anywhere after navigation.
 - **THEN** the token is no longer displayed anywhere, and the page offers
   issuing a new one
 
-### Requirement: The logged-in area is a console over both dashboards
-The account page SHALL present each dashboard the viewer may use as its own
-entry: the growth dashboard for the owner, and the practice dashboard for
-allowlisted coach users. The practice entry SHALL show live state (today's
-graded-of-assigned progress and streak) rather than a bare link. A viewer
-entitled to neither SHALL see the account page without either entry and with
-no hint that they exist.
-
-#### Scenario: Both dashboards for an entitled viewer
-- **WHEN** a signed-in user is both the owner and coach-allowlisted
-- **THEN** the account page shows two distinct entries, growth and practice,
-  and the practice one carries today's progress
-
-#### Scenario: Neither for an ordinary user
-- **WHEN** a signed-in user is neither owner nor allowlisted
-- **THEN** the account page shows no dashboard entries
-
 ### Requirement: The coach page leads with what to do next
-The `/coach` page SHALL show the guidance list above the plan, rendering each
-item's tone distinctly, and SHALL show knowledge gaps (open, with hit counts,
-and cleared) and pattern strength (as a per-pattern bar with seen/total and
-confidence). With no grading history, each panel SHALL say what will fill it
-instead of rendering an empty container.
+With no grading history, each panel SHALL
+still say what will fill it rather than render an empty container — and the
+view SHALL additionally state that the schedule advances only when a grilling
+grades the problem, and that grilling runs locally today. That statement SHALL
+NOT promise a browser-based grilling path, and SHALL NOT read as an error:
+dealing today's problems is a working thing to do.
 
-#### Scenario: Fresh account sees intent, not empty boxes
-- **WHEN** a user with no grades opens the page
-- **THEN** the gaps and pattern panels each explain what will appear after
-  the first grillings
+This requirement's zero state used to be an edge case for one owner's fresh
+account. Opening practice to every signed-in user makes it the first thing
+every new user reads, and a page that showed only empty panels would leave
+them ticking problems for a week before working out that nothing was being
+scheduled.
+
+#### Scenario: A brand-new user's first visit
+- **WHEN** a signed-in user with no reviews and no day log opens the practice
+  view
+- **THEN** the gaps and pattern panels explain what will fill them, and the
+  view states that grading comes from a grilling session run locally
+
+#### Scenario: No self-grading affordance appears
+- **WHEN** any user views a problem row
+- **THEN** nothing on the page lets them record a grade themselves
 
 ### Requirement: Every problem hands over its grilling prompt
 Each problem row SHALL offer the exact prompt to start its grilling

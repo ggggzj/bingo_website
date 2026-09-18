@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Check,
@@ -36,9 +35,8 @@ import type {
 } from "@workspace/api-client-react";
 
 import { useAuth } from "@/hooks/use-auth";
-import { useCoachAccess } from "@/hooks/use-coach-access";
+import { useCoachPlan } from "@/hooks/use-coach-plan";
 import { useToast } from "@/hooks/use-toast";
-import NotFound from "@/pages/not-found";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -323,6 +321,46 @@ function PatternsPanel({ rows }: { rows: CoachPatternRow[] }) {
             ))}
           </div>
         )}
+      </CardContent>
+    </Card>
+  );
+}
+
+/**
+ * What a brand-new account is told, and the one thing this page must not be
+ * coy about.
+ *
+ * Grading is what moves `due`, `ease` and `state`, and grades only ever arrive
+ * from a grilling session — never from a control on this page, because
+ * self-grading is what the whole system exists to prevent. So somebody with no
+ * local session can tick problems for a week and never be scheduled a single
+ * review. Better they know that on the first day than work it out.
+ *
+ * Three things this copy deliberately does not do: promise that browser-based
+ * grilling is coming (it is unscheduled, and may land on "no honest free path
+ * exists"), read as an error (dealing today's problems is real work), or
+ * pretend the empty panels below are waiting on the user's patience.
+ */
+function HowTheScheduleStarts() {
+  return (
+    <Card data-testid="text-practice-zero-state">
+      <CardHeader>
+        <CardTitle className="text-base">How the schedule starts</CardTitle>
+      </CardHeader>
+      <CardContent className="text-sm text-muted-foreground space-y-2">
+        <p>
+          Today's problems are yours to solve and tick. Nothing below fills in
+          from ticking, though — reviews, knowledge gaps and pattern strength
+          all come from <strong className="text-foreground">grades</strong>, and
+          a grade only exists once a grilling has put you through the problem.
+        </p>
+        <p>
+          Grilling runs on your own machine today: copy a problem's{" "}
+          <code className="text-foreground">Grill me on LC N</code> prompt into
+          your local session, and the grade it produces lands back here. Without
+          that, this page stays a daily problem list rather than a review
+          schedule.
+        </p>
       </CardContent>
     </Card>
   );
@@ -815,8 +853,7 @@ function TokenPanel() {
  */
 export default function Coach() {
   const { isLoading: authLoading, isSignedIn } = useAuth();
-  const [, navigate] = useLocation();
-  const { plan, refused } = useCoachAccess();
+  const plan = useCoachPlan();
   const insights = useGetCoachInsights({
     query: {
       queryKey: getGetCoachInsightsQueryKey(),
@@ -827,23 +864,20 @@ export default function Coach() {
     },
   });
 
-  useEffect(() => {
-    if (!authLoading && !isSignedIn) navigate("/login");
-  }, [authLoading, isSignedIn, navigate]);
-
+  // Sending a signed-out visitor to the login page is the shell's job; this
+  // view is only ever rendered inside it.
   if (authLoading || (isSignedIn && plan.isLoading)) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center">
+      <div className="min-h-64 flex items-center justify-center">
         <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (!isSignedIn) return null;
-  if (refused) return <NotFound />;
   if (plan.error) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center px-6">
+      <div className="min-h-64 flex items-center justify-center px-6">
         <p className="text-sm text-muted-foreground">
           The coach could not be reached. Try again in a minute.
         </p>
@@ -853,17 +887,15 @@ export default function Coach() {
   if (!plan.data) return null;
 
   return (
-    <div className="min-h-[100dvh] bg-background">
-      <header className="border-b border-border bg-white">
-        <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
-          <span className="font-semibold text-foreground">Coach</span>
-          <span className="text-sm text-muted-foreground tabular-nums">
-            {plan.data.totalSeen} / {plan.data.totalProblems} problems in rotation
-          </span>
-        </div>
-      </header>
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-6">
-        {insights.data && <GuidancePanel items={insights.data.guidance} />}
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="font-semibold text-foreground">Practice</h1>
+        <span className="text-sm text-muted-foreground tabular-nums">
+          {plan.data.totalSeen} / {plan.data.totalProblems} problems in rotation
+        </span>
+      </div>
+      {plan.data.totalSeen === 0 && <HowTheScheduleStarts />}
+      {insights.data && <GuidancePanel items={insights.data.guidance} />}
         <PlanPanel plan={plan.data} />
         <div className="grid gap-6 lg:grid-cols-2">
           <ConsistencyPanel enabled />
@@ -879,7 +911,6 @@ export default function Coach() {
           <SettingsPanel enabled />
           <TokenPanel />
         </div>
-      </main>
     </div>
   );
 }

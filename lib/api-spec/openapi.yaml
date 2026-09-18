@@ -10,14 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
-  - name: waitlist
-    description: Waitlist operations
   - name: auth
     description: Sign-up and sign-in
   - name: stats
     description: Growth dashboard, owner only
   - name: coach
-    description: Interview coach, allowlisted users only
+    description: Interview coach, any signed-in user
   - name: jobs
     description: The public job feed
 paths:
@@ -34,37 +32,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
-  /waitlist:
-    post:
-      operationId: joinWaitlist
-      tags: [waitlist]
-      summary: Join the waitlist
-      description: Submit an email address to join the waitlist
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/WaitlistInput"
-      responses:
-        "201":
-          description: Successfully joined waitlist
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/WaitlistEntry"
-        "409":
-          description: Email already on waitlist
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "422":
-          description: Invalid email
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /auth/register:
     post:
       operationId: register
@@ -313,10 +280,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  # Coach routes answer 404 for anyone not signed in and on the COACH_EMAILS
-  # allowlist — the same uniform not-found the stats routes use, so the
-  # feature's existence is not confirmed to probers. The 404s below mean
-  # "not allowed" as much as "no such thing".
+  # Coach routes answer 404 for any caller the server cannot resolve — no
+  # session and no valid personal token — which is the same uniform not-found
+  # the stats routes use, so the feature's existence is not confirmed to
+  # probers. The 404s below mean "not allowed" as much as "no such thing".
+  # Every signed-in user may practise; the rows they read and write are their
+  # own, selected by the id on the session, never by a request parameter.
   /coach/plan:
     get:
       operationId: getCoachPlan
@@ -579,27 +548,6 @@ components:
           type: string
       required:
         - status
-    WaitlistInput:
-      type: object
-      required:
-        - email
-      properties:
-        email:
-          type: string
-          format: email
-    WaitlistEntry:
-      type: object
-      required:
-        - id
-        - email
-        - createdAt
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-        createdAt:
-          type: string
     Credentials:
       type: object
       required: [email, password]

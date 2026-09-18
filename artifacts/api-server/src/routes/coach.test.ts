@@ -6,7 +6,7 @@
 import express, { type Express } from "express";
 import cookieParser from "cookie-parser";
 import request from "supertest";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { applyGrade, freshReviewState } from "@workspace/coach-engine";
 import type { Problem } from "@workspace/coach-engine";
@@ -45,8 +45,6 @@ function utcToday(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-const originalCoachEmails = process.env["COACH_EMAILS"];
-
 function testApp(auth: InMemoryAuthStore, coach: InMemoryCoachStore): Express {
   const app = express();
   app.use(express.json());
@@ -62,15 +60,9 @@ describe("coach routes", () => {
   let app: Express;
 
   beforeEach(() => {
-    process.env["COACH_EMAILS"] = `${ME}, ${OTHER}`;
     auth = new InMemoryAuthStore();
     coach = new InMemoryCoachStore(BANK);
     app = testApp(auth, coach);
-  });
-
-  afterEach(() => {
-    if (originalCoachEmails === undefined) delete process.env["COACH_EMAILS"];
-    else process.env["COACH_EMAILS"] = originalCoachEmails;
   });
 
   /** Register through the real route and mirror the user into the coach
@@ -87,22 +79,22 @@ describe("coach routes", () => {
   }
 
   describe("gate", () => {
-    it("signed-out and non-allowlisted get the identical 404", async () => {
+    it("any signed-in user may practise, with no list to be on", async () => {
+      const { agent } = await signIn("stranger@example.com");
+      const res = await agent.get("/api/coach/plan");
+      expect(res.status).toBe(200);
+      expect(res.body.new.length).toBeGreaterThan(0);
+    });
+
+    it("a caller the server cannot resolve gets the uniform 404", async () => {
       const signedOut = await request(app).get("/api/coach/plan");
       expect(signedOut.status).toBe(404);
 
-      process.env["COACH_EMAILS"] = "someoneelse@example.com";
-      const { agent } = await signIn(ME);
-      const gated = await agent.get("/api/coach/plan");
-      expect(gated.status).toBe(404);
-      expect(gated.body).toEqual(signedOut.body);
-    });
-
-    it("unset allowlist closes the feature for everyone", async () => {
-      const { agent } = await signIn(ME);
-      delete process.env["COACH_EMAILS"];
-      const res = await agent.get("/api/coach/plan");
-      expect(res.status).toBe(404);
+      const forged = await request(app)
+        .get("/api/coach/plan")
+        .set("Authorization", "Bearer not-a-real-token");
+      expect(forged.status).toBe(404);
+      expect(forged.body).toEqual(signedOut.body);
     });
   });
 
@@ -151,14 +143,22 @@ describe("coach routes", () => {
       expect(after.status).toBe(404);
     });
 
-    it("a live token stops working when the email leaves the allowlist", async () => {
-      const { agent } = await signIn();
+    it("one user's token never reaches another user's rows", async () => {
+      const { agent } = await signIn(ME);
       const token = (await agent.post("/api/coach/token")).body.token as string;
-      process.env["COACH_EMAILS"] = "someoneelse@example.com";
-      const res = await request(app)
+      const other = await signIn(OTHER);
+      await other.agent.get("/api/coach/plan");
+
+      const mine = await request(app)
         .get("/api/coach/plan")
         .set("Authorization", `Bearer ${token}`);
-      expect(res.status).toBe(404);
+      expect(mine.status).toBe(200);
+      // The bearer resolves to ME, so this is ME's freshly dealt day — not
+      // OTHER's, and there is no parameter that could ask for OTHER's.
+      const asMe = await agent.get("/api/coach/plan");
+      const ids = (body: { new: Array<{ problem: { id: string } }> }) =>
+        body.new.map((i) => i.problem.id);
+      expect(ids(mine.body)).toEqual(ids(asMe.body));
     });
   });
 
@@ -346,9 +346,8 @@ describe("coach routes", () => {
     it("is gated like every other coach route", async () => {
       const signedOut = await request(app).get("/api/coach/insights");
       expect(signedOut.status).toBe(404);
-      process.env["COACH_EMAILS"] = "someoneelse@example.com";
       const { agent } = await signIn(ME);
-      expect((await agent.get("/api/coach/insights")).status).toBe(404);
+      expect((await agent.get("/api/coach/insights")).status).toBe(200);
     });
 
     it("reports guidance, gaps and patterns after a grading, writing nothing", async () => {

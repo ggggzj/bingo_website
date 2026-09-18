@@ -9,16 +9,6 @@ export interface HealthStatus {
   status: string;
 }
 
-export interface WaitlistInput {
-  email: string;
-}
-
-export interface WaitlistEntry {
-  id: number;
-  email: string;
-  createdAt: string;
-}
-
 export interface Credentials {
   email: string;
   /** @minLength 10 */

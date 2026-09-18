@@ -10,6 +10,21 @@ blocks: nothing yet — the redirect that sends people here does not exist until
   counterpart ships its half
 ---
 
+## What changed on 2026-09-13
+
+The owner replaced the middle of the funnel this ticket ends (see the counterpart's own note).
+Two things about this ticket move as a result, and neither cancels it:
+
+- **Nobody arrives here from another host any more.** The profile form is no longer served by
+  `GET /verify` on h1_checker — the questions move to this site as
+  `.harness/backlogs/012`. Point 3 below, "the state to know who they are", stops being an open
+  question about a redirect and becomes an ordinary session on this origin.
+- **Point 1 gets easier and point 2 does not change.** Somebody landing here has just answered
+  ten screens *here*, so "must not be asked for any of it again" is now a fact of the same
+  application rather than a promise across a redirect. Handing over the extension is untouched.
+
+The rest of this ticket stands as written.
+
 ## Where this sits
 
 The owner is turning the funnel around. Today the extension is the front door: you install

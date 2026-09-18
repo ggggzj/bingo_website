@@ -12,7 +12,6 @@ import {
 
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { WaitlistForm } from "@/components/WaitlistForm";
 import { CHROME_STORE_URL } from "@/lib/links";
 
 /**
@@ -432,33 +431,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Waitlist ────────────────────────────────────────────────────── */}
+      {/* ── Closing call to action ──────────────────────────────────────── */}
       <section className="py-24 px-6 bg-primary/5 border-t border-primary/10 mt-auto">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Hear about what comes next
-          </h2>
-          <p className="text-muted-foreground mb-2">
-            The extension is the product today. Leave your email and we will write
-            when there is something worth telling you about — more boards, a sharper
-            red detector, whatever comes after.
-          </p>
-          <p className="text-sm text-muted-foreground/80 mb-8">
-            This is just a mailing list. It is separate from the extension's own
-            sign-up, and joining it does not unlock the badges.
-          </p>
-          <div className="max-w-md mx-auto text-left">
-            <WaitlistForm />
-          </div>
-
           <a
             href={CHROME_STORE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-10 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-2 text-base font-semibold text-primary hover:underline"
             data-testid="link-footer-cta-chrome"
           >
-            Or add it to Chrome now — it is free
+            Add it to Chrome now — it is free
             <ArrowRight className="w-4 h-4" />
           </a>
         </div>
