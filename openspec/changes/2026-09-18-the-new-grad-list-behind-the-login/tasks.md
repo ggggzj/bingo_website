@@ -41,7 +41,9 @@ before starting the next.
 
 ## 3. The server answers — one route, owner-only, fanned out upstream
 
-- [ ] 3.1 `lib/api-spec/openapi.yaml`: add the route and its response schema, then run
+- [ ] 3.1 `lib/api-spec/openapi.yaml`: add the route, whose response **references the existing
+      posting schema** rather than declaring a second shape — a new shape is what would force
+      `SponsorshipEvidence` to be re-implemented. Then run
       `pnpm --filter @workspace/api-spec run codegen` **in this same task**. Nothing else
       regenerates the hooks, and `lib/*/src/generated` is never hand-edited.
 - [ ] 3.2 New `artifacts/api-server/src/routes/new-grad.ts`: one upstream query per
@@ -63,7 +65,9 @@ before starting the next.
       — the entry is absent from a non-owner's rail.
 - [ ] 4.2 New `artifacts/landing/src/pages/dashboard/NewGradList.tsx`: rows carrying employer,
       title, location, posted date, days since posted, the employer's filing count and tier,
-      and the posting's own refusal where one was read. **Ordered: titles naming the target
+      and the posting's own refusal where one was read — the last two rendered by the existing
+      `artifacts/landing/src/components/jobs/SponsorshipEvidence.tsx`, imported and not copied.
+      **Ordered: titles naming the target
       class first, then newest first**, with each row showing why it sorted where it did. No
       badge, no score, no deadline.
       **Test:** `artifacts/landing/src/pages/dashboard/NewGradList.test.tsx` — a posting with

@@ -50,7 +50,8 @@ Three measurements decide what this change is, all taken 2026-09-18:
 - **A last-seen marker**, so "new since your last visit" is a recorded fact rather than a
   guess that a refresh or a second device can contradict.
 - **`lib/api-spec/openapi.yaml` gains the route**, and codegen runs in the same task that
-  edits it.
+  edits it. Its response **reuses the existing posting schema** rather than defining a second
+  one, so that `SponsorshipEvidence` drops in untouched — see below.
 
 ## What does not change
 
@@ -62,6 +63,27 @@ Three measurements decide what this change is, all taken 2026-09-18:
 - **No badge, no score, no match percentage, no predicted deadline.** Rows are ordered by
   observable facts and the ordering shows its reason, the way the owner's own spreadsheet put
   its reason in column 2 after establishing that none of these postings publish a deadline.
+
+### The sponsorship half is already built, and is reused rather than ported
+
+The owner asked whether the per-row sponsorship facts could be borrowed from the extension.
+They should not be, because this repo already has them:
+`artifacts/landing/src/components/jobs/SponsorshipEvidence.tsx` renders the employer's filing
+count and tier and the posting's own refusal **as two claims that are never merged**, and
+already handles the state that gets mishandled — `no_sponsor: null` means nobody has read that
+description, which is not a refusal. The fields are in the API contract on the posting schema
+already.
+
+Porting the extension's version would be worse in three ways. It is plain extension JavaScript
+rather than React, so porting is rewriting. It asks `/check` by company name, because it holds
+a company and no posting, while this page holds postings that already carry the fields. And it
+would be a **third copy of one judgement** — the 401 defect merged into `../h1_checker` today
+was a two-place bug for exactly that reason, and ticket `024` exists to collapse those two
+copies into one. Adding a third is that mistake with a new name.
+
+So: the new route's response reuses the posting schema, and the view renders
+`SponsorshipEvidence` unchanged. If it needs a prop it does not have, that is a signal to look
+again before adding one.
 
 ### The recorded decision this does not reverse
 
