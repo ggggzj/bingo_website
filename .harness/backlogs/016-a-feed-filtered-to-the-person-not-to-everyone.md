@@ -1,5 +1,5 @@
 ---
-id: 010
+id: 016
 title: The signed-in half of /jobs — a feed filtered to the person, not to everyone
 status: open
 origin: Owner request 2026-09-16 — "login之后，对于每一个不同的user有自己的jobfeed".
@@ -7,7 +7,7 @@ origin: Owner request 2026-09-16 — "login之后，对于每一个不同的user
   was ANSWERED 2026-09-10 in the owner's own words — "把 job feed dashboard 恢复,作为账户装的
   东西" — and this request reaffirms it. Reference form supplied by the owner: simplify.jobs,
   whose signed-in app is four views — Matches, Jobs, Tracker, Profile.
-blocked-by: .harness/backlogs/012 (this repo's half of one account) and its counterpart
+blocked-by: .harness/backlogs/018 (this repo's half of one account) and its counterpart
   ../h1_checker/.harness/backlogs/015-one-account-on-both-surfaces.md — the feed is
   keyed to h1_checker's `users`; this site's login writes a row in a different database.
   Also .harness/backlogs/008 — this is a view registered in that rail, not a new top-level route.
@@ -89,3 +89,13 @@ counts and last active year, and it says what an employer *did*, not what will h
 3. **Where prefs come from.** The funnel's profile form (ticket 004 and its counterpart) already
    asks for roles, location, graduation and visa status. Asking again in a prefs form is asking
    twice; inheriting means the two shapes have to agree on what a "title" is.
+
+## Note added 2026-09-18 — note 3 above is answered by ticket 012
+
+Renumbered from 010 on 2026-09-18, when a merge brought in a second session's tickets and three
+numbers had two meanings each. Nothing about the ticket changed except its number.
+
+Note 3 ("where prefs come from") now has an owner: `.harness/backlogs/012` is the onboarding
+questionnaire the owner drew across thirteen screens, and its answers land in `job_prefs` —
+the same row this feed reads. Build order is 012 then this; asking twice is the failure mode
+both tickets name.

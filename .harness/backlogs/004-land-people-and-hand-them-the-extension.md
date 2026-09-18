@@ -17,7 +17,7 @@ Two things about this ticket move as a result, and neither cancels it:
 
 - **Nobody arrives here from another host any more.** The profile form is no longer served by
   `GET /verify` on h1_checker — the questions move to this site as
-  `.harness/backlogs/012`. Point 3 below, "the state to know who they are", stops being an open
+  `.harness/backlogs/018`. Point 3 below, "the state to know who they are", stops being an open
   question about a redirect and becomes an ordinary session on this origin.
 - **Point 1 gets easier and point 2 does not change.** Somebody landing here has just answered
   ten screens *here*, so "must not be asked for any of it again" is now a fact of the same

@@ -1,6 +1,6 @@
 ---
 title: Two sessions ticketed Google sign-in independently — reconcile the numbers and the two plans before implementing
-status: open
+status: done
 origin: Found 2026-09-17 during `/implement google-sign-in`, at the overlap check that precedes
   worktree creation. The run was refused and created nothing. Owner agreed the same day to the
   sequence below: let the other branch land, reconcile, then implement once.
@@ -78,3 +78,34 @@ resolves to the direct path". `.claude/commands/opsx/` now holds `apply.md`, `ar
 `explore.md`, `propose.md`, `sync.md`, `update.md`. The premise is stale; the directive (tdd per
 behavior with tick-back) may well still be what the repo wants, so fix the sentence rather than
 the intent.
+
+---
+
+## Done 2026-09-18
+
+The branch was merged (`79c0424`, both suites green before and after) and the reconciliation ran:
+
+- **Renumbered**, newer side moving: main's `010 → 016` (personal feed), `011 → 017` (tracker),
+  `012 → 018` (account merge). The incoming 010/011/012/013 keep their numbers — they are older
+  and are cited from h1_checker.
+- **`015` archived as superseded by `011`**, its three contributions appended to 011: the
+  collision rule with its `OWNER_EMAIL` exemption, the null-hash finding that needs a test rather
+  than a fix, and the unlinked-fallback answer.
+- **Cross-references fixed**: `ROADMAP.md`'s 条目→票 table, `004`, `014`, `016`, `017`, `018`, and
+  all four files under `openspec/changes/google-sign-in/`, whose Origin now cites 010 + 011.
+- **Two pairs turned out to be complementary rather than duplicate** and are now cross-linked:
+  `012` collects preferences / `016` renders the feed over them; `010` is step 1 of `018`.
+
+### What is still open
+
+1. **`openspec/changes/google-sign-in/` has not been re-grounded.** Its Origin points at 010+011
+   now, but its `design.md` §1 still understates what exists next door, and it does not yet
+   reflect 011's thirteen screenshots or its "drawn but disabled" decision for the password box.
+   Re-pick-up 011 rather than implementing this change as written.
+2. **h1_checker's local checkout is stale** (≈40 commits behind `origin/main`) and its ticket
+   `020-notice-an-application-being-submitted.md` cites
+   `../bingo_website-main/.harness/backlogs/011-where-somebody-is-in-an-application.md`, which is
+   now `017`. Fix that line from a session in that repo, after pulling.
+3. **`CLAUDE.md:77`** still says no opsx commands are installed; six of them are.
+4. **The owner still has to drop the production `waitlist` table** — task 6.2 of the merged
+   change, deliberately unticked, after the API deploy lands.

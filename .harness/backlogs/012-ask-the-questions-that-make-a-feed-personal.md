@@ -114,3 +114,10 @@ the answers go, not how they are asked.
   what Simplify uses to pay for that, and they are the cheapest screens here. If the order has
   to shrink, the questions with nowhere to store an answer are the ones to drop first — they
   cost the most and buy nothing until `015`.
+
+## Note added 2026-09-18 — where the answers are rendered
+
+This ticket **collects**; `.harness/backlogs/016` **renders**. They were written by two sessions
+that did not know about each other and are complementary, not duplicates: the questions here fill
+`job_prefs`, and 016 is the signed-in view over `GET /api/my/jobs`, the feed those preferences
+filter. Neither replaces the other, and 016's note 3 ("where prefs come from") is answered here.

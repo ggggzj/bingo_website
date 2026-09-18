@@ -1,12 +1,12 @@
 ---
-id: 011
+id: 017
 title: Where somebody is in an application, and how a row gets there without typing
 status: open
 origin: Owner request 2026-09-16 — "记录application". Already named as a coming feature in
   ../h1_checker/.harness/backlogs/017 ("记录用户的 job application 情况"), which shaped the
   database around it on 2026-09-13 but built nothing. Reference form supplied by the owner:
   simplify.jobs' tracker — Saved / Applied / Interviewing / Offer, with notes, contacts and dates.
-blocked-by: .harness/backlogs/012 (this repo's half of one account) and its counterpart
+blocked-by: .harness/backlogs/018 (this repo's half of one account) and its counterpart
   ../h1_checker/.harness/backlogs/015-one-account-on-both-surfaces.md — these rows are
   irreplaceable and must live beside the surviving `users` table, and there are two of those today.
   Also .harness/backlogs/008 — the tracker is a view in that rail.

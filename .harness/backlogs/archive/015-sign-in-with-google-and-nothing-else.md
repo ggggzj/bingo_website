@@ -1,23 +1,16 @@
 ---
 id: 015
-title: Sign in with Google — the only control on the page, with the email routes kept out of sight
-status: blocked
-produced: openspec/changes/google-sign-in/ — proposal drafted 2026-09-17. **Do not implement.**
-blocked-by: .harness/session-todos/2026-09-17-reconcile-two-plans-for-google-sign-in.md — the
-  branch implement/2026-09-15-drop-waitlist carries tickets 010 and 011 covering this same work,
-  from an owner decision of 2026-09-13 this ticket did not know about. Reconcile the numbers and
-  the two plans after that branch lands, then implement once.
-origin: ROADMAP.md 第一步 3 — owner 2026-09-17: "网页的登录用 google sign in/sign up（目前先
-  只支持 google sign in），一个 google 的邮箱就是一个账户". The reason is measured, not
-  aesthetic: every mailed step in this funnel dies (48 verification mails → 2 opened; 60
-  addresses → 5 credentialed → 4 profiles, `../h1_checker/.harness/prd/email-capture-funnel.md`).
-  Google returns an address already proven, in one click, with no message to open.
-counterpart: ../h1_checker/.harness/backlogs/014-sign-in-with-google.md — the extension's own
-  Google sign-in, on the pairing page. Different origin, different service; that change lists
-  "Google on the website" as an explicit non-goal. Neither blocks the other.
-blocks: .harness/backlogs/014 (/go/<job_id> reading a session), and everything in ROADMAP 第二步
-  that needs to know who is looking.
+title: SUPERSEDED by 011 — Sign in with Google (a parallel plan written without knowing 011 existed)
+status: superseded
+superseded-by: .harness/backlogs/011-one-way-in-and-it-is-google.md — older, carries the thirteen
+  screenshots as the visual spec, and grounded against h1_checker's live POST /auth/google. Its
+  three contributions (the collision rule, the null-hash finding, the unlinked-fallback answer)
+  were folded into 011 on 2026-09-18. `openspec/changes/google-sign-in/` now cites 010 + 011.
+origin: Owner request 2026-09-17, re-deriving a decision already taken 2026-09-13.
 ---
+
+> Kept unedited below for the reasoning, not as a live ticket. Every decision in it that survives
+> now lives in 011.
 
 ## What ships
 

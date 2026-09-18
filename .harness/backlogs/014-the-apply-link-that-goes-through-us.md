@@ -9,7 +9,7 @@ origin: ROADMAP.md 第一步 1 and 5 (owner decisions 2026-09-17): every apply l
   simplify.jobs/p/<id>?utm_source=GHList (counted 2026-09-17).
 counterpart: ../h1_checker/.harness/backlogs/021-the-summer-2027-intern-list-on-github.md —
   the list that emits these links. It can launch with direct links and switch when this ships.
-blocks: nothing on its own. The "record into the tracker" half waits for .harness/backlogs/011.
+blocks: nothing on its own. The "record into the tracker" half waits for .harness/backlogs/017.
 ---
 
 ## What this is
@@ -21,7 +21,7 @@ and, on the way, does two small things:
    only number that ever says how many people the GitHub list sends to the site (`ROADMAP.md`
    第三步), and it costs one table.
 2. **Records the click on the person's tracker card** when there is a session — an "opened the
-   application page at T" event, never a status change (`011`, decision 2). Until 011 exists
+   application page at T" event, never a status change (`017`, decision 2). Until 017 exists
    this half does nothing, and the route must not wait for it.
 
 Numbered 014 rather than 013: the `drop-waitlist` worktree's branch already carries a 013.

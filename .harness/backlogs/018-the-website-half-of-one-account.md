@@ -1,5 +1,5 @@
 ---
-id: 012
+id: 018
 title: The website's half of one account — read the surviving users table, and move 157 rows without losing one
 status: open
 origin: Owner decision 2026-09-13, recorded in ../h1_checker/.harness/backlogs/015 — "网站和
@@ -8,7 +8,7 @@ origin: Owner decision 2026-09-13, recorded in ../h1_checker/.harness/backlogs/0
   website half is "needed in ../bingo_website-main/.harness/backlogs/". This is it. Written
   2026-09-16 because tickets 010 and 011 are both blocked on it.
 counterpart: ../h1_checker/.harness/backlogs/015-one-account-on-both-surfaces.md
-blocks: .harness/backlogs/010 (the personal feed), .harness/backlogs/011 (the tracker), and
+blocks: .harness/backlogs/016 (the personal feed), .harness/backlogs/017 (the tracker), and
   h1_checker's already-written Google sign-in change, which creates a password-less row this
   repo's schema forbids.
 ---
@@ -133,3 +133,12 @@ consequences for this ticket, neither a reversal:
 And one thing this ticket cannot fix: a website-created (Google) identity cannot sign into the
 extension's popup until the extension also accepts Google (`../h1_checker/.harness/backlogs/014`,
 `018`). "One address, both surfaces" is true only when 015 and 014 have both landed.
+
+## Note added 2026-09-18 — step 1 is already its own ticket
+
+Renumbered from 012 on 2026-09-18 (see 016's note for why).
+
+Step 1 of this ticket — dropping `.notNull()` from `password_hash` — is
+`.harness/backlogs/010`, written by another session on 2026-09-13 and scoped to exactly that one
+line, with both production databases measured. It can ship on its own and it unblocks Google
+sign-in (`011`). Do not do it twice: this ticket's step 1 is satisfied when 010 lands.

@@ -52,7 +52,7 @@ route uses.
 ### Keyed on the address, not on Google's `sub`
 
 `sub` is the stable identifier and the address can change; keying on `sub` is the textbook
-answer. This product cannot use it. `OWNER_EMAIL` is an address, `.harness/backlogs/012` merges
+answer. This product cannot use it. `OWNER_EMAIL` is an address, `.harness/backlogs/018` merges
 two databases **by address**, the extension's identities are addresses, and `isOwner()` reads
 configuration rather than a row. One of those would have to become a lie.
 
@@ -87,7 +87,7 @@ same address is **proof** of it. When they meet, three landings were on the tabl
 Sessions already open on the cleared account are **not** revoked. Revoking them is the safer
 choice and it is not this change's call to make — it would sign the legitimate owner out of
 their other browser as a side effect of signing in. Recorded as a known limit rather than
-decided quietly; a later change may revisit it once `012` gives sessions one home.
+decided quietly; a later change may revisit it once `018` gives sessions one home.
 
 **This is the decision that email verification would dissolve.** A verified password row and a
 Google sign-in on one address are the same person, and nothing needs clearing. That is

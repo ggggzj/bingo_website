@@ -108,3 +108,58 @@ argument for adding to the pile while the plan is to empty it.
   Google address cannot sign in to the extension at all until this ships — accepted deliberately,
   because the path that exists for them today is a mailed link, and the mail is what 46 of 48
   people never opened.
+
+---
+
+## Folded in from ticket 015, 2026-09-18
+
+A second session ticketed this same work on 2026-09-17 as `015-sign-in-with-google-and-nothing-else`,
+not knowing this ticket existed, and drafted `openspec/changes/google-sign-in/` against it. That
+ticket is archived and this one survives — it is older, it carries the thirteen screenshots as the
+visual specification, and it was grounded against h1_checker's live `POST /auth/google` rather
+than assuming greenfield. Three things from it are worth keeping, and are easy to lose in a
+consolidation:
+
+### 1. Two doors, one address — and the two doors prove different things
+
+`POST /auth/register` is open and **does not verify the address**; that is why it reserves
+`OWNER_EMAIL` (`routes/auth.ts:99`). So a password row on `alice@gmail.com` is a *claim* on that
+address, possibly by somebody else. A Google sign-in on the same address is *proof* of it.
+
+**Decided: proof wins.** The Google sign-in reaches the existing account and **clears its
+password** — with **`OWNER_EMAIL` exempt**, because that password is the recovery path the owner
+chose to keep, and without the exemption the first thing this ships in production is the deletion
+of its own fallback. The person is told, on the page they land on, that the account now signs in
+with Google.
+
+Sessions already open on a cleared account are **not** revoked. Revoking is safer and is not this
+change's call — it would sign the legitimate owner out of their other browser as a side effect of
+signing in. Recorded as a known limit rather than decided quietly.
+
+Email verification would dissolve this whole question — a mailed link proves exactly what Google
+proves — and it is unavailable until the account merge, because this service cannot send mail at
+all. See `ROADMAP.md` 第二步 1.5.
+
+### 2. The null hash already lands safely, and needs a test rather than a fix
+
+`routes/auth.ts:142` already reads:
+
+```ts
+const matched = await verifyPassword(parsed.data.password, user?.passwordHash ?? DECOY_HASH);
+```
+
+`??` catches `null` as readily as the missing user it was written for, so once ticket 010 makes
+the column nullable, a password-less account is **already** refused with the same body and the
+same scrypt cost as anyone else — the timing channel that comment closes stays closed, with no
+code change.
+
+Nothing in the code says that is deliberate, so the next refactor can remove it silently. It needs
+a test: sign in against a password-less account, assert the same 401 body and that a hash was
+still computed.
+
+### 3. If the page ever hides the email form, the kept fallback still needs an address
+
+Settled here as "drawn but disabled", so this does not bite today. Recorded because the question
+came back twice on 2026-09-17: a fallback nobody can reach is not a fallback. If the form is ever
+removed from the page rather than disabled, `/login?password=1` rendering it unlinked is the cheap
+answer — and it is **not** a security boundary and must not be built as one.

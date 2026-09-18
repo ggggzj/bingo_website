@@ -17,7 +17,7 @@ every existing behaviour is unchanged.
 
 - [ ] 1.1 `lib/db/src/schema/auth.ts` — drop `.notNull()` from `passwordHash`, and replace the
       comment above it: the column is nullable because an identity proven by Google has no
-      password. Note in the same comment that `.harness/backlogs/012` needs this line too and
+      password. Note in the same comment that `.harness/backlogs/018` needs this line too and
       inherits it from here.
 - [ ] 1.2 `artifacts/api-server/src/lib/auth/store.ts` — `UserRecord.passwordHash` becomes
       `string | null`; `createUser` gains a sibling that creates a user without a password, and

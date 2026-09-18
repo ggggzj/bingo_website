@@ -25,7 +25,9 @@ between this and real users; Vercel rewrites `/api/*` to Railway, so the browser
 origin and the session cookie is unchanged; `isOwner()` reads the address from configuration,
 so the growth dashboard needs no change at all.
 
-Origin: `.harness/backlogs/015-sign-in-with-google-and-nothing-else.md`, serving
+Origin: `.harness/backlogs/011-one-way-in-and-it-is-google.md` and
+`.harness/backlogs/010-let-an-identity-exist-without-a-password.md` (the surviving tickets;
+`015` was folded into 011 on 2026-09-18 and archived), serving
 `ROADMAP.md` 第一步 3. Its counterpart is `../h1_checker/.harness/backlogs/014`, the extension's
 own Google sign-in on the pairing page — a different origin and a different service, which that
 repo's change lists as an explicit non-goal of its own work.
@@ -58,11 +60,11 @@ repo's change lists as an explicit non-goal of its own work.
   `/auth/register` was an earlier draft's plan and the owner reversed it.
 - **Password reset.** There is none in this repo and this change does not add one. A reset means
   sending mail and this service cannot send mail at all — no sender, no token table. Both exist
-  in `../h1_checker`, and `.harness/backlogs/012` moves this site onto that database, so building
+  in `../h1_checker`, and `.harness/backlogs/018` moves this site onto that database, so building
   a second sender here would be the same work twice. Queued in `ROADMAP.md` 第二步 1.5.
 - **Email verification for password sign-up.** Same reason, same timing. It is the right answer
   to §3's collision and it is unavailable until the merge.
-- **The account merge itself** (`.harness/backlogs/012`). This change makes a password-less row
+- **The account merge itself** (`.harness/backlogs/018`). This change makes a password-less row
   legal, which that one needs; it does not move a row or change a database.
 - **LinkedIn and Apple.** simplify.jobs offers all three; the owner asked for Google only.
 - **The home page redesign** (`ROADMAP.md` 第一步 4) and **the `/jobs` login wall** (第一步 5).
