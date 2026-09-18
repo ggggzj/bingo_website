@@ -13,6 +13,7 @@ import {
   sessionExpiry,
 } from "../lib/auth/session";
 import type { AuthStore, UserRecord } from "../lib/auth/store";
+import type { GoogleTokenVerifier } from "../lib/auth/google";
 
 // Long rather than fussy: length is the only password rule that reliably buys
 // anything, and character-class rules mostly buy "Password1!".
@@ -78,7 +79,25 @@ function attemptLimiter(max: number, windowMinutes: number) {
   });
 }
 
-export function createAuthRouter(store: AuthStore): IRouter {
+/**
+ * The default when a caller passes no verifier: refuse everything.
+ *
+ * Fail-closed on purpose. The alternative default — the real verifier — would
+ * mean any test that happened to post a token opened a socket to Google, which
+ * is the one thing `design.md` §7 says the suite must never do. Three of this
+ * router's four callers do not care about Google at all; they get this, and an
+ * accidental call fails loudly instead of quietly reaching the internet.
+ */
+const REFUSING_VERIFIER: GoogleTokenVerifier = {
+  async verify() {
+    return { ok: false, reason: "no Google verifier was given to this router" };
+  },
+};
+
+export function createAuthRouter(
+  store: AuthStore,
+  google: GoogleTokenVerifier = REFUSING_VERIFIER,
+): IRouter {
   const router: IRouter = Router();
 
   // Signing up is rarer than signing in and costs a row, so it gets the tighter one.
@@ -163,6 +182,62 @@ export function createAuthRouter(store: AuthStore): IRouter {
       res.json(describe(user));
     } catch (err) {
       req.log?.error({ err }, "Failed to sign in");
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  router.post("/google", signInLimiter, async (req, res) => {
+    // One answer for every failure, the way /login has one: an unreadable token,
+    // one minted for another application, and one Google will not vouch for the
+    // address of must be indistinguishable from outside. The reason goes to the
+    // log, which is ours.
+    const refuse = () =>
+      res.status(401).json({ error: "Could not verify that Google sign-in" });
+
+    // Capped for the reason /login caps a password: the whole string is handed to
+    // a parser, and an unbounded one is as much work as the sender cares to ask for.
+    const body = z
+      .object({ credential: z.string().min(1).max(8192) })
+      .safeParse(req.body);
+    if (!body.success) {
+      refuse();
+      return;
+    }
+
+    try {
+      const verified = await google.verify(body.data.credential);
+      if (!verified.ok) {
+        req.log?.warn({ reason: verified.reason }, "Refused a Google sign-in");
+        refuse();
+        return;
+      }
+
+      /* The address is Google's, not the caller's. Normalized the same way every
+         other route normalizes one, so `OWNER_EMAIL` and the unique index see the
+         same string they would from the form. */
+      const email = normalizeEmail(verified.email);
+      const now = new Date();
+
+      let user = await store.findUserByEmail(email);
+      let passwordCleared = false;
+
+      if (!user) {
+        user = await store.createPasswordlessUser(email);
+      } else if (user.passwordHash !== null && !isOwner(email)) {
+        /* Proof beats a claim. Sign-up does not verify an address, so a password
+           on this one may have been set by somebody else; Google has just proved
+           it belongs to whoever is here. The owner is exempt because that password
+           is the deliberate way into the dashboard when Google's own configuration
+           is wrong — clearing it here would delete the fallback on first use. */
+        await store.clearPassword(user.id);
+        passwordCleared = true;
+      }
+
+      await startSession(store, res, user, now);
+      await store.recordLogin(user.id, now);
+      res.json({ ...describe(user), passwordCleared });
+    } catch (err) {
+      req.log?.error({ err }, "Failed to sign in with Google");
       res.status(500).json({ error: "Internal server error" });
     }
   });

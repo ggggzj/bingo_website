@@ -37,22 +37,26 @@ Leaves the system working: the route exists in the spec and in generated code; n
 
 ## 3. The route, and the collision it has to resolve
 
+> **Order correction, made during the run.** These were listed 3.1 → 3.4 but 3.2 needs the
+> store method 3.3 adds (`clearPassword`), so they landed 3.3 → 3.1 → 3.2 → 3.4. The listing
+> order was wrong, not the work.
+
 Leaves the system working: Google sign-in works end to end from `curl`; the page does not offer
 it yet.
 
-- [ ] 3.1 `artifacts/api-server/src/routes/auth.ts` — `POST /auth/google` beside `/auth/login`,
+- [x] 3.1 `artifacts/api-server/src/routes/auth.ts` — `POST /auth/google` beside `/auth/login`,
       taking the verifier the way the router already takes the store. Verified claims → normalize
       the address → find or create (via `createPasswordlessUser`, which ticket 010 added) →
       `startSession` → `recordLogin` → the body `describe()` returns. The address comes from the
       claims; anything in the body is ignored. Rate-limited like its neighbours.
-- [ ] 3.2 `artifacts/api-server/src/routes/auth.ts` — the collision rule (`design.md` §4): a
+- [x] 3.2 `artifacts/api-server/src/routes/auth.ts` — the collision rule (`design.md` §4): a
       Google sign-in onto an address that already holds a password clears that password,
       **unless the address is listed in `OWNER_EMAIL`**, and the response says so, so the page
       can tell the person. Clearing goes through a store method, not a raw query.
-- [ ] 3.3 `artifacts/api-server/src/lib/auth/store.ts` + both implementations — the method 3.2
+- [x] 3.3 `artifacts/api-server/src/lib/auth/store.ts` + both implementations — the method 3.2
       needs to clear a password. `memory-store` and `drizzle-store` keep identical behaviour, as
       ticket 010 left them.
-- [ ] 3.4 `artifacts/api-server/src/routes/auth.test.ts` — against `memory-store` and a fake
+- [x] 3.4 `artifacts/api-server/src/routes/auth.test.ts` — against `memory-store` and a fake
       verifier. Tests: `a new Google address gets an account and a session`, `the same address
       twice is one account`, `an address in the body is ignored`, `a password account meeting
       its Google owner loses its password`, `the owner keeps their password`, `a refused token

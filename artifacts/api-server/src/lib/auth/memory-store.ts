@@ -43,6 +43,12 @@ export class InMemoryAuthStore implements AuthStore {
     return user;
   }
 
+  async clearPassword(userId: number): Promise<void> {
+    for (const user of this.users.values()) {
+      if (user.id === userId) user.passwordHash = null;
+    }
+  }
+
   async createSession(
     userId: number,
     tokenHash: string,

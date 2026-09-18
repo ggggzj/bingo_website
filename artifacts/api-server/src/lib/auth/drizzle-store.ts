@@ -57,6 +57,13 @@ export class DrizzleAuthStore implements AuthStore {
     return toRecord(row);
   }
 
+  async clearPassword(userId: number): Promise<void> {
+    await db
+      .update(usersTable)
+      .set({ passwordHash: null })
+      .where(eq(usersTable.id, userId));
+  }
+
   async createSession(
     userId: number,
     tokenHash: string,
