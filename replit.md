@@ -209,6 +209,15 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 
 ## Gotchas
 
+- **`coach.test.ts` runs on a frozen clock, and the instant is deliberate.** Two places
+  read the clock independently — the test file's `utcToday()` and the route's own at
+  `coach.ts:51` — and several tests build a fixture from the first then assert against
+  the second. A run crossing UTC midnight between them saw two different days and
+  failed, once, on 2026-09-11, passing on every re-run. `beforeEach` now freezes `Date`
+  at `2026-01-15T23:59:59.999Z`: the last millisecond of a UTC day, so the suite sits on
+  the boundary every run and a reintroduced live clock fails immediately instead of once
+  a quarter. Only `Date` is faked — faking timers would hang supertest.
+
 - **After editing `openapi.yaml`, run the codegen script.** The frontend imports
   generated hooks; nothing else regenerates them.
 - **Generated query hooks demand a `queryKey`** when you pass any query option. Pass

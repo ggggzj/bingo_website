@@ -6,7 +6,7 @@
 import express, { type Express } from "express";
 import cookieParser from "cookie-parser";
 import request from "supertest";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { applyGrade, freshReviewState } from "@workspace/coach-engine";
 import type { Problem } from "@workspace/coach-engine";
@@ -41,6 +41,22 @@ const BANK = Object.fromEntries(
   ),
 );
 
+/**
+ * The instant every test in this file runs at.
+ *
+ * Deliberately the last millisecond of a UTC day. Two places read the clock
+ * independently — this file's `utcToday()` and the route's own at
+ * `coach.ts:51` — and several tests build fixtures around the first, then
+ * assert against the second. A run that crossed UTC midnight between the two
+ * got two different days and failed; it did once, on 2026-09-11, and passed
+ * on every re-run, which is the worst shape a failure can have.
+ *
+ * Freezing removes the second read's independence. Freezing *here* means the
+ * suite sits on the boundary every run, so anything that reintroduces a live
+ * clock fails immediately rather than once a quarter.
+ */
+const FROZEN_NOW = new Date("2026-01-15T23:59:59.999Z");
+
 function utcToday(): string {
   return new Date().toISOString().slice(0, 10);
 }
@@ -60,9 +76,17 @@ describe("coach routes", () => {
   let app: Express;
 
   beforeEach(() => {
+    // Only `Date` is faked: supertest and Express need real timers, and faking
+    // those would hang every request in this file.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(FROZEN_NOW);
     auth = new InMemoryAuthStore();
     coach = new InMemoryCoachStore(BANK);
     app = testApp(auth, coach);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   /** Register through the real route and mirror the user into the coach
