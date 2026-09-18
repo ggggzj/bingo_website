@@ -49,6 +49,8 @@ export * from "./getCoachLogParams";
 export * from "./getJobsParams";
 export * from "./getStatsDailyParams";
 export * from "./getStatsRegistrationsParams";
+export * from "./googleAccount";
+export * from "./googleCredential";
 export * from "./healthStatus";
 export * from "./jobPosting";
 export * from "./jobPostingTier";

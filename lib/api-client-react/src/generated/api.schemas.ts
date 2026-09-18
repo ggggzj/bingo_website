@@ -21,6 +21,16 @@ export interface Account {
   isOwner: boolean;
 }
 
+export interface GoogleCredential {
+  /** Google's own field name for the ID token its button hands the page, kept so the page can pass the response through without renaming it. */
+  credential: string;
+}
+
+export type GoogleAccount = Account & {
+  /** True when this sign-in reached an account that already held a password and cleared it. A password set through open sign-up is a claim on an address; a Google sign-in is proof of it, so proof wins. The page tells the person rather than revoking a credential in silence. */
+  passwordCleared: boolean;
+};
+
 export interface Ok {
   ok: boolean;
 }

@@ -30,7 +30,7 @@ Leaves the system working: the verifier exists and is tested; no route calls it 
 
 Leaves the system working: the route exists in the spec and in generated code; nothing serves it.
 
-- [ ] 2.1 `lib/api-spec/openapi.yaml` — `POST /auth/google`, taking a single `credential` string
+- [x] 2.1 `lib/api-spec/openapi.yaml` — `POST /auth/google`, taking a single `credential` string
       and answering the account body `/auth/login` answers plus a flag saying whether a password
       was cleared, or 401. **Run codegen in this task** — nothing else regenerates the hooks and
       Zod schemas.

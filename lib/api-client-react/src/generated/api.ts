@@ -35,6 +35,8 @@ import type {
   GetJobsParams,
   GetStatsDailyParams,
   GetStatsRegistrationsParams,
+  GoogleAccount,
+  GoogleCredential,
   HealthStatus,
   JobsPage,
   Ok,
@@ -300,6 +302,93 @@ export const useLogIn = <
   TContext
 > => {
   return useMutation(getLogInMutationOptions(options));
+};
+
+/**
+ * Exchanges the ID token Google's button hands the page for a session. The address comes from the token's verified claims, never from the request body, so nothing the caller writes names a person. Every failure — an unreadable token, one minted for another application, one Google will not vouch for the address of — answers the same 401.
+ * @summary Sign in with Google
+ */
+export const getSignInWithGoogleUrl = () => {
+  return `/api/auth/google`;
+};
+
+export const signInWithGoogle = async (
+  googleCredential: GoogleCredential,
+  options?: RequestInit,
+): Promise<GoogleAccount> => {
+  return customFetch<GoogleAccount>(getSignInWithGoogleUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(googleCredential),
+  });
+};
+
+export const getSignInWithGoogleMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof signInWithGoogle>>,
+    TError,
+    { data: BodyType<GoogleCredential> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof signInWithGoogle>>,
+  TError,
+  { data: BodyType<GoogleCredential> },
+  TContext
+> => {
+  const mutationKey = ["signInWithGoogle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof signInWithGoogle>>,
+    { data: BodyType<GoogleCredential> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return signInWithGoogle(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SignInWithGoogleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof signInWithGoogle>>
+>;
+export type SignInWithGoogleMutationBody = BodyType<GoogleCredential>;
+export type SignInWithGoogleMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Sign in with Google
+ */
+export const useSignInWithGoogle = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof signInWithGoogle>>,
+    TError,
+    { data: BodyType<GoogleCredential> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof signInWithGoogle>>,
+  TError,
+  { data: BodyType<GoogleCredential> },
+  TContext
+> => {
+  return useMutation(getSignInWithGoogleMutationOptions(options));
 };
 
 /**

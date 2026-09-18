@@ -102,6 +102,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /auth/google:
+    post:
+      operationId: signInWithGoogle
+      tags: [auth]
+      summary: Sign in with Google
+      description: >-
+        Exchanges the ID token Google's button hands the page for a session. The
+        address comes from the token's verified claims, never from the request
+        body, so nothing the caller writes names a person. Every failure — an
+        unreadable token, one minted for another application, one Google will not
+        vouch for the address of — answers the same 401.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoogleCredential"
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoogleAccount"
+        "401":
+          description: The token could not be verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /auth/logout:
     post:
       operationId: logOut
@@ -569,6 +605,29 @@ components:
           description: >-
             Whether this account may see the growth dashboard. Read from the
             server's OWNER_EMAIL setting, never stored on the account.
+    GoogleCredential:
+      type: object
+      required: [credential]
+      properties:
+        credential:
+          type: string
+          description: >-
+            Google's own field name for the ID token its button hands the page,
+            kept so the page can pass the response through without renaming it.
+    GoogleAccount:
+      allOf:
+        - $ref: "#/components/schemas/Account"
+        - type: object
+          required: [passwordCleared]
+          properties:
+            passwordCleared:
+              type: boolean
+              description: >-
+                True when this sign-in reached an account that already held a
+                password and cleared it. A password set through open sign-up is a
+                claim on an address; a Google sign-in is proof of it, so proof
+                wins. The page tells the person rather than revoking a credential
+                in silence.
     Ok:
       type: object
       required: [ok]
