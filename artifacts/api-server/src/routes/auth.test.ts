@@ -21,6 +21,7 @@ import {
   sessionExpiry,
 } from "../lib/auth/session";
 import { createAuthRouter } from "./auth";
+import type { GoogleTokenVerifier } from "../lib/auth/google";
 
 const PASSWORD = "correct horse battery staple";
 
@@ -288,6 +289,201 @@ describe("an identity with no password", () => {
     await expect(
       store.createUser("google@example.com", await hashPassword(PASSWORD)),
     ).rejects.toThrow(/duplicate/);
+  });
+});
+
+describe("signing in with Google", () => {
+  /* The verifier is faked, deliberately and only here: what it does with a real
+     token is `google.test.ts`'s job, against locally minted ones. What these
+     prove is what the *route* does once an address has been vouched for — which
+     account it reaches, what it does to a password it finds there, and that a
+     refusal leaves nothing behind. */
+
+  let store: InMemoryAuthStore;
+
+  const vouchesFor = (email: string): GoogleTokenVerifier => ({
+    async verify() {
+      return { ok: true, email };
+    },
+  });
+  const refuses: GoogleTokenVerifier = {
+    async verify() {
+      return { ok: false, reason: "test refusal" };
+    },
+  };
+
+  function googleApp(verifier: GoogleTokenVerifier): Express {
+    const app = express();
+    app.use(express.json());
+    app.use(cookieParser());
+    app.use("/api/auth", createAuthRouter(store, verifier));
+    return app;
+  }
+
+  beforeEach(() => {
+    store = new InMemoryAuthStore();
+  });
+
+  it("a new Google address gets an account and a session", async () => {
+    const agent = request.agent(googleApp(vouchesFor("new@usc.edu")));
+
+    const signedIn = await agent
+      .post("/api/auth/google")
+      .send({ credential: "a token the fake verifier accepts" });
+
+    expect(signedIn.status).toBe(200);
+    expect(signedIn.body).toMatchObject({ email: "new@usc.edu", passwordCleared: false });
+    expect(signedIn.headers["set-cookie"]).toBeDefined();
+
+    const me = await agent.get("/api/auth/me");
+    expect(me.status).toBe(200);
+    expect(me.body).toMatchObject({ email: "new@usc.edu" });
+
+    const stored = await store.findUserByEmail("new@usc.edu");
+    expect(stored?.passwordHash).toBeNull();
+  });
+
+  it("the same address twice is one account", async () => {
+    const app = googleApp(vouchesFor("twice@usc.edu"));
+    const first = await request(app).post("/api/auth/google").send({ credential: "x" });
+    const second = await request(app).post("/api/auth/google").send({ credential: "x" });
+
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect((await store.findUserByEmail("twice@usc.edu"))?.id).toBeDefined();
+    /* One row, not two: creating a second would be a silent duplicate that only
+       shows up later as "my saved jobs disappeared". */
+    expect(await store.findUserByEmail("TWICE@usc.edu")).toBeNull();
+  });
+
+  it("the address in the body is ignored", async () => {
+    /* Nothing the caller writes may name a person. If this ever regresses, the
+       endpoint becomes a way to sign in as anybody by typing their address. */
+    const app = googleApp(vouchesFor("real@usc.edu"));
+
+    const signedIn = await request(app)
+      .post("/api/auth/google")
+      .send({ credential: "x", email: "attacker@example.com" });
+
+    expect(signedIn.body).toMatchObject({ email: "real@usc.edu" });
+    expect(await store.findUserByEmail("attacker@example.com")).toBeNull();
+  });
+
+  it("capitalisation does not make a second account", async () => {
+    await store.createUser("mixed@usc.edu", await hashPassword(PASSWORD));
+    const app = googleApp(vouchesFor("Mixed@USC.edu"));
+
+    const signedIn = await request(app).post("/api/auth/google").send({ credential: "x" });
+
+    expect(signedIn.status).toBe(200);
+    expect(signedIn.body).toMatchObject({ email: "mixed@usc.edu" });
+  });
+
+  it("a password account meeting its Google owner loses its password", async () => {
+    await store.createUser("claimed@usc.edu", await hashPassword(PASSWORD));
+    const app = googleApp(vouchesFor("claimed@usc.edu"));
+
+    const signedIn = await request(app).post("/api/auth/google").send({ credential: "x" });
+
+    expect(signedIn.status).toBe(200);
+    expect(signedIn.body).toMatchObject({ passwordCleared: true });
+    expect((await store.findUserByEmail("claimed@usc.edu"))?.passwordHash).toBeNull();
+
+    const withOldPassword = await request(app)
+      .post("/api/auth/login")
+      .send({ email: "claimed@usc.edu", password: PASSWORD });
+    expect(withOldPassword.status).toBe(401);
+  });
+
+  it("the owner keeps their password", async () => {
+    /* Without this exemption the first thing this ships in production is the
+       deletion of the only way into the dashboard when Google is misconfigured. */
+    const previous = process.env["OWNER_EMAIL"];
+    process.env["OWNER_EMAIL"] = "boss@example.com";
+    try {
+      await store.createUser("boss@example.com", await hashPassword(PASSWORD));
+      const app = googleApp(vouchesFor("boss@example.com"));
+
+      const signedIn = await request(app).post("/api/auth/google").send({ credential: "x" });
+      expect(signedIn.body).toMatchObject({ isOwner: true, passwordCleared: false });
+
+      const stillWorks = await request(app)
+        .post("/api/auth/login")
+        .send({ email: "boss@example.com", password: PASSWORD });
+      expect(stillWorks.status).toBe(200);
+    } finally {
+      if (previous === undefined) delete process.env["OWNER_EMAIL"];
+      else process.env["OWNER_EMAIL"] = previous;
+    }
+  });
+
+  it("a refused token creates nothing and leaves no session", async () => {
+    const agent = request.agent(googleApp(refuses));
+
+    const refused = await agent.post("/api/auth/google").send({ credential: "x" });
+
+    expect(refused.status).toBe(401);
+    expect(refused.headers["set-cookie"]).toBeUndefined();
+    expect((await agent.get("/api/auth/me")).status).toBe(401);
+  });
+
+  it("does not share the password form's attempt budget", async () => {
+    /* The password limiter allows ten attempts per quarter hour per IP, which is
+       right when attempts mean guessing. A Google token offers nothing to guess,
+       and this is the only way in — behind a campus NAT, ten sign-ins in fifteen
+       minutes is ordinary traffic, not an attack. Eleven consecutive sign-ins
+       from one address must all succeed. */
+    const app = googleApp(vouchesFor("crowded@usc.edu"));
+
+    for (let attempt = 0; attempt < 11; attempt++) {
+      const answer = await request(app)
+        .post("/api/auth/google")
+        .send({ credential: "x" });
+      expect(answer.status, `attempt ${attempt + 1}`).toBe(200);
+    }
+  });
+
+  it("losing the race to create an account still signs the person in", async () => {
+    /* Two sign-ins for one new address can both find nothing and both insert;
+       the loser hits `users_email_unique`, and left alone that is a 500 on a
+       sign-in route.
+       Driven directly rather than with `Promise.all`, because the in-memory
+       store cannot lose this race — its check and its insert have no `await`
+       between them, so on one thread it is atomic. Written that way the test
+       passed with the fix removed, which is worse than no test. This store
+       loses the way Postgres does: the row appears, then the insert is refused. */
+    const racy = Object.create(store) as InMemoryAuthStore;
+    racy.createPasswordlessUser = async (email: string) => {
+      await store.createPasswordlessUser(email); // the other request got there first
+      throw new Error(
+        'duplicate key value violates unique constraint "users_email_unique"',
+      );
+    };
+
+    const app = express();
+    app.use(express.json());
+    app.use(cookieParser());
+    app.use("/api/auth", createAuthRouter(racy, vouchesFor("race@usc.edu")));
+
+    const signedIn = await request(app)
+      .post("/api/auth/google")
+      .send({ credential: "x" });
+
+    expect(signedIn.status).toBe(200);
+    expect(signedIn.body).toMatchObject({ email: "race@usc.edu" });
+    expect(signedIn.headers["set-cookie"]).toBeDefined();
+  });
+
+  it("a router given no verifier refuses rather than reaching Google", async () => {
+    /* The fail-closed default. If it ever defaults to the real verifier instead,
+       some unrelated test will start opening a socket and nobody will notice. */
+    const app = express();
+    app.use(express.json());
+    app.use(cookieParser());
+    app.use("/api/auth", createAuthRouter(store));
+
+    const refused = await request(app).post("/api/auth/google").send({ credential: "x" });
+    expect(refused.status).toBe(401);
   });
 });
 

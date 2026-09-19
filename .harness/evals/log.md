@@ -5,3 +5,8 @@
 - 2026-09-18T12:29:50-07:00 PASS 2026-09-18-a-password-less-identity · pocock @ 21297d5 (opus-5)
 - 2026-09-18T12:29:50-07:00 MIXED 2026-09-18-a-password-less-identity · production @ 21297d5 (opus-5)
 - 2026-09-18T12:38:55-07:00 PASS 2026-09-18-a-password-less-identity · google @ d68bd8f (opus-5)
+- 2026-09-18T16:23:12-07:00 PASS 2026-09-18-one-way-in-and-it-is-google · google @ 331bcfa (opus-5)
+- 2026-09-18T16:23:12-07:00 PASS 2026-09-18-one-way-in-and-it-is-google · willison @ 331bcfa (opus-5)
+- 2026-09-18T16:23:12-07:00 PASS 2026-09-18-one-way-in-and-it-is-google · ponytail @ 331bcfa (opus-5)
+- 2026-09-18T16:23:13-07:00 FAIL 2026-09-18-one-way-in-and-it-is-google · production @ 331bcfa (opus-5)
+- 2026-09-18T18:17:14-07:00 PASS 2026-09-18-one-way-in-and-it-is-google · production @ cc487da (opus-5)

@@ -47,6 +47,37 @@ export const LogInResponse = zod.object({
 });
 
 /**
+ * Exchanges the ID token Google's button hands the page for a session. The address comes from the token's verified claims, never from the request body, so nothing the caller writes names a person. Every failure — an unreadable token, one minted for another application, one Google will not vouch for the address of — answers the same 401.
+ * @summary Sign in with Google
+ */
+export const SignInWithGoogleBody = zod.object({
+  credential: zod
+    .string()
+    .describe(
+      "Google's own field name for the ID token its button hands the page, kept so the page can pass the response through without renaming it.",
+    ),
+});
+
+export const SignInWithGoogleResponse = zod
+  .object({
+    email: zod.string(),
+    isOwner: zod
+      .boolean()
+      .describe(
+        "Whether this account may see the growth dashboard. Read from the server's OWNER_EMAIL setting, never stored on the account.",
+      ),
+  })
+  .and(
+    zod.object({
+      passwordCleared: zod
+        .boolean()
+        .describe(
+          "True when this sign-in reached an account that already held a password and cleared it. A password set through open sign-up is a claim on an address; a Google sign-in is proof of it, so proof wins. The page tells the person rather than revoking a credential in silence.",
+        ),
+    }),
+  );
+
+/**
  * Ends the session. Answers the same whether or not there was one.
  * @summary Sign out
  */

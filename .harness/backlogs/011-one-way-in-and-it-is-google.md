@@ -1,7 +1,14 @@
 ---
 id: 011
 title: One way in, and for now it is Google — the page the whole funnel starts at
-status: open
+status: picked-up
+produced: openspec/changes/2026-09-18-one-way-in-and-it-is-google/ — proposal drafted
+  2026-09-18, awaiting owner approval. Two of this ticket's recorded positions were reversed
+  by the owner the same day and are cited in that proposal: the page carries Google only (the
+  drawn-but-disabled password area is out), and this server verifies the token rather than
+  posting it next door — this ticket's reason for the latter did not survive the schema, see
+  the change's design.md §2. Supersedes the deleted openspec/changes/google-sign-in/, which
+  was drafted against the archived ticket 015.
 origin: Owner decision 2026-09-13, from thirteen screenshots of Simplify's onboarding —
   "我希望 welcome sign in/up 的界面是图一这样的（目前先只支持 google）". Two calls were
   settled at the same time and are recorded below: this lands on **this site**, not the

@@ -44,6 +44,8 @@ dashboard that only the owner can see.
 | `STATS_API_BASE_URL` | api-server | Origin of the extension's API, e.g. `https://h1bchecker-production.up.railway.app` |
 | `STATS_TOKEN` | api-server | Must match `STATS_TOKEN` on that server. Server-side only; never sent to a browser. |
 | `TRUST_PROXY` | api-server | Proxies in front of us. Defaults to 1 in production, 0 elsewhere — see Gotchas. |
+| `GOOGLE_CLIENT_ID` | api-server | The OAuth client `POST /auth/google` checks a token's `aud` against. **Unset means nobody can sign in with Google** — the route refuses rather than skipping the check. |
+| `VITE_GOOGLE_CLIENT_ID` | landing (build time) | The same value, for Google's library. Public by design. Unset and `/login` shows the password form instead of a button that cannot work. |
 
 ### Setting up the owner
 
@@ -88,6 +90,9 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   software title is and which class it names, `location.ts` reads a country out of a
   location string, `marker-store.ts` is the Postgres half of the "what had I already
   seen" seam. The page is `artifacts/landing/src/pages/dashboard/NewGradList.tsx`.
+- **Google sign-in:** `artifacts/api-server/src/lib/auth/google.ts` is the only place a
+  token is verified; `artifacts/landing/src/components/auth/GoogleSignInButton.tsx` is the
+  only place one is asked for.
 - **Web pages:** `artifacts/landing/src/pages/` — `Home.tsx`, `Login.tsx`,
   `Account.tsx`, `Jobs.tsx`; `src/hooks/use-auth.ts` asks the server who you are.
 - **The logged-in area:** `artifacts/landing/src/pages/dashboard/` — `Shell.tsx` (the
@@ -294,7 +299,55 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   timing which addresses signed up with Google. The comment at the call site carries that
   reason for exactly this reason.
 
+- **Signing in is Google, and the ID-token flow rather than the redirect one.** The page
+  gets a token from Google's library and posts it to `POST /api/auth/google`; the server
+  verifies it against Google's published keys (`lib/auth/google.ts`, via `jose`) and starts
+  the same session `/auth/login` does. Taking only `email`, `profile` and `openid` means no
+  redirect URI, no client secret and **no Google review** — simplify.jobs uses the redirect
+  flow because it also asks for Gmail scopes, and we do not. The JWKS location comes from
+  Google's discovery document rather than a constant, because it is theirs to move.
+
+  **Verification happens here rather than in `../h1_checker`**, whose `/auth/google` is live
+  and would have meant one verifier instead of two. It was not chosen because
+  `sessions.user_id` points at *this* database's `users`: a signed-in browser on this origin
+  needs a local row whoever verified the token, so routing through there would have produced
+  two rows per person rather than one. After `.harness/backlogs/018` merges the databases,
+  one of the two verifiers can go.
+
+  **Keyed on the address, not Google's `sub`.** `sub` is the stable identifier and the
+  textbook choice; this product cannot use it, because `OWNER_EMAIL` is an address, `018`
+  merges by address, and the extension's identities are addresses. The cost: somebody who
+  changes the address on their Google account arrives as a new person.
+
+- **A Google sign-in onto an address that already has a password clears that password —
+  except the owner's.** Sign-up does not verify an address, so a password on one is a
+  *claim*; a Google sign-in is *proof*, and proof wins. `OWNER_EMAIL` is exempt because that
+  password is the way into the dashboard when Google's own configuration is wrong, and
+  clearing it would delete the fallback on first use. The person is told with a toast rather
+  than finding out next time they try.
+
+  **Known limit:** sessions already open on a cleared account are *not* revoked. Revoking is
+  safer and would sign the legitimate owner out of their other browser as a side effect of
+  signing in, so it was left rather than decided quietly.
+
 ## Gotchas
+
+- **`/login?password=1` is the email form, and nothing links to it.** The page carries one
+  Google control by decision (2026-09-17). The form is how the owner gets in when Google is
+  misconfigured, and how the identities that still hold passwords would sign in. It is **not
+  a security boundary and must not be built as one** — the routes are rate-limited and answer
+  401 the same either way; the parameter hides a form from people not looking for it, and
+  anyone reading the bundle can find it.
+
+- **One Google client serves both this site and the extension**, so `aud` no longer separates
+  the two surfaces: a token minted for one is valid at the other. Both are ours and `018`
+  makes them one identity, so the blast radius is small — but it is no longer a boundary
+  between them, only against every other application. A second client would restore it.
+
+- **Nobody can sign in until two console actions are done**, and neither is code:
+  `http://localhost:5173` and `https://bingocareer.com` must be Authorized JavaScript origins
+  on the client, and the app must be moved from Testing to Production. Until then sign-in
+  fails in a way that reads like a bug rather than a configuration state.
 
 - **`coach.test.ts` runs on a frozen clock, and the instant is deliberate.** Two places
   read the clock independently — the test file's `utcToday()` and the route's own at

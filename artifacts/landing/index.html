@@ -15,6 +15,17 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--
+      Google Identity Services, for the sign-in button on /login.
+
+      The first external script this page has ever loaded, and it is Google's
+      rather than ours on purpose: a button we drew asking for a Google address
+      is the shape of a phishing page even when the intent is honest, and only
+      Google's own library can hand the page a real ID token. There is no CSP on
+      this site to widen; if one is ever added, accounts.google.com belongs in it.
+    -->
+    <link rel="preconnect" href="https://accounts.google.com">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>
     <div id="root"></div>

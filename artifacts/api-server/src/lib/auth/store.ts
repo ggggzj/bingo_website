@@ -38,6 +38,16 @@ export interface AuthStore {
    */
   createPasswordlessUser(email: string): Promise<UserRecord>;
 
+  /**
+   * Take the password off an account, leaving the account itself alone.
+   *
+   * Used when a Google sign-in proves an address that already held a password:
+   * the password was a *claim* on that address, made through a sign-up form that
+   * verifies nothing, and proof beats a claim. Idempotent — clearing an account
+   * that has none is a no-op, not an error.
+   */
+  clearPassword(userId: number): Promise<void>;
+
   createSession(
     userId: number,
     tokenHash: string,

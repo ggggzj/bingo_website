@@ -7,6 +7,7 @@ import { DrizzleMarkerStore } from "../lib/new-grad/marker-store";
 import { createUpstreamStats } from "../lib/stats/upstream";
 import healthRouter from "./health";
 import { createAuthRouter } from "./auth";
+import { createGoogleVerifier } from "../lib/auth/google";
 import { createCoachRouter } from "./coach";
 import { createJobsRouter } from "./jobs";
 import { createNewGradRouter } from "./new-grad";
@@ -21,7 +22,7 @@ const markerStore = new DrizzleMarkerStore();
 const router: IRouter = Router();
 
 router.use(healthRouter);
-router.use("/auth", createAuthRouter(authStore));
+router.use("/auth", createAuthRouter(authStore, createGoogleVerifier()));
 router.use("/stats", createStatsRouter(authStore, createUpstreamStats()));
 // Public and identity-free — no auth store, because it reads nothing about a user.
 router.use("/jobs", createJobsRouter(createUpstreamJobs()));
