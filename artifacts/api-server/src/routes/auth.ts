@@ -103,6 +103,27 @@ export function createAuthRouter(
   // Signing up is rarer than signing in and costs a row, so it gets the tighter one.
   const signUpLimiter = attemptLimiter(10, 60);
   const signInLimiter = attemptLimiter(10, 15);
+  /*
+   * Google gets its own, and a far looser one, for two reasons the password
+   * limiter's own comment explains by contrast.
+   *
+   * It says the point of ten-in-fifteen is that "a password is only as strong as
+   * the number of guesses someone gets". A Google token offers nothing to guess:
+   * it verifies against Google's published keys or it does not, and checking one
+   * is a cached-key RSA verification rather than a deliberately slow scrypt. So
+   * the limit here protects far less.
+   *
+   * And it now costs far more. This is the only way in, and the limiter keys on
+   * IP — which on a university campus is one NAT in front of everybody. At ten
+   * per fifteen minutes the eleventh student to sign in from campus wifi is told
+   * "too many attempts" for something nobody did wrong. That audience is the
+   * product's stated one.
+   *
+   * Still limited rather than open: an unauthenticated endpoint that does
+   * asymmetric crypto is worth a ceiling. The ceiling is just set where a shared
+   * egress is normal traffic instead of an attack.
+   */
+  const googleLimiter = attemptLimiter(60, 15);
 
   router.post("/register", signUpLimiter, async (req, res) => {
     const parsed = credentials.safeParse(req.body);
@@ -186,7 +207,7 @@ export function createAuthRouter(
     }
   });
 
-  router.post("/google", signInLimiter, async (req, res) => {
+  router.post("/google", googleLimiter, async (req, res) => {
     // One answer for every failure, the way /login has one: an unreadable token,
     // one minted for another application, and one Google will not vouch for the
     // address of must be indistinguishable from outside. The reason goes to the
@@ -222,7 +243,20 @@ export function createAuthRouter(
       let passwordCleared = false;
 
       if (!user) {
-        user = await store.createPasswordlessUser(email);
+        /* Two sign-ins for the same new address can both arrive here before
+           either has inserted. The loser hits `users_email_unique` and, left
+           alone, answers 500 on a sign-in route. Re-reading is the whole fix:
+           by the time the insert failed the row exists. */
+        /* Two sign-ins for the same new address can both arrive here before
+           either has inserted. The loser hits `users_email_unique` and, left
+           alone, answers 500 on a sign-in route. Re-reading is the whole fix:
+           by the time the insert failed the row exists. */
+        try {
+          user = await store.createPasswordlessUser(email);
+        } catch (err) {
+          user = await store.findUserByEmail(email);
+          if (!user) throw err;
+        }
       } else if (user.passwordHash !== null && !isOwner(email)) {
         /* Proof beats a claim. Sign-up does not verify an address, so a password
            on this one may have been set by somebody else; Google has just proved

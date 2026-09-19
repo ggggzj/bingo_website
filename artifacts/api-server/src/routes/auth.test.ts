@@ -427,6 +427,53 @@ describe("signing in with Google", () => {
     expect((await agent.get("/api/auth/me")).status).toBe(401);
   });
 
+  it("does not share the password form's attempt budget", async () => {
+    /* The password limiter allows ten attempts per quarter hour per IP, which is
+       right when attempts mean guessing. A Google token offers nothing to guess,
+       and this is the only way in — behind a campus NAT, ten sign-ins in fifteen
+       minutes is ordinary traffic, not an attack. Eleven consecutive sign-ins
+       from one address must all succeed. */
+    const app = googleApp(vouchesFor("crowded@usc.edu"));
+
+    for (let attempt = 0; attempt < 11; attempt++) {
+      const answer = await request(app)
+        .post("/api/auth/google")
+        .send({ credential: "x" });
+      expect(answer.status, `attempt ${attempt + 1}`).toBe(200);
+    }
+  });
+
+  it("losing the race to create an account still signs the person in", async () => {
+    /* Two sign-ins for one new address can both find nothing and both insert;
+       the loser hits `users_email_unique`, and left alone that is a 500 on a
+       sign-in route.
+       Driven directly rather than with `Promise.all`, because the in-memory
+       store cannot lose this race — its check and its insert have no `await`
+       between them, so on one thread it is atomic. Written that way the test
+       passed with the fix removed, which is worse than no test. This store
+       loses the way Postgres does: the row appears, then the insert is refused. */
+    const racy = Object.create(store) as InMemoryAuthStore;
+    racy.createPasswordlessUser = async (email: string) => {
+      await store.createPasswordlessUser(email); // the other request got there first
+      throw new Error(
+        'duplicate key value violates unique constraint "users_email_unique"',
+      );
+    };
+
+    const app = express();
+    app.use(express.json());
+    app.use(cookieParser());
+    app.use("/api/auth", createAuthRouter(racy, vouchesFor("race@usc.edu")));
+
+    const signedIn = await request(app)
+      .post("/api/auth/google")
+      .send({ credential: "x" });
+
+    expect(signedIn.status).toBe(200);
+    expect(signedIn.body).toMatchObject({ email: "race@usc.edu" });
+    expect(signedIn.headers["set-cookie"]).toBeDefined();
+  });
+
   it("a router given no verifier refuses rather than reaching Google", async () => {
     /* The fail-closed default. If it ever defaults to the real verifier instead,
        some unrelated test will start opening a socket and nobody will notice. */
