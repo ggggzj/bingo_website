@@ -138,6 +138,88 @@ export const GetJobsResponse = zod.object({
 });
 
 /**
+ * Built from several /jobs upstream queries, merged and narrowed here. The upstream takes one title substring and cannot express (software AND early-career MINUS seniority), so the terms go out one at a time as a coarse net and the precise test runs on this server.
+Owner-only. Every other caller gets 404, never 403 — the same refusal the coach routes make, so the route's existence gives nothing away.
+Reading this list never advances the caller's marker. What is new stays new until POST /new-grad-list/ack, so a reload cannot spend the answer.
+ * @summary The owner's list of US early-career software postings
+ */
+export const GetNewGradListResponse = zod.object({
+  target_class_year: zod
+    .number()
+    .describe(
+      "The class this list is fenced to. Configuration, not a literal.",
+    ),
+  postings: zod.array(
+    zod
+      .object({
+        job_id: zod.number(),
+        employer_name: zod.string(),
+        title: zod.string(),
+        url: zod
+          .string()
+          .nullish()
+          .describe(
+            "Absent when upstream withheld it, which it does for any scheme that is not http or https. A card with no url renders no apply link.",
+          ),
+        location: zod.string().nullish(),
+        is_remote: zod.boolean(),
+        posted_at: zod.string().nullish(),
+        tier: zod.enum(["strong", "weak"]),
+        total_h1b_certified: zod.number(),
+        last_active_year: zod.number().nullish(),
+        no_sponsor: zod
+          .boolean()
+          .nullish()
+          .describe(
+            "true = this posting's text refuses sponsorship. false = its text was read and does not refuse. null = NOBODY HAS READ IT YET, which is not a refusal and must never be rendered as one.",
+          ),
+      })
+      .describe(
+        "One open role. Carries two sponsorship facts that must not be merged: tier \/ total_h1b_certified \/ last_active_year are claims about the EMPLOYER, from certified DOL filings; no_sponsor is a claim about THIS POSTING'S own description. They can disagree for one company.",
+      )
+      .and(
+        zod.object({
+          class_year: zod
+            .enum(["target", "none"])
+            .describe(
+              "Whether the title names the class this list is for. `other` never appears: a posting naming a different class is absent, not ranked low. Sorts first; it is a property of the posting, never a score about the reader.",
+            ),
+          location_read: zod
+            .enum(["us", "unknown"])
+            .describe(
+              "`elsewhere` never appears — those are absent. `unknown` means the location string could not be read and the row SHALL be marked, not assumed American.",
+            ),
+          is_new: zod
+            .boolean()
+            .describe(
+              "First seen upstream after the caller's last acknowledgement.",
+            ),
+        }),
+      )
+      .describe(
+        "A posting on the owner's list. It IS a JobPosting — same shape, so the component that renders the two sponsorship facts is imported rather than re-implemented — plus what this list knows that browsing does not.",
+      ),
+  ),
+  closed: zod.array(
+    zod
+      .object({
+        job_id: zod.number(),
+        employer_name: zod.string(),
+        title: zod.string(),
+        url: zod.string().nullish(),
+      })
+      .describe(
+        "A posting that was on this list at the last acknowledgement and is no longer open. Carried as its own shape because the upstream cannot return it — browsing serves open postings only, so a closed one is knowable only from what we recorded when it was listed.",
+      ),
+  ),
+  board_note: zod
+    .string()
+    .describe(
+      "What this list cannot see, in words the page shows verbatim. Employers running their own careers sites are not among the boards behind it, and a reader who does not know that will read an absence as an answer.",
+    ),
+});
+
+/**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
  * @summary Growth totals (owner only)
  */

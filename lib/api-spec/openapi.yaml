@@ -189,6 +189,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /new-grad-list:
+    get:
+      operationId: getNewGradList
+      tags: [new-grad-list]
+      summary: The owner's list of US early-career software postings
+      description: >-
+        Built from several /jobs upstream queries, merged and narrowed here. The
+        upstream takes one title substring and cannot express (software AND
+        early-career MINUS seniority), so the terms go out one at a time as a
+        coarse net and the precise test runs on this server.
+
+        Owner-only. Every other caller gets 404, never 403 — the same refusal the
+        coach routes make, so the route's existence gives nothing away.
+
+        Reading this list never advances the caller's marker. What is new stays
+        new until POST /new-grad-list/ack, so a reload cannot spend the answer.
+      responses:
+        "200":
+          description: The list, what is new in it, and what has closed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewGradList"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /new-grad-list/ack:
+    post:
+      operationId: ackNewGradList
+      tags: [new-grad-list]
+      summary: Acknowledge the list, so what is new now stops being new
+      description: >-
+        Advances the caller's marker and records what was listed. Deliberately a
+        separate call from the GET: advancing on render would mean a stray reload
+        or a second tab silently consumed the one thing this page is for.
+      responses:
+        "204":
+          description: Acknowledged
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /stats:
     get:
       operationId: getStatsTotals
@@ -620,6 +667,68 @@ components:
             true = this posting's text refuses sponsorship. false = its text was
             read and does not refuse. null = NOBODY HAS READ IT YET, which is not
             a refusal and must never be rendered as one.
+    NewGradPosting:
+      description: >-
+        A posting on the owner's list. It IS a JobPosting — same shape, so the
+        component that renders the two sponsorship facts is imported rather than
+        re-implemented — plus what this list knows that browsing does not.
+      allOf:
+        - $ref: "#/components/schemas/JobPosting"
+        - type: object
+          required: [class_year, location_read, is_new]
+          properties:
+            class_year:
+              type: string
+              enum: [target, none]
+              description: >-
+                Whether the title names the class this list is for. `other` never
+                appears: a posting naming a different class is absent, not ranked
+                low. Sorts first; it is a property of the posting, never a score
+                about the reader.
+            location_read:
+              type: string
+              enum: [us, unknown]
+              description: >-
+                `elsewhere` never appears — those are absent. `unknown` means the
+                location string could not be read and the row SHALL be marked, not
+                assumed American.
+            is_new:
+              type: boolean
+              description: First seen upstream after the caller's last acknowledgement.
+    NewGradClosed:
+      type: object
+      description: >-
+        A posting that was on this list at the last acknowledgement and is no
+        longer open. Carried as its own shape because the upstream cannot return
+        it — browsing serves open postings only, so a closed one is knowable only
+        from what we recorded when it was listed.
+      required: [job_id, employer_name, title]
+      properties:
+        job_id: { type: integer }
+        employer_name: { type: string }
+        title: { type: string }
+        url: { type: [string, "null"] }
+    NewGradList:
+      type: object
+      required: [target_class_year, postings, closed, board_note]
+      properties:
+        target_class_year:
+          type: integer
+          description: The class this list is fenced to. Configuration, not a literal.
+        postings:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewGradPosting"
+        closed:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewGradClosed"
+        board_note:
+          type: string
+          description: >-
+            What this list cannot see, in words the page shows verbatim. Employers
+            running their own careers sites are not among the boards behind it, and
+            a reader who does not know that will read an absence as an answer.
     StatsTotals:
       type: object
       required:

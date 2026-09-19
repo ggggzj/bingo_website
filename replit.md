@@ -75,13 +75,19 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 - **API contract, source of truth:** `lib/api-spec/openapi.yaml`. Edit it, then run the
   codegen script — `lib/api-client-react/src/generated` and `lib/api-zod/src/generated`
   are generated and should never be edited by hand.
-- **DB schema, source of truth:** `lib/db/src/schema/` (`auth.ts`, `coach.ts`).
+- **DB schema, source of truth:** `lib/db/src/schema/` (`auth.ts`, `coach.ts`,
+  `new-grad.ts`).
 - **Auth:** `artifacts/api-server/src/lib/auth/` — `password.ts` (scrypt),
   `session.ts` (cookie + token hashing), `owner.ts` (who the owner is),
   `store.ts` (the storage interface) with `drizzle-store.ts` and `memory-store.ts`.
   Routes in `src/routes/auth.ts`.
 - **Dashboard data:** `artifacts/api-server/src/routes/stats.ts` is the gate;
   `src/lib/stats/upstream.ts` is the only file that reads or sends `STATS_TOKEN`.
+- **The owner's new-grad list:** `artifacts/api-server/src/routes/new-grad.ts` is the
+  gate and the assembly; `src/lib/new-grad/titles.ts` decides what an early-career
+  software title is and which class it names, `location.ts` reads a country out of a
+  location string, `marker-store.ts` is the Postgres half of the "what had I already
+  seen" seam. The page is `artifacts/landing/src/pages/dashboard/NewGradList.tsx`.
 - **Web pages:** `artifacts/landing/src/pages/` — `Home.tsx`, `Login.tsx`,
   `Account.tsx`, `Jobs.tsx`; `src/hooks/use-auth.ts` asks the server who you are.
 - **The logged-in area:** `artifacts/landing/src/pages/dashboard/` — `Shell.tsx` (the
@@ -201,6 +207,49 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   dropped by hand with one `drop table waitlist;`, deliberately not
   `pnpm --filter @workspace/db run push`, which reconciles the whole schema and would
   carry any drift along with it.
+
+### The owner's new-grad list, 2026-09-18
+
+- **Twelve terms where the public page sends one.** `/jobs`'s seniority control sends
+  `title=new grad` as a single substring and its spec states the cost outright. Against
+  the owner's own 376 US rows that reaches 55; the 321 it misses are titled
+  `Entry Level Java Developer Associate`, `Associate Software Engineer`,
+  `EFA Network Software Engineer 1`. So this list asks the upstream **one question per
+  early-career term** — fourteen requests per page load, pinned by a test — and
+  intersects them with a software test and a seniority exclusion **here**, because
+  `/api/postings` takes one `title` matched as `ilike` and cannot express a conjunction.
+  The fan-out is deliberate and temporary: when `.harness/backlogs/016` opens this to
+  every user the query belongs upstream, and this is what gets deleted.
+- **It filters and never labels.** No seniority is stored, none is rendered, and the page
+  says it is a title search — the line `openspec/specs/jobs-page/spec.md` draws, which is
+  between narrowing and asserting rather than between one term and twelve. That spec is
+  not amended.
+- **The class year fences and sorts; it is not the filter.** 8 of the owner's 376 titles
+  contain `2027`, one contains `2026`, and 367 contain no year at all. Filtering on the
+  year would be an eight-row page. So a title naming another class is excluded, one
+  naming the target sorts first with its reason on the row, and one naming no year is
+  listed. `TARGET_CLASS_YEAR` is a constant: this page outlives one hiring season.
+- **Location is three states because the data has three.** There is no country upstream
+  (`../h1_checker/.harness/backlogs/011` is still open), only the string a provider
+  wrote. Reads-as-US is listed, plainly-elsewhere is dropped, and unreadable is listed
+  **and marked** — the same 是/否/? the owner's own spreadsheet settled on. An
+  unreadable string must never resolve to US; there is a test whose only job is that.
+- **"New since you last looked" is a stored snapshot of rows, not a timestamp.** Two
+  upstream facts force it: the browse route returns no first-seen field, and it returns
+  **open postings only** — so a posting that closed is simply absent, and absence cannot
+  be told from never having existed. `new_grad_seen` holds enough of each listed posting
+  to render a row that has since closed. It is a snapshot for comparison, not a second
+  copy of the feed.
+- **Rendering never advances the marker.** `POST /new-grad-list/ack` does, and it
+  recomputes the list rather than trusting what the caller sends. Advancing on render
+  would mean a reload or a second tab silently spent the one answer the page is for —
+  the same reason the upstream's browse route never writes a delivery row.
+- **The sponsorship half is imported, not ported.** `SponsorshipEvidence` already renders
+  the employer's filings and the posting's own refusal as two claims that never merge,
+  and already treats `no_sponsor: null` as "nobody has read it". The route's response
+  therefore references the existing posting schema rather than declaring a second shape —
+  a second shape is exactly what would have forced a third copy of that judgement, and
+  `../h1_checker`'s 401 defect was a two-place bug for precisely that reason.
 
 ## Product
 

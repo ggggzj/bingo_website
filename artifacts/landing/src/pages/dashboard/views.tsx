@@ -1,7 +1,8 @@
 import type { ComponentType } from "react";
-import { BarChart3, Dumbbell } from "lucide-react";
+import { BarChart3, Dumbbell, GraduationCap } from "lucide-react";
 
 import Coach from "@/pages/Coach";
+import NewGradList from "@/pages/dashboard/NewGradList";
 import Dashboard from "@/pages/Dashboard";
 import { PracticeStatus } from "@/pages/dashboard/PracticeStatus";
 
@@ -49,6 +50,14 @@ export const VIEWS: DashboardView[] = [
     icon: BarChart3,
     entitled: (viewer) => viewer.isOwner,
     Component: Dashboard,
+  },
+  {
+    id: "new-grad",
+    label: "New grad",
+    blurb: "US 2027 early-career software roles, and what changed since you looked.",
+    icon: GraduationCap,
+    entitled: (viewer) => viewer.isOwner,
+    Component: NewGradList,
   },
   {
     id: "practice",

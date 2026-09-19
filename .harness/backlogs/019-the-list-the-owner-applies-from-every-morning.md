@@ -1,7 +1,7 @@
 ---
 id: 019
 title: The list the owner applies from, rebuilt every morning — 2027 new-grad SDE, one person
-status: picked-up
+status: built — the change below is implemented; the two non-goals remain open
 change: openspec/changes/2026-09-18-the-new-grad-list-behind-the-login/
   Covers the view, the early-career filter, the three-state location and the last-seen
   marker. **Left open on this ticket as that change's declared non-goals:** the per-row

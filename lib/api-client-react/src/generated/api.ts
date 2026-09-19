@@ -37,6 +37,7 @@ import type {
   GetStatsRegistrationsParams,
   HealthStatus,
   JobsPage,
+  NewGradList,
   Ok,
   StatsDaily,
   StatsRegistrations,
@@ -531,6 +532,164 @@ export function useGetJobs<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Built from several /jobs upstream queries, merged and narrowed here. The upstream takes one title substring and cannot express (software AND early-career MINUS seniority), so the terms go out one at a time as a coarse net and the precise test runs on this server.
+Owner-only. Every other caller gets 404, never 403 — the same refusal the coach routes make, so the route's existence gives nothing away.
+Reading this list never advances the caller's marker. What is new stays new until POST /new-grad-list/ack, so a reload cannot spend the answer.
+ * @summary The owner's list of US early-career software postings
+ */
+export const getGetNewGradListUrl = () => {
+  return `/api/new-grad-list`;
+};
+
+export const getNewGradList = async (
+  options?: RequestInit,
+): Promise<NewGradList> => {
+  return customFetch<NewGradList>(getGetNewGradListUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetNewGradListQueryKey = () => {
+  return [`/api/new-grad-list`] as const;
+};
+
+export const getGetNewGradListQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNewGradList>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getNewGradList>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetNewGradListQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNewGradList>>> = ({
+    signal,
+  }) => getNewGradList({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getNewGradList>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetNewGradListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getNewGradList>>
+>;
+export type GetNewGradListQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary The owner's list of US early-career software postings
+ */
+
+export function useGetNewGradList<
+  TData = Awaited<ReturnType<typeof getNewGradList>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getNewGradList>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetNewGradListQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Advances the caller's marker and records what was listed. Deliberately a separate call from the GET: advancing on render would mean a stray reload or a second tab silently consumed the one thing this page is for.
+ * @summary Acknowledge the list, so what is new now stops being new
+ */
+export const getAckNewGradListUrl = () => {
+  return `/api/new-grad-list/ack`;
+};
+
+export const ackNewGradList = async (options?: RequestInit): Promise<void> => {
+  return customFetch<void>(getAckNewGradListUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getAckNewGradListMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof ackNewGradList>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof ackNewGradList>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["ackNewGradList"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof ackNewGradList>>,
+    void
+  > = () => {
+    return ackNewGradList(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AckNewGradListMutationResult = NonNullable<
+  Awaited<ReturnType<typeof ackNewGradList>>
+>;
+
+export type AckNewGradListMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Acknowledge the list, so what is new now stops being new
+ */
+export const useAckNewGradList = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof ackNewGradList>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof ackNewGradList>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getAckNewGradListMutationOptions(options));
+};
 
 /**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.

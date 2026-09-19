@@ -67,6 +67,60 @@ export interface JobsPage {
   postings: JobPosting[];
 }
 
+/**
+ * Whether the title names the class this list is for. `other` never appears: a posting naming a different class is absent, not ranked low. Sorts first; it is a property of the posting, never a score about the reader.
+ */
+export type NewGradPostingClassYear =
+  (typeof NewGradPostingClassYear)[keyof typeof NewGradPostingClassYear];
+
+export const NewGradPostingClassYear = {
+  target: "target",
+  none: "none",
+} as const;
+
+/**
+ * `elsewhere` never appears — those are absent. `unknown` means the location string could not be read and the row SHALL be marked, not assumed American.
+ */
+export type NewGradPostingLocationRead =
+  (typeof NewGradPostingLocationRead)[keyof typeof NewGradPostingLocationRead];
+
+export const NewGradPostingLocationRead = {
+  us: "us",
+  unknown: "unknown",
+} as const;
+
+/**
+ * A posting on the owner's list. It IS a JobPosting — same shape, so the component that renders the two sponsorship facts is imported rather than re-implemented — plus what this list knows that browsing does not.
+ */
+export type NewGradPosting = JobPosting & {
+  /** Whether the title names the class this list is for. `other` never appears: a posting naming a different class is absent, not ranked low. Sorts first; it is a property of the posting, never a score about the reader. */
+  class_year: NewGradPostingClassYear;
+  /** `elsewhere` never appears — those are absent. `unknown` means the location string could not be read and the row SHALL be marked, not assumed American. */
+  location_read: NewGradPostingLocationRead;
+  /** First seen upstream after the caller's last acknowledgement. */
+  is_new: boolean;
+};
+
+/**
+ * A posting that was on this list at the last acknowledgement and is no longer open. Carried as its own shape because the upstream cannot return it — browsing serves open postings only, so a closed one is knowable only from what we recorded when it was listed.
+ */
+export interface NewGradClosed {
+  job_id: number;
+  employer_name: string;
+  title: string;
+  /** @nullable */
+  url?: string | null;
+}
+
+export interface NewGradList {
+  /** The class this list is fenced to. Configuration, not a literal. */
+  target_class_year: number;
+  postings: NewGradPosting[];
+  closed: NewGradClosed[];
+  /** What this list cannot see, in words the page shows verbatim. Employers running their own careers sites are not among the boards behind it, and a reader who does not know that will read an absence as an answer. */
+  board_note: string;
+}
+
 export type StatsTotalsReferralSources = { [key: string]: number };
 
 export interface StatsTotals {

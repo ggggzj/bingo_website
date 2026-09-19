@@ -7,7 +7,7 @@ before starting the next.
 
 ## 1. Decide what "early-career software" means, in one place, against real titles
 
-- [ ] 1.1 New `artifacts/api-server/src/lib/new-grad/titles.ts`: the early-career term list,
+- [x] 1.1 New `artifacts/api-server/src/lib/new-grad/titles.ts`: the early-career term list,
       the software-role test and the seniority exclusions, as exported data plus one
       predicate. Word boundaries are applied here, because the upstream `ilike` has none.
       **Test:** `artifacts/api-server/src/lib/new-grad/titles.test.ts` — proven against real
@@ -17,9 +17,9 @@ before starting the next.
       `Software Engineer Graduate - 2027` ✓, `Senior Software Engineer I` ✗,
       `Software Engineering Intern` ✗, `Sr. Solutions Architect` ✗,
       `Robotics Systems Engineering Manager` ✗.
-- [ ] 1.2 Same test file: the exclusions are applied **after** the terms and win, proven by a
+- [x] 1.2 Same test file: the exclusions are applied **after** the terms and win, proven by a
       title that satisfies both.
-- [ ] 1.3 Same module: the class-year rule (D3), with `2027` as an exported constant rather
+- [x] 1.3 Same module: the class-year rule (D3), with `2027` as an exported constant rather
       than a literal in a condition. A title naming a year other than the target is excluded;
       a title naming the target is flagged for the sort; a title naming no year passes
       untouched.
@@ -32,7 +32,7 @@ before starting the next.
 
 ## 2. Decide what a location means, and admit when it cannot be read
 
-- [ ] 2.1 New `artifacts/api-server/src/lib/new-grad/location.ts`: `us` / `unknown` /
+- [x] 2.1 New `artifacts/api-server/src/lib/new-grad/location.ts`: `us` / `unknown` /
       `elsewhere` over the provider's raw location string.
       **Test:** `artifacts/api-server/src/lib/new-grad/location.test.ts` —
       `Irving Texas United States` → us, `US-Remote` → us, `San Jose / LA` → us,
@@ -41,12 +41,12 @@ before starting the next.
 
 ## 3. The server answers — one route, owner-only, fanned out upstream
 
-- [ ] 3.1 `lib/api-spec/openapi.yaml`: add the route, whose response **references the existing
+- [x] 3.1 `lib/api-spec/openapi.yaml`: add the route, whose response **references the existing
       posting schema** rather than declaring a second shape — a new shape is what would force
       `SponsorshipEvidence` to be re-implemented. Then run
       `pnpm --filter @workspace/api-spec run codegen` **in this same task**. Nothing else
       regenerates the hooks, and `lib/*/src/generated` is never hand-edited.
-- [ ] 3.2 New `artifacts/api-server/src/routes/new-grad.ts`: one upstream query per
+- [x] 3.2 New `artifacts/api-server/src/routes/new-grad.ts`: one upstream query per
       early-career term against `/api/postings`, merged and de-duplicated by `job_id`, then
       narrowed by groups 1 and 2. Refuses a non-owner with **404, never 403**, the way
       `coachGate` already does — the rail's `entitled` is convenience, never the boundary.
@@ -55,15 +55,20 @@ before starting the next.
       terms returning the same `job_id` yield one row; a row failing the software test is
       absent though the upstream returned it; an `elsewhere` row is absent and an `unknown`
       row is present and marked.
-- [ ] 3.3 Same test file: the PR states the number of upstream requests one page-load makes,
+- [x] 3.4 `artifacts/api-server/src/routes/index.ts`: mount the router. **Added during
+      implementation, and it reorders the groups:** "the server answers" is not true until it
+      is mounted, and mounting needs the marker store, so 5.1 and 5.2 are done before this and
+      group 4 follows. Nothing was added to the change's scope — this is a step that was
+      missing from the list.
+- [x] 3.3 Same test file: the PR states the number of upstream requests one page-load makes,
       the way `../h1_checker`'s `022` was made to state its daily count.
 
 ## 4. The rail lists it, and the page says what it cannot see
 
-- [ ] 4.1 `artifacts/landing/src/pages/dashboard/views.tsx`: one entry, `entitled: (viewer) =>
+- [x] 4.1 `artifacts/landing/src/pages/dashboard/views.tsx`: one entry, `entitled: (viewer) =>
       viewer.isOwner`. **Test:** extend `artifacts/landing/src/pages/dashboard/Shell.test.tsx`
       — the entry is absent from a non-owner's rail.
-- [ ] 4.2 New `artifacts/landing/src/pages/dashboard/NewGradList.tsx`: rows carrying employer,
+- [x] 4.2 New `artifacts/landing/src/pages/dashboard/NewGradList.tsx`: rows carrying employer,
       title, location, posted date, days since posted, the employer's filing count and tier,
       and the posting's own refusal where one was read — the last two rendered by the existing
       `artifacts/landing/src/components/jobs/SponsorshipEvidence.tsx`, imported and not copied.
@@ -74,25 +79,25 @@ before starting the next.
       no refusal verdict renders nothing about refusing, matching what
       `openspec/specs/jobs-page/spec.md` already requires of the public page; and a
       2027-titled posting sorts above a newer one that names no year, with its reason shown.
-- [ ] 4.3 Same component: a header naming the gap — how many boards feed this and that
+- [x] 4.3 Same component: a header naming the gap — how many boards feed this and that
       company-owned sites (TikTok, ByteDance, Amazon, Apple, Google) are not among them.
       **Test:** same file — the gap sentence is present with no postings and with postings.
 
 ## 5. What is new since the owner last looked, and what closed
 
-- [ ] 5.1 `lib/db/src/schema/`: one table keyed by user and view holding the marker, cascading
+- [x] 5.1 `lib/db/src/schema/`: one table keyed by user and view holding the marker, cascading
       with the account the way `coach_*` does. Schema is source of truth; no hand-written SQL.
-- [ ] 5.2 New store module beside the route: read the marker, and advance it only on an
+- [x] 5.2 New store module beside the route: read the marker, and advance it only on an
       explicit acknowledgement. **Test:** in `new-grad.test.ts` — rendering twice without
       acknowledging leaves the same rows new; acknowledging then re-reading empties them.
-- [ ] 5.3 `NewGradList.tsx`: the two sections, and a posting that has closed since the marker
+- [x] 5.3 `NewGradList.tsx`: the two sections, and a posting that has closed since the marker
       shown as closed rather than dropped. **Test:** in `NewGradList.test.tsx`.
 
 ## 6. Say what changed
 
-- [ ] 6.1 `replit.md`: the working loop's update, and an "Architecture decisions" entry for D1
+- [x] 6.1 `replit.md`: the working loop's update, and an "Architecture decisions" entry for D1
       (the fan-out, and that it is deleted when `016` moves the query upstream), D3 (the class
       year fences and sorts but never filters — 8 of the owner's 376 titles name a year) and
       D5 (the marker's table, and why not `localStorage`).
-- [ ] 6.2 `.harness/backlogs/019`: status and a pointer to this change. The note and the alumni
+- [x] 6.2 `.harness/backlogs/019`: status and a pointer to this change. The note and the alumni
       import stay open on the ticket — they are this change's non-goals, not its leftovers.

@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { AppRoutes } from "@/App";
-import type { DashboardView } from "@/pages/dashboard/views";
+import { VIEWS as SHIPPED_VIEWS, type DashboardView } from "@/pages/dashboard/views";
 import { renderApp } from "@/test/render";
 import { http, HttpResponse, server } from "@/test/server";
 
@@ -114,5 +114,36 @@ describe("the dashboard shell", () => {
 
     await waitFor(() => expect(currentPath()).toBe("/login"));
     expect(screen.queryByText("practice view")).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * The real registry, not the stubs above.
+ *
+ * The shell's behaviour is tested with stand-ins so it can be exercised without two
+ * dashboards' worth of endpoints. What that cannot catch is an entitlement written
+ * wrongly on a real entry — `entitled` is convenience for drawing the rail, but an
+ * entry that offers itself to the wrong viewer is still a bug worth failing on, and
+ * this is the only place the shipped array is read.
+ */
+describe("the shipped registry", () => {
+  const owner = { isSignedIn: true, isOwner: true };
+  const stranger = { isSignedIn: true, isOwner: false };
+  // Aliased on import: this file already has a local `VIEWS` of stand-ins, and reading
+  // that one here would assert the stubs are right rather than the shipped array.
+  const view = (id: string) => SHIPPED_VIEWS.find((v) => v.id === id)!;
+
+  it("offers the new-grad list to the owner and to nobody else", () => {
+    expect(view("new-grad")).toBeDefined();
+    expect(view("new-grad").entitled(owner)).toBe(true);
+    expect(view("new-grad").entitled(stranger)).toBe(false);
+    expect(view("new-grad").entitled({ isSignedIn: false, isOwner: false })).toBe(false);
+  });
+
+  it("leaves growth owner-only and practice open to everyone signed in", () => {
+    /* Pinned beside the new entry: adding one to this array is how the next feature
+       arrives, and the cheapest way to break the other two is to edit around them. */
+    expect(view("growth").entitled(stranger)).toBe(false);
+    expect(view("practice").entitled(stranger)).toBe(true);
   });
 });
