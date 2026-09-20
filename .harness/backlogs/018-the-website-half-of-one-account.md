@@ -1,9 +1,12 @@
 ---
 id: 018
 title: The website's half of one account — read the surviving users table, and move 157 rows without losing one
-status: open — grill-stopped 2026-09-20 at pickup. Two of its three steps have moved and
-  the third cannot be proposed responsibly without two facts nobody in a session can read.
-  See "State at pickup" at the end.
+status: picked-up
+change: openspec/changes/2026-09-20-move-onto-the-surviving-database/
+  Written 2026-09-20 after the owner ran the queries this ticket needed and settled three
+  decisions. Step 1 was already delivered by 010; step 2 is decided as "no change here".
+  The change covers step 3 only, and it is far smaller than this ticket assumed: no `users`
+  row moves, four dependent rows do.
 origin: Owner decision 2026-09-13, recorded in ../h1_checker/.harness/backlogs/015 — "网站和
   extension 的输入的密码是一样的,而且不管在哪里注册,用同一个邮箱和密码的人就是同一个账户,
   在两边都可以登录". That ticket is the h1_checker half and says in its own header that the
@@ -253,3 +256,111 @@ against numbers it guessed.
 
   Recorded here rather than only in the proposal because this is the answer to a question
   the next session will otherwise ask again.
+
+---
+
+# Measured against both production databases, 2026-09-20
+
+Run by the owner through `railway connect`, because no session can reach either. **Both
+databases are services in one Railway project** (`h1b_checker`) — `Postgres-EBWW` is this
+site's, `Postgres` is h1_checker's — so the move needs no cross-project networking.
+
+## The collision is real, and the ids are crossed
+
+| address | this site (`Postgres-EBWW`) | h1_checker (`Postgres`) |
+|---|---|---|
+| `zguo7940@usc.edu` | **id 3**, no password (Google) | **id 1**, has a password |
+| `christineguo610@gmail.com` | **id 1**, has a password | **id 3**, no password (Google) |
+
+This site holds 2 users. h1_checker holds 10, and **both of this site's addresses are
+already among them.**
+
+**Read the table again before planning anything.** The two ids are not merely different —
+they are *swapped*. Copy this site's rows preserving `id` and this site's id 3, which is
+the owner, lands on h1_checker's id 3, **which is the other person**. Every `coach_*` and
+`new_grad_seen` row keyed to it follows. No constraint is violated, nothing errors, and the
+owner's practice history and job list silently become somebody else's.
+
+That is the one failure mode of this migration that is invisible afterwards, and it is why
+the remap table belongs in the proposal as a literal, checked twice:
+
+```
+this site id 3  →  h1_checker id 1     zguo7940@usc.edu
+this site id 1  →  h1_checker id 3     christineguo610@gmail.com
+```
+
+## What this does to the shape of the work
+
+**No `users` row moves at all.** Both addresses exist on the surviving side already, so
+there is nothing to insert and `unique(email)` is never tested. The ticket's "157 rows" and
+its worry about `users_id_seq` both fall away with it — nothing new claims an id.
+
+What remains is: **re-key the dependent rows onto the surviving user ids.** Measured from
+`\d users` on this site, six tables reference it, all `ON DELETE CASCADE`:
+
+```
+coach_api_tokens · coach_config · coach_daily_log · coach_reviews · new_grad_seen · sessions
+```
+
+`coach_problems` is **not** among them — the bank is global and holds no user data, so the
+150 rows the ticket lists do not move.
+
+Two consequences worth stating before the proposal is written:
+
+- **`sessions` should not be carried over.** A session row is a live cookie for an origin
+  that is about to stop being that account's home; re-keying them means moving credentials
+  whose only value is that they expire. Signing in again is the honest migration for those
+  three rows, and it costs the owner one login.
+- **Which password survives is now a question, not an accident.** For `zguo7940@usc.edu` the
+  surviving row has a password and this site's has none — the owner keeps extension access,
+  which is the right outcome. For `christineguo610@gmail.com` it is reversed: the surviving
+  row has **no** password, and the extension's popup still asks for one
+  (`../h1_checker/.harness/backlogs/018` is open). That account would be able to sign in on
+  the website and not in the extension popup until Google reaches it. Not a blocker; it is
+  a thing the proposal must say out loud rather than discover.
+
+## What actually moves, counted 2026-09-20
+
+```
+coach_api_tokens  user 1  2 rows
+coach_config      user 1  1 row
+coach_daily_log   user 1  1 row
+sessions          user 1  4 rows
+sessions          user 3  1 row
+coach_reviews             0 rows
+new_grad_seen             0 rows
+```
+
+**Four rows, and all four belong to `christineguo610@gmail.com`.** The owner's own account
+(`zguo7940@usc.edu`, this site's id 3) holds one session and nothing else — no coach history,
+no list marker. Sessions are not carried (see above), so the owner's account moves nothing at
+all.
+
+The remap that matters is therefore `user_id 1 → 3`, and it is the one a careless "keep the
+ids" would get exactly wrong: h1_checker's id 1 is `zguo7940@usc.edu`, so those four rows
+would land on the owner rather than on the account that made them.
+
+## The surviving database has none of these tables
+
+Measured against `models.py`: h1_checker's 21 tables are employers, job postings, the feed and
+auth. **There is no `coach_*` and no `new_grad_seen`.** So this is not a re-key of four rows —
+it is *create six tables on the surviving side, move the 150-row problem bank, then move four
+rows*.
+
+`coach_problems` moves even though it references no user: the bank is what the coach reads,
+and a coach with no problems is not a coach.
+
+## Third decision, owner 2026-09-20 — who owns the coach tables' DDL
+
+The 2026-09-20 decision above put `users` and `sessions` with h1_checker. It did not cover
+these six, and they are a different case: **only this repo's code reads them.**
+
+**Decided: this repo owns them, scoped to its own tables.** Whoever uses a table maintains it;
+asking h1_checker's Python to carry six models it never reads is how definitions rot.
+
+The condition attached is not optional. After the move this repo's drizzle describes six tables
+in a database holding twenty-seven, so **a whole-schema reconciliation from here would see
+h1_checker's entire application as unknown.** `pnpm --filter @workspace/db run push` must be
+made unable to run against the surviving database — not documented as unwise, *unable*.
+`.harness/backlogs/007` is the ticket for saying which database a push is about to change;
+this change needs the harder version of it.
