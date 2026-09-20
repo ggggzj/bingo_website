@@ -1,7 +1,9 @@
 ---
 id: 018
 title: The website's half of one account — read the surviving users table, and move 157 rows without losing one
-status: open
+status: open — grill-stopped 2026-09-20 at pickup. Two of its three steps have moved and
+  the third cannot be proposed responsibly without two facts nobody in a session can read.
+  See "State at pickup" at the end.
 origin: Owner decision 2026-09-13, recorded in ../h1_checker/.harness/backlogs/015 — "网站和
   extension 的输入的密码是一样的,而且不管在哪里注册,用同一个邮箱和密码的人就是同一个账户,
   在两边都可以登录". That ticket is the h1_checker half and says in its own header that the
@@ -142,3 +144,112 @@ Step 1 of this ticket — dropping `.notNull()` from `password_hash` — is
 `.harness/backlogs/010`, written by another session on 2026-09-13 and scoped to exactly that one
 line, with both production databases measured. It can ship on its own and it unblocks Google
 sign-in (`011`). Do not do it twice: this ticket's step 1 is satisfied when 010 lands.
+
+---
+
+# State at pickup, 2026-09-20 — two steps moved, the third is all that is left
+
+Measured against the code, not assumed.
+
+## Step 1 is done
+
+`lib/db/src/schema/auth.ts` now reads `passwordHash: text("password_hash")` — no `.notNull()`.
+It shipped as `.harness/backlogs/010` / `openspec/changes/2026-09-18-a-password-less-identity`,
+exactly as this ticket's own 2026-09-18 note said it would. **Do not do it again.**
+
+## Step 2 shrank, and may now be empty
+
+`MIN_PASSWORD_LENGTH` is still 10 and `routes/auth.ts:18` still says *"Long rather than
+fussy"*, so the owner's 2026-09-13 choice (eight characters, upper, lower, symbol) is
+**not** applied here.
+
+But `2026-09-18-one-way-in-and-it-is-google` is merged: the website signs people in with
+Google and shows no password form. This ticket's own 2026-09-17 note already anticipated
+that and shrank the website's role to *"never stricter than the surface that set the
+credential"*. Whether that leaves anything to build **in this repo** is an owner call, not
+an inherited task.
+
+## The migration inventory is stale in two directions
+
+This ticket lists what moves as *"the owner's `users` row, 3 `sessions`, 150
+`coach_problems`, every `coach_*` row keyed on `user_id`, and `waitlist`"*.
+
+- **`waitlist` is gone** — `openspec/changes/archive/2026-09-15-drop-waitlist` and
+  `.harness/session-todos/2026-09-18-drop-the-waitlist-table-in-production.md`.
+- **`new_grad_seen` is new**, and this ticket could not have known about it. Created in this
+  site's production database on 2026-09-19 (`lib/db/src/schema/new-grad.ts`, change
+  `2026-09-18-the-new-grad-list-behind-the-login`). It is keyed on `user_id` with
+  `ON DELETE CASCADE` to `users`, so it moves with the account rows and its foreign key has
+  to survive the move. The exact statement that created it is in `replit.md` under
+  "Run & Operate", beside the one that made `password_hash` nullable.
+
+**Anything added to this database between now and the move joins that list.** The inventory
+belongs in the proposal as a query against the live schema, not as a sentence written once.
+
+## Why this stopped at a grill rather than a proposal
+
+The remaining work is a production migration between two databases, and two of the facts it
+turns on cannot be read from a session:
+
+1. **Does `OWNER_EMAIL`'s address exist as a `users` row on BOTH sides?** If it does,
+   `unique(email)` refuses the copy, one row has to be chosen, and every `coach_*` and
+   `new_grad_seen` row keyed to the losing id has to be remapped. If it does not, the move
+   is a straight copy. These are different plans, and the difference is one query per side.
+2. **What is actually in each table today?** This ticket's "157 rows" was counted on
+   2026-09-16 and three changes have landed since.
+
+Neither is reachable from here: `DATABASE_URL` is not in this repo (measured 2026-09-19 —
+there is no `.env`), and `pnpm --filter @workspace/db run push` cannot reach production at
+all, because Railway hands it an internal hostname that does not resolve from a laptop.
+Both databases are reachable only through `railway connect`, which is the owner's session.
+
+So the next move is the owner running one query per side, not a session writing a plan
+against numbers it guessed.
+
+## The two decisions that shape the proposal, and neither is a session's to make
+
+- **Who owns `users` and `sessions` DDL after the move.** This ticket's own answer is
+  h1_checker, with this repo's drizzle schema becoming a description of tables it does not
+  migrate. That is a recommendation and has never been recorded as a decision.
+  `.harness/backlogs/007` exists because a push does not say which database it is about to
+  change, and after the move a careless one here would describe h1_checker's production.
+- ~~**Whether step 2 survives Google-only**~~ — **decided by the owner 2026-09-20: this repo
+  does not change the password rule.** Their words: *"目前网站这边先不要改"*, on the reasoning
+  that the website has no password form and that non-Google email registration is a later
+  question.
+
+  One fact in the owner's reasoning was corrected at the time and the decision survived it.
+  They recalled that both surfaces are Google-only now. Measured: the website is, but the
+  **extension's popup still signs in with a password** — `extension/popup.js` still carries
+  the box, `../h1_checker/.harness/backlogs/014` is `shipped-in-part` (Google landed on the
+  pairing page only) and its `018` is still open. That makes the decision *stronger*, not
+  weaker: the credential is live on the extension, so the rule belongs to the surface that
+  sets it, and this repo's role is the one this ticket's 2026-09-17 note already named —
+  **never stricter than the surface that set the credential.**
+
+  `MIN_PASSWORD_LENGTH = 10` therefore stays as it is, and the 2026-09-13 choice (eight
+  characters, upper, lower, symbol) is h1_checker's to apply if and when it applies it.
+
+- ~~**Who owns `users` and `sessions` DDL after the move**~~ — **decided by the owner
+  2026-09-20: h1_checker owns it.** The surviving database is that repo's and its SQLAlchemy
+  models already create and maintain these tables, so the definition that runs is the
+  definition that rules.
+
+  What that obliges this repo to do, and the proposal must carry all three:
+
+  1. `lib/db/src/schema/auth.ts` **stays** — the api-server needs its types — but stops
+     being a migration source. It becomes a description of tables this repo does not own.
+     Say so in the file itself, not only in a proposal nobody reads twice.
+  2. **A guard so `pnpm --filter @workspace/db run push` cannot reach the surviving
+     database.** This is not hypothetical: `replit.md` already records that a successful
+     push would have offered to drop `waitlist`, because that table was in the database and
+     not in the schema file. After the move, the tables not in this repo's schema file are
+     h1_checker's whole application. `.harness/backlogs/007` ("say which database a push is
+     about to change") is the ticket that exists for this and should be read with it.
+  3. `lib/db/src/schema/new-grad.ts` is now in the same position — created by this repo on
+     2026-09-19 but keyed to `users`. After the move it describes a table in h1_checker's
+     database, and whichever side owns that DDL has to be stated rather than left to whoever
+     edits first.
+
+  Recorded here rather than only in the proposal because this is the answer to a question
+  the next session will otherwise ask again.
