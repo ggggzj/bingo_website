@@ -356,10 +356,24 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   makes them one identity, so the blast radius is small — but it is no longer a boundary
   between them, only against every other application. A second client would restore it.
 
-- **Nobody can sign in until two console actions are done**, and neither is code:
-  `http://localhost:5173` and `https://bingocareer.com` must be Authorized JavaScript origins
-  on the client, and the app must be moved from Testing to Production. Until then sign-in
-  fails in a way that reads like a bug rather than a configuration state.
+- **The Google console work is done** (2026-09-20): `https://bingocareer.com` and
+  `http://localhost:5173` are Authorized JavaScript origins on the `h1b-extension-signin`
+  client, and the app is In production. Verified end to end on the live site — a Google
+  address signs in, and the owner's password still opens `/login?password=1` and reaches the
+  dashboard, which is the exemption working.
+
+  **If you ever add another origin, expect `Error 400: origin_mismatch` first.** Google's own
+  documentation says an origin change takes "5 minutes to a few hours" to propagate, and it
+  really does: the first sign-in attempt after saving failed with exactly that, and the same
+  attempt succeeded a few minutes later with nothing changed. Nothing is misconfigured when
+  you see it — wait, then retry in a private window so the browser is not holding the old
+  config.
+
+  Two console fields are still worth knowing about. The app shows a **"requires verification"**
+  banner; it does not apply here, because `email`, `profile` and `openid` are non-sensitive
+  scopes and Google's own docs say verification is not mandatory for them. And **one client
+  serves both this site and the extension**, so `aud` no longer separates the two surfaces —
+  see the gotcha above.
 
 - **`coach.test.ts` runs on a frozen clock, and the instant is deliberate.** Two places
   read the clock independently — the test file's `utcToday()` and the route's own at
