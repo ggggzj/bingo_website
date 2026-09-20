@@ -26,7 +26,19 @@ dashboard that only the owner can see.
   alter table users alter column password_hash drop not null;
   ```
 
-  That is how `password_hash` was made nullable in production on 2026-09-18. One statement
+  That is how `password_hash` was made nullable in production on 2026-09-18, and how
+  `new_grad_seen` was created there on 2026-09-19:
+
+  ```sql
+  create table new_grad_seen (
+    user_id integer primary key references users(id) on delete cascade,
+    acknowledged_at timestamptz not null default now(),
+    listed jsonb not null default '[]'::jsonb
+  );
+  ```
+
+  Verified with `\d new_grad_seen` rather than assumed: three columns, the defaults, and
+  the cascade to `users`. One statement
   beats `push` here for a second reason beyond reachability: push reconciles the *whole*
   schema, and `waitlist` is currently in the database but not in `lib/db/src/schema/`, so a
   successful push would also offer to drop it — see
