@@ -371,3 +371,49 @@ h1_checker's entire application as unknown.** `pnpm --filter @workspace/db run p
 made unable to run against the surviving database — not documented as unwise, *unable*.
 `.harness/backlogs/007` is the ticket for saying which database a push is about to change;
 this change needs the harder version of it.
+
+---
+
+# The owner's address expires, told by the owner 2026-09-20
+
+> *"我 usc 的账号毕业之后就用不了了，所有的数据都属于 christineguo610@gmail.com"*
+
+Two things follow, and the first is not about this ticket at all.
+
+## `OWNER_EMAIL` is a deadline nobody wrote down
+
+`artifacts/api-server/src/lib/auth/owner.ts` reads `OWNER_EMAIL` and nothing else decides who
+sees the growth dashboard **or the new-grad list** — `views.tsx` gates both on `isOwner`. If
+that variable names only the USC address, the owner loses their own dashboards on the day the
+university closes the account. Nothing breaks; they simply stop being the owner, which is the
+worse failure because it looks deliberate.
+
+The variable is comma-separated on purpose — *"so a second person can be added without a code
+change"*. **Add the gmail address to it now.** It costs one Railway variable and one redeploy,
+it is independent of this ticket, and it is verified by signing in with the gmail account and
+seeing Growth and New grad in the rail.
+
+## It confirms the remap rather than changing it
+
+The owner's statement and the measurement agree: the four rows that move are
+`christineguo610@gmail.com`'s, and the USC account holds nothing. The mapping
+`this site 1 → surviving 3` was already the gmail one. **No change to the plan.**
+
+What it does change is which account this product should be built around long-term. The USC
+address is the one with no password (created by Google) and the one that expires; the gmail
+address is the one carrying every row and the one that persists. Any later decision about
+which identity survives a merge on the *extension* side — `../h1_checker/.harness/backlogs/015`
+— should start from that rather than from which row is older.
+
+## One consequence to state before somebody meets it
+
+`replit.md` records that a Google sign-in onto an address that already has a password **clears
+that password**. In the surviving database `christineguo610@gmail.com` has no password already;
+in this one it does. Once the owner signs into the website with Google under that address, the
+password is gone — which the website does not care about, and **the extension's popup does**,
+because it still asks for one (`../h1_checker/.harness/backlogs/018` is open).
+
+So the long-lived account may end up able to sign in on the website and not in the extension,
+until Google reaches the extension. That is not caused by this change; it is caused by the
+order the two surfaces are getting Google, and it should be said out loud rather than
+discovered at a popup.

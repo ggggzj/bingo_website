@@ -6,6 +6,8 @@
 --   CREATE TABLE "sessions"    would fail; recreating it would be a catastrophe. Their DDL
 --                              is that repo's (owner decision, 2026-09-20).
 --   sessions' foreign key    — same reason, and sessions are deliberately not carried.
+--   sessions' index          — caught late, in a grep for statements that write. Cutting a
+--                              table is three statements, not two: create, constrain, index.
 --
 -- Everything kept references "public"."users", which binds to h1_checker's existing table.
 -- That is intended: these seven tables hang off the surviving account rows.
@@ -109,7 +111,11 @@ ALTER TABLE "coach_reviews" ADD CONSTRAINT "coach_reviews_problem_id_coach_probl
 
 ALTER TABLE "new_grad_seen" ADD CONSTRAINT "new_grad_seen_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
 
-CREATE INDEX "sessions_user_id_idx" ON "sessions" USING btree ("user_id");
+-- REMOVED: CREATE INDEX "sessions_user_id_idx" ON "sessions" ...
+-- Found in the audit, after the sessions CREATE TABLE and foreign key had already been
+-- cut. An index is a change to a table, and `sessions` is h1_checker's — it has its own,
+-- with its own columns. This would either have modified a table this repo does not own or
+-- failed on a column name that does not match. Both are the same mistake.
 
 CREATE INDEX "coach_api_tokens_user_id_idx" ON "coach_api_tokens" USING btree ("user_id");
 
