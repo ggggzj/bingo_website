@@ -39,16 +39,31 @@ export type JobFilters = {
   include_refusals?: boolean;
 };
 
-/** Title searches dressed as a picker. The value IS the search text. */
-const ROLE_PRESETS: { label: string; title: string }[] = [
-  { label: "Internship", title: "intern" },
+/**
+ * Title searches dressed as a picker. The value IS the search text.
+ *
+ * **There is no Internship option, and its absence is the point** (removed 2026-09-20).
+ * It searched for `intern`, the upstream matches a title search as `ilike '%text%'` with
+ * no word boundary, and so it returned `Director, US International Tax Planning`,
+ * `Internal Audit - Regulatory Lead` and `Principal Software Developer - Database
+ * Internals`. Measured against the live feed: 18 of 100 rows were not internships.
+ *
+ * Both cheap repairs are worse. Searching `internship` instead takes the feed from 194
+ * rows to 23 and loses every real internship, because all 82 in that sample are titled
+ * `... Intern`. Filtering the fetched page in the browser is the shape this page already
+ * removed once at review, for breaking the result count — see SPONSORSHIP_OPTIONS below.
+ *
+ * So the control is gone until the feed can express the filter, which is what
+ * `.harness/backlogs/021` is for. `FilterRow.test.ts` holds the line meanwhile.
+ */
+export const ROLE_PRESETS: { label: string; title: string }[] = [
   { label: "New grad", title: "new grad" },
   { label: "Junior", title: "junior" },
   { label: "Senior", title: "senior" },
   { label: "Staff and above", title: "staff" },
 ];
 
-const CATEGORY_PRESETS: { label: string; title: string }[] = [
+export const CATEGORY_PRESETS: { label: string; title: string }[] = [
   { label: "Software", title: "engineer" },
   { label: "Data and AI", title: "data" },
   { label: "Product", title: "product manager" },
