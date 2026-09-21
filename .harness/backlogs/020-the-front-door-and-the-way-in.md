@@ -1,7 +1,15 @@
 ---
 id: 020
 title: The front door and the way in — the left half explains, the right half signs you in
-status: open
+status: picked-up
+produced: openspec/changes/2026-09-20-the-front-door-signs-you-in/ — proposal drafted
+  2026-09-20, awaiting owner approval. Classified a bounded change: no server seam, no
+  contract, no schema, and every decision this ticket raised was answered by the owner the
+  same day. Two things the proposal carries that this ticket did not: `/login` has **four**
+  callers rather than the two named below (two signed-out guards, two after a deliberate log
+  out), and the `sign-in` spec it modifies is not in `openspec/specs/` yet — it lives inside
+  the unarchived `2026-09-18-one-way-in-and-it-is-google`, so archiving order is a decision
+  rather than a surprise.
 origin: ROADMAP.md 第一步 4 (owner decision 2026-09-17) — "首页改成：左边介绍网站和插件，右边整个是
   Google 登录". The owner's words in full, same day: "网站的主页就是左边是对网站的介绍和 extension
   的介绍，然后右边整个是 sign in/up". The roadmap's own acceptance for the item: 手机上（320px）能用；
