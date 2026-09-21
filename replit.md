@@ -13,11 +13,24 @@ dashboard that only the owner can see.
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes. **Dev only, and not by
-  preference — it cannot reach production at all.** Measured 2026-09-18: `railway run` hands
-  it `DATABASE_URL=postgres://…@postgres-ebww.railway.internal`, a hostname that resolves
-  only from inside Railway's network, so from a laptop it dies on `ENOTFOUND` before opening
-  a connection. Nothing is changed when it does; the failure is safe, just opaque.
+- `pnpm --filter @workspace/db run generate` — emit SQL for a schema change. **There is no
+  `push` any more**, and that is deliberate rather than an oversight: it reconciles the
+  *whole* schema, and after the move onto h1_checker's database (2026-09-20) this repo's
+  schema describes seven of that database's twenty-eight tables. A push from here would read
+  h1_checker's entire application as tables that should not exist. The script is deleted from
+  `lib/db/package.json` and `drizzle.config.ts` throws if `drizzle-kit push` is invoked
+  directly.
+
+  It could not have reached production anyway. Measured 2026-09-18: `railway run` hands it
+  `DATABASE_URL=postgres://…@postgres-ebww.railway.internal`, a hostname that resolves only
+  from inside Railway's network, so from a laptop it died on `ENOTFOUND` before opening a
+  connection. That failure was safe but opaque, and it was never the real reason not to use
+  it.
+
+  **Who owns which tables in the surviving database** (owner, 2026-09-20): `users` and
+  `sessions` are h1_checker's — this repo's `lib/db/src/schema/auth.ts` is a description for
+  types and changing it changes nothing. `coach_*` and `new_grad_seen` are this repo's, and
+  are changed with `generate` plus the apply path below.
 
   **To change the production schema, connect and run the statement:**
 

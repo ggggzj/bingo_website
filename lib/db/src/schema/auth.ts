@@ -8,6 +8,29 @@ import {
 } from "drizzle-orm/pg-core";
 
 /**
+ * **h1_checker owns this table's DDL** (owner decision, 2026-09-20).
+ *
+ * Both products used to keep their own `users`, and the same address in each was two
+ * people. The surviving database is h1_checker's, and the definition that runs there is
+ * its SQLAlchemy model — so what follows is a *description*, kept because the api-server
+ * needs the types, and not a migration source.
+ *
+ * Changing a column here changes nothing in any database. Ask in ../h1_checker.
+ * See openspec/changes/2026-09-20-move-onto-the-surviving-database.
+ */
+/**
+ * **h1_checker owns this table's DDL** (owner decision, 2026-09-20).
+ *
+ * Both products used to keep their own `users`, and the same address in each was two
+ * people. The surviving database is h1_checker's, and the definition that runs there is
+ * its SQLAlchemy model — so what follows is a *description*, kept because the api-server
+ * needs the types, and not a migration source.
+ *
+ * Changing a column here changes nothing in any database. Ask in ../h1_checker.
+ * See openspec/changes/2026-09-20-move-onto-the-surviving-database.
+ */
+
+/**
  * An account. The email is stored already normalized (trimmed, lowercased) by the
  * route that writes it, so the unique index is what actually stops one person
  * holding two accounts that differ only in capitals.

@@ -40,7 +40,7 @@ Signing in again after the cutover SHALL be expected rather than treated as a fa
 ### Requirement: This repo cannot reconcile a schema it does not own
 
 After the move, a whole-schema reconciliation from this repo SHALL be impossible rather than
-discouraged. This repo's schema describes six tables in a database holding twenty-seven, so a
+discouraged. This repo's schema describes seven tables in a database holding twenty-eight, so a
 reconciliation would read the other application's tables as unknown.
 
 Applying schema changes SHALL be by generated SQL, reviewed, and run against the database

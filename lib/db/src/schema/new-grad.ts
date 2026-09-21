@@ -3,6 +3,18 @@ import { integer, jsonb, pgTable, timestamp } from "drizzle-orm/pg-core";
 import { usersTable } from "./auth";
 
 /**
+ * **This repo owns these tables' DDL** (owner decision, 2026-09-20), even though after the
+ * move they live in h1_checker's database. Whoever reads a table maintains it, and nothing
+ * over there reads these.
+ *
+ * The condition attached is not optional: this file describes a handful of that database's
+ * twenty-seven tables, so a whole-schema reconciliation from here would read h1_checker's
+ * application as unknown. `push` is gone from package.json and refused in drizzle.config.ts
+ * for that reason. Change a table with `generate`, read the SQL, apply it through
+ * `railway connect` — the path recorded in replit.md under Run & Operate.
+ */
+
+/**
  * What the owner had already seen on their new-grad list, so the page can say what
  * arrived since and what closed.
  *

@@ -27,20 +27,20 @@ a mistake nobody would notice for months.
 `this site 3 → surviving 1` is in the table even though the owner's account moves nothing.
 A mapping with one row in it invites the reader to wonder about the other.
 
-## D2 — The six tables are generated from the schema, not hand-written
+## D2 — The seven tables are generated from the schema, not hand-written
 
 The owner decided (2026-09-20) that this repo keeps ownership of `coach_*` and `new_grad_seen`.
 That makes `lib/db/src/schema/` the source of the DDL — so the DDL should come *out of it*
 mechanically rather than be retyped.
 
-**Options.** (a) Hand-write six `CREATE TABLE` statements, as `new_grad_seen` was written on
+**Options.** (a) Hand-write seven `CREATE TABLE` statements, as `new_grad_seen` was written on
 2026-09-19. (b) `drizzle-kit generate` the SQL, review it, apply it through `railway connect`.
 (c) `drizzle-kit push` against the surviving database.
 
-**Choice: (b).** One table hand-written is a paste; six with their indexes, defaults and
+**Choice: (b).** One table hand-written is a paste; seven with their indexes, defaults and
 foreign keys is a transcription exercise, and a column that silently differs from the schema is
 a bug that appears weeks later as a type error in production. (c) is what D4 makes impossible,
-for reasons that have nothing to do with these six tables.
+for reasons that have nothing to do with these seven tables.
 
 The generated SQL is reviewed before it is run, because generation is not the same as
 correctness: these tables reference `users`, which this repo no longer owns, and the foreign
@@ -72,7 +72,7 @@ What replaces it is `generate` — SQL out, applied by hand through `railway con
 already how both previous production schema changes were made and is recorded in `replit.md`
 under Run & Operate.
 
-The reason is arithmetic: after the move this repo's schema describes **six** tables in a
+The reason is arithmetic: after the move this repo's schema describes **seven** tables in a
 database holding **twenty-seven**. Whole-schema reconciliation from here reads h1_checker's
 entire application as unknown. `replit.md` already records a push offering to drop `waitlist`
 over a single stray table.

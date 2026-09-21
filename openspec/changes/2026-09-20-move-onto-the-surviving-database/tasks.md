@@ -11,24 +11,24 @@ Groups 1 and 2 change nothing that anybody is using: they are reversible by `DRO
 
 ## 1. Stop this repo from being able to reconcile a database it does not own
 
-- [ ] 1.1 `lib/db/package.json`: delete the `push` and `push-force` scripts, add
+- [x] 1.1 `lib/db/package.json`: delete the `push` and `push-force` scripts, add
       `generate` (`drizzle-kit generate --config ./drizzle.config.ts`). A script that does not
       exist cannot be run out of habit.
-- [ ] 1.2 `lib/db/drizzle.config.ts`: refuse to run a push at all — throw with a message naming
+- [x] 1.2 `lib/db/drizzle.config.ts`: refuse to run a push at all — throw with a message naming
       `openspec/changes/2026-09-20-move-onto-the-surviving-database` and what to do instead.
       Second line behind 1.1, for anyone invoking `drizzle-kit` directly.
       **Test:** none possible — it is a config module read by a CLI. The proof is running
       `pnpm --filter @workspace/db run push` and seeing it fail to resolve the script.
-- [ ] 1.3 `lib/db/src/schema/auth.ts`: a comment at the top of `usersTable` and `sessionsTable`
+- [x] 1.3 `lib/db/src/schema/auth.ts`: a comment at the top of `usersTable` and `sessionsTable`
       saying h1_checker owns this DDL after the move (owner decision 2026-09-20) and that this
       file exists for types. `coach.ts` and `new-grad.ts` get the opposite note: owned here,
       applied by `generate` and by hand.
-- [ ] 1.4 `replit.md` Run & Operate: `push` is gone and why; `generate` is what to run; the
+- [x] 1.4 `replit.md` Run & Operate: `push` is gone and why; `generate` is what to run; the
       apply path is `railway connect`, beside the two statements already recorded there.
 
-## 2. Create the six tables on the surviving side
+## 2. Create the seven tables on the surviving side
 
-- [ ] 2.1 Run `generate` and **read the SQL it produces**. The foreign keys must reference the
+- [x] 2.1 Run `generate` and **read the SQL it produces**. The foreign keys must reference the
       surviving `users`, not recreate it. Attach the reviewed SQL to the PR — it is the thing
       being run against production and the only artifact of this group.
 - [ ] 2.2 Apply it through `railway connect Postgres` (the surviving database; `Postgres-EBWW`

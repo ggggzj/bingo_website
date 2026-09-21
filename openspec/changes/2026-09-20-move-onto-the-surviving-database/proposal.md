@@ -43,7 +43,7 @@ nothing else.
 ### The surviving database has none of these tables
 
 h1_checker's 21 tables are employers, postings, the feed and auth. There is no `coach_*` and no
-`new_grad_seen`. So this is **create six tables there, move the 150-row problem bank, then move
+`new_grad_seen`. So this is **create seven tables there, move the 150-row problem bank, then move
 four rows** — not a re-key.
 
 ## What Changes
@@ -60,7 +60,7 @@ four rows** — not a re-key.
   it expires. The owner signs in once afterwards.
 - **`DATABASE_URL` for `artifacts/api-server` points at the surviving database.**
 - **`pnpm --filter @workspace/db run push` is made unable to run against it.** After the move
-  this repo's drizzle describes six tables in a database holding twenty-seven; a whole-schema
+  this repo's drizzle describes seven tables in a database holding twenty-eight; a whole-schema
   reconciliation from here would read h1_checker's entire application as unknown. `replit.md`
   already records that a push once offered to drop `waitlist` for exactly this reason, and that
   was with one stray table rather than twenty-one.

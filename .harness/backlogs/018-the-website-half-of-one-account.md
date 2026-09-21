@@ -302,8 +302,15 @@ What remains is: **re-key the dependent rows onto the surviving user ids.** Meas
 coach_api_tokens · coach_config · coach_daily_log · coach_reviews · new_grad_seen · sessions
 ```
 
-`coach_problems` is **not** among them — the bank is global and holds no user data, so the
-150 rows the ticket lists do not move.
+`coach_problems` is **not** among them — the bank is global and holds no user data — and yet
+it moves anyway, because a coach with no bank is not a coach. So the 150 rows the ticket lists
+do move, for a different reason than the ticket gives.
+
+**And `\d users` under-counts what has to be created.** A seventh table, `coach_review_events`,
+never appears in that list because its foreign key points at `coach_reviews` rather than at
+`users` — found 2026-09-20 when `drizzle-kit generate` emitted it. Counting the account's
+direct dependants misses the coach's grading history, which is exactly the thing not to leave
+behind. Seven tables are created on the surviving side; six of them reference `users`.
 
 Two consequences worth stating before the proposal is written:
 
@@ -344,7 +351,7 @@ would land on the owner rather than on the account that made them.
 
 Measured against `models.py`: h1_checker's 21 tables are employers, job postings, the feed and
 auth. **There is no `coach_*` and no `new_grad_seen`.** So this is not a re-key of four rows —
-it is *create six tables on the surviving side, move the 150-row problem bank, then move four
+it is *create seven tables on the surviving side, move the 150-row problem bank, then move four
 rows*.
 
 `coach_problems` moves even though it references no user: the bank is what the coach reads,
@@ -353,12 +360,12 @@ and a coach with no problems is not a coach.
 ## Third decision, owner 2026-09-20 — who owns the coach tables' DDL
 
 The 2026-09-20 decision above put `users` and `sessions` with h1_checker. It did not cover
-these six, and they are a different case: **only this repo's code reads them.**
+these seven, and they are a different case: **only this repo's code reads them.**
 
 **Decided: this repo owns them, scoped to its own tables.** Whoever uses a table maintains it;
-asking h1_checker's Python to carry six models it never reads is how definitions rot.
+asking h1_checker's Python to carry seven models it never reads is how definitions rot.
 
-The condition attached is not optional. After the move this repo's drizzle describes six tables
+The condition attached is not optional. After the move this repo's drizzle describes seven tables
 in a database holding twenty-seven, so **a whole-schema reconciliation from here would see
 h1_checker's entire application as unknown.** `pnpm --filter @workspace/db run push` must be
 made unable to run against the surviving database — not documented as unwise, *unable*.
