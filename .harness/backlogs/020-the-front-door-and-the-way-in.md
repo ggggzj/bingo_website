@@ -65,7 +65,48 @@ landing decision instead of inheriting one.
 - **The cost is two surfaces carrying a Google button**, which makes the reuse below
   mandatory rather than merely tidy, and two pages that must both work at 320px.
 
-Surface this at `/pickup` and record the answer in the proposal. Do not pick one here.
+### Answered by the owner, 2026-09-20 — A, with a layout neither option described
+
+The owner chose **one page**, and then specified the shape in their own words:
+
+> 我希望右边是 login，左边是可以上下滑的页面，然后介绍 extension 和网站的功能
+
+So it is not "the left column holds three sentences", which is what option A assumed and
+costed. **The right half is the sign-in and it stays put. The left half scrolls, and the
+introduction lives in it.** That answers the objection A was written around: nothing has to
+be deleted to make room, because the room is vertical.
+
+What this settles, and what it does not:
+
+- **`/` is the only front door.** `/login` still has to resolve, for the reasons under A
+  below. What it renders is a proposal call.
+- **The five sections keep their content.** They do not keep their layout. Today they are
+  full-width: `max-w-7xl`, multi-column grids, type that steps up at `md` and `lg`. In a
+  half-width scrolling column every one of them is re-laid-out, and that is the bulk of
+  this ticket's work. It is not a move, it is a re-fit.
+- **The anchors can survive, and how is a real question.** `SiteHeader`'s four entries
+  (`#badges`, `#where`, `#how`, `#data`) are ordinary fragment links that scroll the
+  window. When the thing that scrolls is a column rather than the window, that has to
+  keep working or the header items have to go. Decide it, do not discover it.
+- **The header and footer become an open question.** `Login.tsx` renders neither;
+  `Home.tsx` renders both. A header whose right-hand door says "Log in", on a page whose
+  entire right half is the sign-in, is the duplication `SiteHeader`'s own comment already
+  objects to in the other direction. The proposal says what the merged page carries.
+
+**The sharpest remaining question is the phone, and the roadmap already set the bar:**
+手机上（320px）能用；没登录的人能看懂这是干嘛的、装插件的按钮在哪. There is no room for two
+columns at 320px, so one of them comes first, and both requirements have to survive the
+choice. A reader must not have to scroll the whole introduction to reach the button, and a
+visitor must not meet a bare Google button with nothing saying what this is. That is a
+design call for the proposal, with both constraints stated rather than traded.
+
+## Still open after that decision
+
+- **What a signed-in visitor sees at `/`.** Unchanged by the layout answer, and still
+  unanswered. See the note under A.
+- **What `/login` renders now that it is not the front door.** It has to keep resolving:
+  `Account.tsx:27` and `Shell.tsx:45` both send a signed-out visitor there, and
+  `?password=1` is the owner's way back in when Google is misconfigured.
 
 ## The right half is reused, not copied
 
