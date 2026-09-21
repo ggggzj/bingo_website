@@ -100,13 +100,50 @@ choice. A reader must not have to scroll the whole introduction to reach the but
 visitor must not meet a bare Google button with nothing saying what this is. That is a
 design call for the proposal, with both constraints stated rather than traded.
 
-## Still open after that decision
+## Settled by the owner, 2026-09-20 — the three that were left
 
-- **What a signed-in visitor sees at `/`.** Unchanged by the layout answer, and still
-  unanswered. See the note under A.
-- **What `/login` renders now that it is not the front door.** It has to keep resolving:
-  `Account.tsx:27` and `Shell.tsx:45` both send a signed-out visitor there, and
-  `?password=1` is the owner's way back in when Google is misconfigured.
+Nothing below is a recommendation. They were put to the owner with their costs and
+answered in one sitting, the same day the layout was.
+
+**1. On a phone, neither requirement is traded away.** There is no room for two columns at
+320px, so the two stack, in this order: one line saying what this is, then the Google
+button, then the extension button, then the full introduction below. A visitor meets an
+explanation and a way in without scrolling, and the introduction is still all there for
+anyone who keeps going. This is the roadmap's 手机上（320px）能用 and 没登录的人能看懂这是
+干嘛的、装插件的按钮在哪, satisfied together rather than one at the other's expense.
+
+**2. The four section links come out of the header.** `SECTIONS` in `SiteHeader.tsx:23`
+(`#badges`, `#where`, `#how`, `#data`) is deleted rather than rewritten. They work today
+because the window scrolls; after this the window does not scroll and the left column
+does, so they would need rebuilding to keep a behaviour the page no longer needs. The left
+column is one short piece read top to bottom, and four jump links into it are furniture.
+
+Measured 2026-09-20: **no test asserts any of the four**, in `SiteHeader.test.tsx` or
+anywhere else, so this is a deletion and not a test rewrite. `SiteHeader`'s own comment
+about three items not fitting a 320px bar goes with them; it describes a bar that no
+longer has them.
+
+**3a. A signed-in visitor at `/` is sent to `/jobs`.** They do not get shown a sign-in
+button for the account they are already holding.
+
+**3b. `/login` keeps resolving and redirects to `/`, except with `?password=1`.** That one
+parameter still renders the password form exactly as it does today. The address cannot be
+deleted: `Account.tsx:27` and `Shell.tsx:45` both send a signed-out visitor there, and the
+form behind that parameter is the owner's way into their own dashboard when Google
+sign-in is misconfigured. A redirect that swallowed it would close the back door while
+looking like tidying.
+
+### The hazard those two redirects create, and the pattern that already solves it
+
+`/` sends a signed-in visitor to `/jobs`. Once `.harness/backlogs/021` lands, `/jobs`
+sends a signed-out visitor to `/`. Two redirects pointing at each other, decided by an
+answer that is **not instant** — `useGetMe` has a loading state before it knows.
+
+Redirecting while the answer is still outstanding is how that becomes a loop. The repo
+already has the guard and it is one line: `Account.tsx:27` reads
+`if (!isLoading && !isSignedIn)`, and `Shell.tsx:42` opens with `if (isLoading) return;`.
+Every new redirect here waits the same way, and a test drives the loading state rather
+than only the settled ones.
 
 ## The right half is reused, not copied
 
@@ -160,7 +197,19 @@ Nothing predictive. `ROADMAP.md` 明确不做 and the 中签率计算器 removed
   client id still falls back to the form rather than a dead end.
 - Signing in with Google from the new page lands on `/jobs` — the roadmap's 登录后直接进
   `/jobs`, which is what `Login.tsx:108` already does.
-- A signed-in visitor arriving at `/` is not invited to sign in again.
+- **A signed-in visitor arriving at `/` lands on `/jobs`**, and is never shown a sign-in
+  button for the account they already hold.
+- **`/login` still answers.** Without the parameter it redirects to `/`; with
+  `?password=1` it renders the password form unchanged. Both proven by a test, because the
+  second is the owner's only way in when Google sign-in is broken.
+- **Neither redirect fires before the server has answered who this is.** A test drives the
+  loading state, not just signed-in and signed-out, so `/` and `/jobs` cannot bounce a
+  visitor between them.
+- **At 320px the order is: what this is, the Google button, the extension button, then the
+  introduction.** No horizontal scroll, and nothing above the button that has to be
+  scrolled past to reach it.
+- **The header carries no `#badges` / `#where` / `#how` / `#data` links**, and nothing else
+  in the app links to those fragments.
 - The mailing list stays gone. `Home.test.tsx` asserts it appears nowhere on the page
   (`013`, 2026-09-15); a rewrite that drops that test re-opens the question silently.
 - Every claim on the page checks out against `../h1_checker`. Tested in
