@@ -1,0 +1,138 @@
+---
+id: 020
+title: The front door and the way in — the left half explains, the right half signs you in
+status: open
+origin: ROADMAP.md 第一步 4 (owner decision 2026-09-17) — "首页改成：左边介绍网站和插件，右边整个是
+  Google 登录". The owner's words in full, same day: "网站的主页就是左边是对网站的介绍和 extension
+  的介绍，然后右边整个是 sign in/up". The roadmap's own acceptance for the item: 手机上（320px）能用；
+  没登录的人能看懂这是干嘛的、装插件的按钮在哪。
+related: .harness/backlogs/021 — the /jobs login wall sends a signed-out visitor to the home page,
+  so what that page is depends on the decision below. `openspec/changes/2026-09-18-one-way-in-and-it-is-google`
+  built the shape this ticket reuses.
+blocks: nothing. 021 can ship against either answer to the decision below, but reads better after this.
+grounded: 2026-09-20 — measured against Login.tsx, Home.tsx, SiteHeader.tsx and the route table, not assumed.
+---
+
+## The shape already exists, and it is not on the home page
+
+`artifacts/landing/src/pages/Login.tsx` **is** the page the owner described. It shipped
+2026-09-18 (`630a04d`) out of `openspec/changes/2026-09-18-one-way-in-and-it-is-google`:
+`grid lg:grid-cols-2`, the product's case on the left, one Google button on the right.
+
+So this ticket is not "build a split page". It is **"the home page is still the old long
+marketing page, and the owner asked for the split one at `/`"** — plus one decision nobody
+in a session gets to make.
+
+What is at `/` today: `Home.tsx`, 453 lines, five sections (hero, badges, `#where`,
+`#how`, `#data`, a closing extension CTA) between `SiteHeader` and `SiteFooter`. No sign-in
+anywhere on it — the way in is the header's "Log in" door (`SiteHeader.tsx:37`), which
+points at `/login`.
+
+## The decision, and it is the owner's
+
+**Do `/` and `/login` become one page, or stay two?**
+
+Both are defensible. Neither is a session's call, and the answer changes the tasks
+materially, so it is recorded here rather than assumed — the same way `019` recorded its
+landing decision instead of inheriting one.
+
+### A — one page. `/` becomes the split page; `/login` redirects to it
+
+- The owner's sentence read literally: the home page *is* the sign-in page.
+- One surface to maintain, one place the Google button exists, one answer to "where do I
+  sign in".
+- **The cost is the left column.** It holds three sentences and a three-item list today.
+  The home page's five sections do not fit there, so choosing A is also choosing **what of
+  the current home page survives** — and the header's section anchors (`#badges`, `#where`,
+  `#how`, `#data`, `SiteHeader.tsx:23`) point into content that would no longer exist.
+- **And a signed-in visitor landing on `/`.** Today they get the marketing page; under A
+  they get a sign-in button for the account they already hold. `SiteHeader.test.tsx`
+  already treats that confusion as worth a test ("offers the dashboard to someone already
+  signed in"), so A needs an answer for the signed-in case — pass through to `/jobs`, or
+  render something else.
+- `/login` cannot simply be deleted: `Account.tsx:27` and `Shell.tsx:45` both
+  `navigate("/login")` when a visitor is not signed in, and `?password=1` is the owner's
+  documented way back in when Google is misconfigured. Under A it stays as an address that
+  resolves, whatever it renders.
+
+### B — two pages. `/` gains the split shape above the fold; `/login` stays as it is
+
+- The marketing page survives below the fold, so "what does the left half say" stays a
+  small question and the section anchors keep their targets.
+- The extension's case, the badges and the data provenance keep the room they need — that
+  content is read by people deciding whether to trust the badge (`replit.md`, "The home
+  page describes only what the extension actually ships").
+- **The cost is two surfaces carrying a Google button**, which makes the reuse below
+  mandatory rather than merely tidy, and two pages that must both work at 320px.
+
+Surface this at `/pickup` and record the answer in the proposal. Do not pick one here.
+
+## The right half is reused, not copied
+
+Whichever answer, the sign-in half comes from the existing component — extracted from
+`Login.tsx` into something both pages render, never transcribed a second time. Three things
+in those 40 lines are load-bearing and a copy is how one of them quietly goes missing:
+
+1. **`?password=1`** (`Login.tsx:68`) — the owner's documented way in when the Google client
+   id is wrong. The comment says it is not a security boundary; it is still the back door,
+   and a second page that forgot it is a second page the owner cannot get in through.
+2. **The empty-client-id fallback** (`Login.tsx:88`) — with no client id there is no working
+   button, so the form stands in rather than rendering a dead end.
+3. **The `passwordCleared` toast** (`Login.tsx:97`) — somebody whose password just stopped
+   working is told why. A copy without it leaves them concluding the site is broken.
+
+## What must NOT be inherited from that page
+
+**The left half is `hidden lg:flex`** (`Login.tsx:159`). Below the `lg` breakpoint it is
+gone, so `/login` on a phone is a Google button and nothing else.
+
+The roadmap's acceptance for *this* item is the opposite: 手机上（320px）能用；没登录的人能看懂
+这是干嘛的、装插件的按钮在哪. A home page that hides its own explanation on a phone fails its
+own criterion. Whatever the layout does at `lg`, the explanation and the extension link
+have to survive at 320px.
+
+Related: the Chrome store link on `/login` is small print inside the left column
+(`Login.tsx:176`), so today it is doubly invisible on a phone. The roadmap asks for a
+button somebody can find.
+
+## What the left half may claim
+
+The same bar the current home page is held to, which `replit.md` states outright: **only
+what the extension actually ships.** The badges are the extension's own strings, the counts
+are row counts, the DOL data is refreshed quarterly by hand. `Login.tsx`'s left column
+already obeys this — three claims, and a line saying filing history is evidence of past
+sponsorship rather than a promise of future sponsorship. Carry that line across; it is the
+compliance sentence, not decoration.
+
+Nothing predictive. `ROADMAP.md` 明确不做 and the 中签率计算器 removed 2026-09-10.
+
+## What done looks like
+
+- The home page renders the product's case and the extension's case beside a Google
+  sign-in, per whichever answer the owner gave to the decision above, recorded in the
+  proposal.
+- **At 320px the explanation and the extension link are both present and reachable**, and
+  the page does not scroll horizontally — the bar `/jobs` is already held to in
+  `openspec/specs/jobs-page/spec.md`.
+- The sign-in half is one component rendered in every place it appears. Proven by a test
+  that `?password=1` still reaches the password form from the new page, and that an empty
+  client id still falls back to the form rather than a dead end.
+- Signing in with Google from the new page lands on `/jobs` — the roadmap's 登录后直接进
+  `/jobs`, which is what `Login.tsx:108` already does.
+- A signed-in visitor arriving at `/` is not invited to sign in again.
+- The mailing list stays gone. `Home.test.tsx` asserts it appears nowhere on the page
+  (`013`, 2026-09-15); a rewrite that drops that test re-opens the question silently.
+- Every claim on the page checks out against `../h1_checker`. Tested in
+  `artifacts/landing`, which has had a test runner since `008`.
+
+## Notes for whoever picks this up
+
+- **`004` is not this ticket and is not cancelled by it.** That one lands somebody who has
+  just finished the profile form and hands them the extension — a different arrival, from a
+  different place, and its counterpart in `../h1_checker` has not shipped. Read it before
+  designing the hero so the two do not contradict each other.
+- **`013` already took one section off this page.** The closing CTA that remains is the
+  extension link that replaced the email box. It is the only CTA on the page today.
+- **The header's door is conditional already** (`SiteHeader.tsx:37`): "Dashboard" when
+  signed in, "Log in" when not, never both. Under A that door points at a page that now
+  signs people in at `/`; say what it points at rather than leaving it.

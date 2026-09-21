@@ -189,10 +189,11 @@ answer arrives with the `/implement` invocation, which is the owner's gate anywa
 
 ## Notes for whoever picks this up
 
-- **The new-grad classifier is not a detour from the roadmap — it is `021` with a different
+- **The new-grad classifier is not a detour from the roadmap — it is `../h1_checker/021` with a different
   filter.** 第一步's GitHub intern list needs the same title machinery, one signal apart
-  (`intern` vs new-grad). Whoever builds it for this dashboard should build it where `021` can
-  use it, not twice.
+  (`intern` vs new-grad). Whoever builds it for this dashboard should build it where
+  `../h1_checker/021` can use it, not twice. This repo's own `021` (the `/jobs` intern section,
+  written 2026-09-20) needs the same machinery a third time — build it once for all three.
 - **The name join is the quiet risk.** Rows from any new source land as employer name strings
   and must reach our H-1B employer rows to be worth anything. h1_checker already has
   `EmployerAlias` (`models.py:461`), which means this problem was met and solved once; reuse it

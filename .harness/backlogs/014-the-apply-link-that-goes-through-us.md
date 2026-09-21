@@ -10,6 +10,12 @@ origin: ROADMAP.md 第一步 1 and 5 (owner decisions 2026-09-17): every apply l
 counterpart: ../h1_checker/.harness/backlogs/021-the-summer-2027-intern-list-on-github.md —
   the list that emits these links. It can launch with direct links and switch when this ships.
 blocks: nothing on its own. The "record into the tracker" half waits for .harness/backlogs/017.
+related: .harness/backlogs/021 (written 2026-09-20) — the /jobs login wall and the Summer 2027
+  intern section. Counterparts in one repo, pushing on the same sentence from two sides: this
+  ticket reads a session when one exists, 021 requires one. **This route must stay reachable
+  without a session after that wall lands** — a signed-out click is the number 021's own
+  decision is meant to be reviewed with, and the GitHub list links here for people who have
+  not signed in. The intern section's rows are what these links will carry.
 ---
 
 ## What this is
@@ -71,8 +77,9 @@ one exists is the first thing on the jobs side that looks at one, and the propos
 ## Notes for whoever picks this up
 
 1. **Ship before the README switches its links, not after.** A README link to a route that
-   answers 404 is worse than a direct link. 021 can launch with direct ATS links and flip in one
-   generator change once this is live.
+   answers 404 is worse than a direct link. `../h1_checker/021` (the GitHub list — not this
+   repo's `021`, which took that number on 2026-09-20) can launch with direct ATS links and flip
+   in one generator change once this is live.
 2. **Rate limiting.** The list can send a burst; the upstream proxy already limits per calling
    server. The redirect should not spend an upstream call per click if a cache of id → URL is
    cheap — a design call for the proposal, not a requirement.
