@@ -125,6 +125,12 @@ backlog — reproduce, failing Vitest test, `fix-<slug>`. It is recorded here be
 where it was found and because a session picking up this ticket will otherwise fix it silently
 inside a feature change. **Raise it with the owner as its own thing; do not fold it in.**
 
+**And it is not a one-line fix.** The obvious cheap repair is measured dead in "The count
+problem" below. The two honest interim moves are a boundary-aware match upstream, or removing
+the `Internship` preset from the picker until this ticket builds it properly — which is the
+precedent `openspec/specs/jobs-page/spec.md` already set when a control that could not keep its
+promise was removed at review rather than shipped narrowed.
+
 ## The count problem — the easy implementation is already forbidden here
 
 The obvious fix is to fetch `title=intern` and drop the `International` rows in the browser.
@@ -141,14 +147,25 @@ And the spec's own **"The result count matches the list"** requirement says the 
 what the filters matched, counted the way the list pages through them. Post-filtering breaks
 both. Whatever this section is, it cannot be a local filter over a fetched page.
 
-Three ways out, none free, and the proposal picks one:
+Three ways out were on the table. One has since been measured and removed, so the proposal
+picks between the remaining two:
 
 1. **The upstream gains a boundary-aware title match.** The honest fix — it puts the filter
    where the count is computed. Cost: a counterpart ticket in `../h1_checker` and a contract
    change. Nothing here should pretend that is small.
-2. **Choose terms that do not collide.** `internship` as a substring matches `internships` and
-   little else; `%internship%` cannot reach `International`. Cheap, and it costs the postings
-   titled only `... Intern`. Measure what that loses before choosing it.
+2. ~~**Choose terms that do not collide.**~~ **Measured 2026-09-20, and it is dead.** The idea
+   was that `%internship%` cannot reach `International`, so swapping the preset's value is a
+   one-line fix. It is, and it destroys the feature:
+
+   | | `title=intern` | `title=internship` |
+   |---|---|---|
+   | Rows upstream | 194 | 23 |
+
+   In a sample of 100 rows from the first, 82 are real internships and **all 82** are titled
+   `... Intern` rather than `... Internship`. The losses are the exact audience: `Software
+   Engineering Intern (Summer 2027)`, `Software Engineer, Intern`, `Security Risk Management
+   Intern (Summer 2027)`. The swap trades 18 wrong rows for 82 missing right ones. Recorded so
+   nobody re-derives it and ships it.
 3. **A precomputed section** — the list is built server-side and cached, with its own count,
    the way `routes/new-grad.ts` builds one. See the warning below.
 
