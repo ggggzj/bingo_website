@@ -185,6 +185,20 @@ opens this to every user the query belongs upstream, and this is what gets delet
 early, and the upstream's rate limit is per calling server — this server — so it is one budget
 shared by everybody. Whatever is built, it is not that loop on a public page.
 
+## The picker no longer has an Internship option — resolved 2026-09-20
+
+The owner chose to remove it rather than narrow it (`f6fc12f`). So this section is
+**restoring a control that was deliberately withdrawn**, not extending one that exists:
+
+- `ROLE_PRESETS` in `FilterRow.tsx` now runs New grad / Junior / Senior / Staff and above,
+  with a header comment saying why the fifth is missing.
+- `FilterRow.test.ts` holds two lines. One fails if any picker option searches for a term
+  that returns a role of another kind. The other fails if an `Internship` label comes back
+  at all — **whoever lands this ticket deletes that second test on purpose**, having
+  answered the count question rather than around it. The first one stays.
+
+That is the gate on this part of the ticket, and it is deliberately awkward to walk past.
+
 ## What the section is, and what it must never become
 
 A preset filter. The roadmap's words: 就是一个预设好的筛选. Not a classifier.
