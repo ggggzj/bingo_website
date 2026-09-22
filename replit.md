@@ -332,16 +332,37 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   dashboard, which is the defect `fix-google-signin-skips-the-owner-list` closed.
 
   `DrizzleAuthStore.recordProvenAddress` writes them as **raw SQL, and they are deliberately
-  absent from `lib/db/src/schema/`**. Declaring them would pull two tables this repo does not
-  own into `db run push`'s scope, and a push run from here for an unrelated coach change
-  would reconcile a stale declaration against the live table — silently dropping whatever
-  h1_checker had added at runtime. That is the same shared-`DATABASE_URL` hazard CLAUDE.md
-  names for schema pushes and dev servers, in the one form that leaves no error behind.
+  absent from `lib/db/src/schema/`**. `drizzle.config.ts` already refuses `push` because this
+  schema describes seven of that database's twenty-seven tables. The gap that guard leaves is
+  the path it recommends instead: `generate` emits DDL for everything the schema declares, so
+  declaring these two would put `CREATE TABLE`, and later `ALTER TABLE`, for h1_checker's
+  tables into a migration file indistinguishable from this repo's own. Staying out of the
+  schema is what makes that impossible rather than unlikely.
 
   The price is that the compiler checks no column name on that path.
-  `lib/auth/proven-address.contract.test.ts` pays it, and skips without
-  `COACH_TEST_DATABASE_URL` — so on a machine without that scratch database, nothing checks
-  those two statements at all.
+  `lib/auth/proven-address.contract.test.ts` pays it — but it **skips** without
+  `COACH_TEST_DATABASE_URL`, so a green run on a machine with no scratch Postgres has not
+  checked those two statements at all.
+
+- **Running the contract tests locally: a throwaway Postgres, in four commands.** Both
+  `store.contract.test.ts` and `proven-address.contract.test.ts` skip silently without
+  `COACH_TEST_DATABASE_URL`, which is how a suite reads 156-green while two files never ran.
+
+  ```sh
+  export LC_ALL=C                      # else the postmaster dies "multithreaded" on macOS
+  initdb -D /tmp/pg -U postgres --auth=trust
+  pg_ctl -D /tmp/pg -o "-p 55432 -k /tmp/pg -c listen_addresses=127.0.0.1" -w start
+  psql postgresql://postgres@127.0.0.1:55432/postgres -c 'create database scratch'
+  psql postgresql://postgres@127.0.0.1:55432/scratch -f lib/db/drizzle/0000_*.sql
+  COACH_TEST_DATABASE_URL=postgresql://postgres@127.0.0.1:55432/scratch \
+    pnpm --filter @workspace/api-server run test
+  ```
+
+  With that, 2026-09-21: **163 passed, 14 files, nothing skipped**. Two traps are worth the
+  four lines — `LC_ALL` unset kills the postmaster on macOS with a message about threads that
+  names no cause, and a socket directory under a long path fails at 103 bytes, which is easy
+  to hit inside a sandbox's temp dir. `push` is not how the schema gets there; the config
+  refuses it, so the generated migration is applied instead.
 
 - **Signing in is Google, and the ID-token flow rather than the redirect one.** The page
   gets a token from Google's library and posts it to `POST /api/auth/google`; the server

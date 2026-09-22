@@ -17,15 +17,29 @@ h1_checker's `models.py` owns `registrations` and `email_verifications`, and mig
 lazily at runtime — `_ensure_column` added `last_verified_at` to `email_verifications` after
 that table had shipped. Two repos now share one `DATABASE_URL`.
 
-Declaring those tables in `lib/db/src/schema/` would put them inside `db run push`'s scope
-here. A push run from this repo for an unrelated coach change would then compare its
-declaration against the live table and reconcile the difference — and the difference is
-whatever h1_checker added since. Nothing would error; a column would simply be gone.
+**Correction, made while verifying and left in rather than rewritten away.** This section
+first said the danger was `drizzle-kit push` reconciling a stale declaration against the live
+table. Running it proved that cannot happen: `lib/db/drizzle.config.ts` already throws on
+`push`, and its message is this same argument reached first and independently — *"it
+reconciles the WHOLE schema, and after 2026-09-20 this schema describes seven of the
+surviving database's twenty-seven tables, so a push would offer to drop h1_checker's
+application."* The hazard is real and it is already guarded.
 
-Raw SQL keeps the declaration out of the schema entirely, so no push from this repo can
-reach those two tables. The cost is that the compiler does not check the column names. That
-cost is paid by the repro tests plus the contract test in task 3.2, which is the only place
-in this change that touches a real database.
+What is **not** guarded is the path that guard sends people down: `generate`, read the SQL,
+apply it through `railway connect`. `drizzle-kit generate` emits DDL for everything the
+schema declares. Declare `registrations` and `email_verifications` here and the next
+generated migration carries `CREATE TABLE` — or, once they drift, `ALTER TABLE` — for two
+tables h1_checker owns and migrates at runtime in `models.py`. Somebody then applies that SQL
+by hand, believing it to be this repo's, because every other statement in the file is.
+
+So the conclusion stands and the reason is one step further along than it was written. Raw
+SQL keeps the declaration out of the schema, so nothing this repo generates can describe
+those two tables at all.
+
+The cost is that the compiler checks no column name on that path. It is paid by
+`proven-address.contract.test.ts`, which ran green against a real Postgres (see tasks 3.2 and
+4.1) — and, for the one thing that test cannot check, by reading the production schema
+directly on 2026-09-21.
 
 ## One `now`, passed in
 

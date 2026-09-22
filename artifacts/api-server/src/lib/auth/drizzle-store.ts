@@ -64,14 +64,17 @@ export class DrizzleAuthStore implements AuthStore {
    * `email_verifications` belong to h1_checker's `models.py`, which migrates them
    * lazily at runtime — that is how `email_verifications.last_verified_at` arrived
    * after the table had shipped. Since the 2026-09-21 cutover both repos share one
-   * `DATABASE_URL`. Declaring these two in `lib/db/src/schema/` would pull them into
-   * `db run push`'s scope here, and a push run from this repo for an unrelated coach
-   * change would reconcile its stale idea of them against the real thing. Nothing
-   * would error; a column h1_checker added would simply be gone. Keeping them out of
-   * the schema is what makes that impossible rather than merely unlikely.
+   * `DATABASE_URL`.
+   *
+   * `drizzle.config.ts` already refuses `push` for exactly this reason. The gap that
+   * guard leaves is the path it recommends instead — `generate`, read the SQL, apply it
+   * by hand. `generate` emits DDL for everything the schema declares, so declaring these
+   * two here would put `CREATE TABLE`, and later `ALTER TABLE`, for h1_checker's tables
+   * into a migration file indistinguishable from this repo's own. Staying out of the
+   * schema is what makes that impossible rather than merely unlikely.
    *
    * The cost is that the column names are not checked by the compiler.
-   * `store.contract.test.ts` pays it.
+   * `proven-address.contract.test.ts` pays it.
    */
   async recordProvenAddress(email: string, now: Date): Promise<void> {
     /* `client_id IS NULL` in the guard, never `= NULL`, which matches nothing and
