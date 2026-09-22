@@ -267,6 +267,18 @@ export function createAuthRouter(
         passwordCleared = true;
       }
 
+      /* The owner's list, not just the identity. Before the 2026-09-21 cutover this
+         site had no `registrations` table to reach and a sign-in that stopped at
+         `users` was complete; since then the two repos share one database, and
+         stopping there leaves a real person invisible on the dashboard.
+
+         After the verifier and after the identity, so a refused token adds nobody —
+         and before `startSession`, so the list entry is not something a later failure
+         can leave a signed-in person without. Same `now` as the session and the login
+         stamp: the reader on the other side counts a proof only when it is not older
+         than the registration asking about it. */
+      await store.recordProvenAddress(email, now);
+
       await startSession(store, res, user, now);
       await store.recordLogin(user.id, now);
       res.json({ ...describe(user), passwordCleared });

@@ -19,6 +19,10 @@ export class InMemoryAuthStore implements AuthStore {
   private readonly users = new Map<string, UserRecord>();
   private readonly sessions = new Map<string, StoredSession>();
   readonly lastLoginAt = new Map<number, Date>();
+  /** address -> when it was FIRST proved. The tests read this; so does nothing else. */
+  readonly provenAddresses = new Map<string, Date>();
+  /** How many times a row was actually written, as opposed to asked for. */
+  provenRecordCount = 0;
   private nextId = 1;
 
   async findUserByEmail(email: string): Promise<UserRecord | null> {
@@ -41,6 +45,15 @@ export class InMemoryAuthStore implements AuthStore {
     const user: UserRecord = { id: this.nextId++, email, passwordHash };
     this.users.set(email, user);
     return user;
+  }
+
+  async recordProvenAddress(email: string, now: Date): Promise<void> {
+    /* Idempotent the way the Postgres side is: a second sign-in writes nothing and
+       leaves the first proof where it is. `provenRecordCount` counts writes rather
+       than calls, so a test can tell "recorded once" from "called once". */
+    if (this.provenAddresses.has(email)) return;
+    this.provenAddresses.set(email, now);
+    this.provenRecordCount += 1;
   }
 
   async clearPassword(userId: number): Promise<void> {

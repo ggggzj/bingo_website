@@ -5,7 +5,7 @@
  */
 
 import { db, sessionsTable, usersTable } from "@workspace/db";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, eq, gt, isNull, sql } from "drizzle-orm";
 
 import type { AuthStore, UserRecord } from "./store";
 
@@ -55,6 +55,56 @@ export class DrizzleAuthStore implements AuthStore {
       .returning();
     if (!row) throw new Error("insert returned no row");
     return toRecord(row);
+  }
+
+  /**
+   * The two rows that put a Google-proved address on the owner's list.
+   *
+   * **Raw SQL, and not a Drizzle table, on purpose.** `registrations` and
+   * `email_verifications` belong to h1_checker's `models.py`, which migrates them
+   * lazily at runtime — that is how `email_verifications.last_verified_at` arrived
+   * after the table had shipped. Since the 2026-09-21 cutover both repos share one
+   * `DATABASE_URL`. Declaring these two in `lib/db/src/schema/` would pull them into
+   * `db run push`'s scope here, and a push run from this repo for an unrelated coach
+   * change would reconcile its stale idea of them against the real thing. Nothing
+   * would error; a column h1_checker added would simply be gone. Keeping them out of
+   * the schema is what makes that impossible rather than merely unlikely.
+   *
+   * The cost is that the column names are not checked by the compiler.
+   * `store.contract.test.ts` pays it.
+   */
+  async recordProvenAddress(email: string, now: Date): Promise<void> {
+    /* `client_id IS NULL` in the guard, never `= NULL`, which matches nothing and
+       would insert a row per sign-in. NULL is correct here: `client_id` names a
+       browser extension install, and somebody signing in on this site has none.
+       Inventing one would put a false install on the dashboard's Installed column. */
+    await db.execute(sql`
+      INSERT INTO registrations (email, client_id, created_at)
+      SELECT ${email}, NULL, ${now}
+      WHERE NOT EXISTS (
+        SELECT 1 FROM registrations
+        WHERE email = ${email} AND client_id IS NULL
+      )
+    `);
+
+    /* `email` is unique here, so this is an upsert rather than a guarded insert.
+       `verified_at` is when the address was FIRST proved and must not drift — the rule
+       h1_checker's own `/verify` follows — so it is only set when absent, while
+       `last_verified_at` records this proof. `token_hash` is NOT NULL and unique and
+       holds the hash of a token that is generated here and dropped: nothing is mailed,
+       so nothing can be redeemed with it. */
+    await db.execute(sql`
+      INSERT INTO email_verifications
+        (email, token_hash, sent_at, verified_at, last_verified_at)
+      VALUES (
+        ${email},
+        encode(sha256((gen_random_uuid()::text || ${email})::bytea), 'hex'),
+        ${now}, ${now}, ${now}
+      )
+      ON CONFLICT (email) DO UPDATE SET
+        verified_at = COALESCE(email_verifications.verified_at, EXCLUDED.verified_at),
+        last_verified_at = EXCLUDED.last_verified_at
+    `);
   }
 
   async clearPassword(userId: number): Promise<void> {

@@ -65,4 +65,22 @@ export interface AuthStore {
   revokeSession(tokenHash: string): Promise<void>;
 
   recordLogin(userId: number, at: Date): Promise<void>;
+
+  /**
+   * Put an address Google has just proved onto the owner's list.
+   *
+   * The list is `registrations`, and whether an address is confirmed is
+   * `email_verifications` — two tables this repo shares with h1_checker since the
+   * 2026-09-21 database cutover, and does not own. Before that day this site had its
+   * own database with neither, so a sign-in that only reached `users` was complete;
+   * afterwards it leaves a person invisible on the dashboard.
+   *
+   * Idempotent: signing in twice is one person, and the record of when the address was
+   * first proven does not move.
+   *
+   * Sends nothing. This capability already requires that somebody who signs in with
+   * Google is never sent to their inbox, and the verification row exists to say the
+   * address was proved, not to record a message.
+   */
+  recordProvenAddress(email: string, now: Date): Promise<void>;
 }

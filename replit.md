@@ -324,6 +324,25 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   timing which addresses signed up with Google. The comment at the call site carries that
   reason for exactly this reason.
 
+- **A Google-proved address is also written to `registrations` and `email_verifications`,
+  two tables this repo shares but does not own.** They are h1_checker's, defined in its
+  `models.py` and migrated there lazily at runtime; the owner's dashboard reads them, and
+  before the 2026-09-21 cutover this site had its own database containing neither. Since
+  that day a sign-in that reached only `users` left a real person invisible on that
+  dashboard, which is the defect `fix-google-signin-skips-the-owner-list` closed.
+
+  `DrizzleAuthStore.recordProvenAddress` writes them as **raw SQL, and they are deliberately
+  absent from `lib/db/src/schema/`**. Declaring them would pull two tables this repo does not
+  own into `db run push`'s scope, and a push run from here for an unrelated coach change
+  would reconcile a stale declaration against the live table — silently dropping whatever
+  h1_checker had added at runtime. That is the same shared-`DATABASE_URL` hazard CLAUDE.md
+  names for schema pushes and dev servers, in the one form that leaves no error behind.
+
+  The price is that the compiler checks no column name on that path.
+  `lib/auth/proven-address.contract.test.ts` pays it, and skips without
+  `COACH_TEST_DATABASE_URL` — so on a machine without that scratch database, nothing checks
+  those two statements at all.
+
 - **Signing in is Google, and the ID-token flow rather than the redirect one.** The page
   gets a token from Google's library and posts it to `POST /api/auth/google`; the server
   verifies it against Google's published keys (`lib/auth/google.ts`, via `jose`) and starts
