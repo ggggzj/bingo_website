@@ -343,6 +343,38 @@ describe("signing in with Google", () => {
     expect(stored?.passwordHash).toBeNull();
   });
 
+  /* The owner's list lives in `registrations`, a table this site now shares with
+     h1_checker after the 2026-09-21 cutover. Signing in with Google reached `users`
+     and stopped, so a person who arrived through this page was invisible on the
+     dashboard — the same defect h1_checker fixed on its own two Google paths. */
+
+  it("puts the address Google proved on the owner's list", async () => {
+    const app = googleApp(vouchesFor("listed@usc.edu"));
+
+    const signedIn = await request(app).post("/api/auth/google").send({ credential: "x" });
+
+    expect(signedIn.status).toBe(200);
+    expect(store.provenAddresses.get("listed@usc.edu")).toBeInstanceOf(Date);
+  });
+
+  it("records the address once, however many times they sign in", async () => {
+    const app = googleApp(vouchesFor("twice@usc.edu"));
+
+    await request(app).post("/api/auth/google").send({ credential: "x" });
+    await request(app).post("/api/auth/google").send({ credential: "x" });
+
+    expect(store.provenRecordCount).toBe(1);
+  });
+
+  it("a refused token puts nobody on the list", async () => {
+    const app = googleApp(refuses);
+
+    const refused = await request(app).post("/api/auth/google").send({ credential: "x" });
+
+    expect(refused.status).toBe(401);
+    expect(store.provenRecordCount).toBe(0);
+  });
+
   it("the same address twice is one account", async () => {
     const app = googleApp(vouchesFor("twice@usc.edu"));
     const first = await request(app).post("/api/auth/google").send({ credential: "x" });
