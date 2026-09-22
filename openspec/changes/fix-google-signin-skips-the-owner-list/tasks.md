@@ -44,7 +44,7 @@ Baseline before them, 36 of 36 green in that file; with them, 3 failed / 36 pass
 
       Original task follows.
 
-- [ ] 3.2-original Add a contract test beside the existing drizzle contract test, running against
+      (Original wording) Add a contract test beside the existing drizzle contract test, running against
       `COACH_TEST_DATABASE_URL`, that proves the two statements are idempotent and that the
       column names are real. This is the only place the raw SQL is checked by a machine
       rather than by reading; the proposal's decision (a) is paid for here. If that scratch
@@ -75,5 +75,8 @@ Baseline before them, 36 of 36 green in that file; with them, 3 failed / 36 pass
       explains the password-less identity; add beside it that such an identity is also recorded
       in `registrations` and `email_verifications`, tables this repo shares but does not own.
 - [ ] 4.4 Retire `../h1_checker/.harness/session-todos/2026-09-21-website-google-signin-skips-the-owner-list.md`
-      — it exists to point here, and this change closes it. That file is in the other repo, so
-      it is a separate commit there, not part of this change's PR.
+      — **when this change merges, not now.** The todo describes a defect that is still live in
+      production until then, and deleting it while the fix sits on a branch would leave the
+      only written record of an open hole pointing at nothing. Amended 2026-09-21: the todo now
+      carries a line naming this change, so a reader knows work is in flight. That file is in
+      the other repo and its amendment is a separate commit there, on that repo's open PR.
