@@ -139,4 +139,15 @@ export class DrizzleApplicationStore implements ApplicationStore {
       return { ...row, ...after };
     });
   }
+
+  async jd(userId: number, id: number): Promise<string | null> {
+    const [row] = await this.database
+      .select({ jdMarkdown: applicationsTable.jdMarkdown })
+      .from(applicationsTable)
+      // Ownership in the query again: a row belonging to somebody else and a row with no
+      // archive both answer null, and the route turns both into the same 404.
+      .where(and(eq(applicationsTable.id, id), eq(applicationsTable.userId, userId)))
+      .limit(1);
+    return row?.jdMarkdown ?? null;
+  }
 }

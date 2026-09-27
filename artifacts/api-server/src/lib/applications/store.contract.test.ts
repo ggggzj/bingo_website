@@ -172,4 +172,24 @@ describe.skipIf(!PG_URL)("DrizzleApplicationStore (Postgres)", () => {
 
     await database!.delete(schema.usersTable).where(eq(schema.usersTable.id, other!.id));
   });
+
+  it("hands back an archived body only to the person whose row it is", async () => {
+    const store = new DrizzleApplicationStore(database! as never);
+    const rows = await store.list(userId);
+    const solace = rows.find((row) => row.company === "Solace Health")!;
+    const zoom = rows.find((row) => row.company === "Zoom")!;
+
+    expect(await store.jd(userId, solace.id)).toContain("Associate Software Engineer");
+    // Nothing was archived for this one, which is an ordinary state and not an error.
+    expect(await store.jd(userId, zoom.id)).toBeNull();
+
+    const [other] = await database!
+      .insert(schema.usersTable)
+      .values({ email: `other-${OWNER}`, passwordHash: null, createdAt: new Date() })
+      .returning();
+    // Indistinguishable from "nothing archived", which is what lets the route answer one 404.
+    expect(await store.jd(other!.id, solace.id)).toBeNull();
+
+    await database!.delete(schema.usersTable).where(eq(schema.usersTable.id, other!.id));
+  });
 });

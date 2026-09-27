@@ -208,6 +208,20 @@ export interface ApplicationEdit {
   note?: string | null;
 }
 
+export interface ApplicationJd {
+  /** What to show — the archive's own header, then the description. */
+  markdown: string;
+  /** Whether page furniture was skipped past. Stated rather than assumed: a reader who does not know text was cut cannot tell a short job description from a trimmed one. */
+  trimmed: boolean;
+  /** Everything the archive holds, so nothing is only hidden. */
+  full_markdown: string;
+  /**
+   * "Greenhouse API", "Workday API", "HTML 抓取" — how the copy was taken.
+   * @nullable
+   */
+  source?: string | null;
+}
+
 export interface ApplicationList {
   applications: Application[];
   /**

@@ -393,6 +393,37 @@ export const UpdateApplicationResponse = zod
   );
 
 /**
+ * The copy taken when the application was sent. This is the half that cannot be re-fetched: a posting's page 404s when the req closes, and two of the owner's did within five days of applying.
+Served one row at a time rather than with the list, because 80 bodies are 400 kB of text and the list needs only to know that one exists.
+Nothing is rewritten. Where the archive was scraped from a page rather than read from an applicant tracking system, the site's menus and its list of other jobs are skipped past — `trimmed` says when that happened and `full_markdown` carries everything, so what was skipped is reachable rather than hidden.
+Owner-only; everyone else gets 404, as does an application with no archive.
+ * @summary The archived job description for one application
+ */
+export const GetApplicationJdParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetApplicationJdResponse = zod.object({
+  markdown: zod
+    .string()
+    .describe("What to show — the archive's own header, then the description."),
+  trimmed: zod
+    .boolean()
+    .describe(
+      "Whether page furniture was skipped past. Stated rather than assumed: a reader who does not know text was cut cannot tell a short job description from a trimmed one.",
+    ),
+  full_markdown: zod
+    .string()
+    .describe("Everything the archive holds, so nothing is only hidden."),
+  source: zod
+    .string()
+    .nullish()
+    .describe(
+      '\"Greenhouse API\", \"Workday API\", \"HTML 抓取\" — how the copy was taken.',
+    ),
+});
+
+/**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
  * @summary Growth totals (owner only)
  */

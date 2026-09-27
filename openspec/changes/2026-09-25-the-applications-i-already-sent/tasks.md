@@ -80,23 +80,23 @@ says whether one is still running on 127.0.0.1:55432 and how to recreate it.
 
 ## 5. A second import cannot touch what the browser wrote
 
-- [ ] 5.1 The test this whole change exists for, in `import.contract.test.ts`: import, change a
+- [x] 5.1 The test this whole change exists for, in `import.contract.test.ts`: import, change a
       status and a note through the store, import again — **the change is still there**, and the
       machine half did refresh. Extend the importer only if this fails.
 
 ## 6. The archived JD opens from a row
 
-- [ ] 6.1 Add `GET /applications/{id}/jd` to `openapi.yaml` and **run codegen in this same task**.
-- [ ] 6.2 Serve the body from `routes/applications.ts`, owner-only, 404 otherwise. Proven in
+- [x] 6.1 Add `GET /applications/{id}/jd` to `openapi.yaml` and **run codegen in this same task**.
+- [x] 6.2 Serve the body from `routes/applications.ts`, owner-only, 404 otherwise. Proven in
       `applications.test.ts`: a row with an archive returns its markdown; a row without returns
       404; a non-owner returns 404 for both.
-- [ ] 6.3 Open it from the row in `Applications.tsx`; a row with no archive says so rather than
+- [x] 6.3 Open it from the row in `Applications.tsx`; a row with no archive says so rather than
       offering a dead control. Proven in `Applications.test.tsx`.
       **Owner request 2026-09-27**, which is this group's whole point rather than an addition to
       it: *"点击 posting 的 link，可以出来一个你整理好的内容，这样哪怕最后 posting 不在了，我依然
       可以看到 JD 里面的内容"*. So the row's control opens the archived body **here**; the link to
       the employer's page is the secondary one, because that is the half that dies.
-- [ ] 6.4 Render it legibly — which is two problems, not one, measured 2026-09-27 against the
+- [x] 6.4 Render it legibly — which is two problems, not one, measured 2026-09-27 against the
       real 80 bodies:
       - **API-sourced bodies are already clean prose** (Workday / Greenhouse / Ashby): a
         `Job Description:` heading and a list of responsibilities. They need rendering, nothing more.

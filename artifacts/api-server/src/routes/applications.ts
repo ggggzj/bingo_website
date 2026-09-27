@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 
 import { isOwner } from "../lib/auth/owner";
 import type { AuthStore } from "../lib/auth/store";
+import { readableJd } from "../lib/applications/jd";
 import { currentUser } from "./auth";
 
 /**
@@ -63,6 +64,12 @@ export interface ApplicationStore {
     edit: ApplicationEdit,
     hand: EditHand,
   ): Promise<ApplicationRecord | null>;
+  /**
+   * The archived body, or null when this row is not theirs or nothing was archived for it.
+   * Its own query rather than a column on the list: 80 bodies are 400 kB, and the list needs
+   * only to know that one exists.
+   */
+  jd(userId: number, id: number): Promise<string | null>;
 }
 
 /**
@@ -240,6 +247,46 @@ export function createApplicationsRouter(
       res.json(present(row));
     } catch (err) {
       req.log?.error({ err }, "Failed to update application");
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  router.get("/:id/jd", async (req, res) => {
+    let signedIn;
+    try {
+      signedIn = await owner(req);
+    } catch (err) {
+      req.log?.error({ err }, "Failed to read session");
+      res.status(500).json({ error: "Internal server error" });
+      return;
+    }
+    if (!signedIn) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+
+    const id = Number(req.params["id"]);
+    if (!Number.isInteger(id)) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+
+    try {
+      const raw = await applications.jd(signedIn.id, id);
+      // Nothing archived is the same answer as not yours: neither tells a stranger which.
+      if (raw === null) {
+        res.status(404).json({ error: "Not found" });
+        return;
+      }
+      const jd = readableJd(raw);
+      res.json({
+        markdown: jd.markdown,
+        trimmed: jd.trimmed,
+        full_markdown: jd.fullMarkdown,
+        source: jd.source,
+      });
+    } catch (err) {
+      req.log?.error({ err }, "Failed to read the archived description");
       res.status(500).json({ error: "Internal server error" });
     }
   });

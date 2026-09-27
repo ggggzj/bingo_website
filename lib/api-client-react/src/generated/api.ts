@@ -20,6 +20,7 @@ import type {
   Account,
   Application,
   ApplicationEdit,
+  ApplicationJd,
   ApplicationList,
   CoachConfig,
   CoachConfigInput,
@@ -951,6 +952,97 @@ export const useUpdateApplication = <
 > => {
   return useMutation(getUpdateApplicationMutationOptions(options));
 };
+
+/**
+ * The copy taken when the application was sent. This is the half that cannot be re-fetched: a posting's page 404s when the req closes, and two of the owner's did within five days of applying.
+Served one row at a time rather than with the list, because 80 bodies are 400 kB of text and the list needs only to know that one exists.
+Nothing is rewritten. Where the archive was scraped from a page rather than read from an applicant tracking system, the site's menus and its list of other jobs are skipped past — `trimmed` says when that happened and `full_markdown` carries everything, so what was skipped is reachable rather than hidden.
+Owner-only; everyone else gets 404, as does an application with no archive.
+ * @summary The archived job description for one application
+ */
+export const getGetApplicationJdUrl = (id: number) => {
+  return `/api/applications/${id}/jd`;
+};
+
+export const getApplicationJd = async (
+  id: number,
+  options?: RequestInit,
+): Promise<ApplicationJd> => {
+  return customFetch<ApplicationJd>(getGetApplicationJdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetApplicationJdQueryKey = (id: number) => {
+  return [`/api/applications/${id}/jd`] as const;
+};
+
+export const getGetApplicationJdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApplicationJd>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getApplicationJd>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApplicationJdQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApplicationJd>>
+  > = ({ signal }) => getApplicationJd(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApplicationJd>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetApplicationJdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApplicationJd>>
+>;
+export type GetApplicationJdQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary The archived job description for one application
+ */
+
+export function useGetApplicationJd<
+  TData = Awaited<ReturnType<typeof getApplicationJd>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getApplicationJd>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetApplicationJdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.

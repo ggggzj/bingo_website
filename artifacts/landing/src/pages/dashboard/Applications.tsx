@@ -3,6 +3,7 @@ import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   getGetApplicationsQueryKey,
+  useGetApplicationJd,
   useGetApplications,
   useUpdateApplication,
   type Application,
@@ -11,6 +12,14 @@ import {
 } from "@workspace/api-client-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -55,6 +64,80 @@ function statusCounts(applications: Application[]): [string, number][] {
   return [...known, ...rest];
 }
 
+/**
+ * The archived job description.
+ *
+ * This is the column the owner asked for, and its reason is blunt: a posting's page 404s when
+ * the req closes — two of theirs did within five days of applying, and those two bodies are
+ * gone. So the control opens **our copy**, and the employer's link is the secondary one.
+ *
+ * Rendered as preformatted text rather than through a markdown library. These bodies are prose
+ * with a few dashed lists; a dependency to render them prettier would buy formatting and cost a
+ * package, and the thing the owner needs is to read what the employer wrote.
+ */
+function ArchivedJd({
+  application,
+  onClose,
+}: {
+  application: Application;
+  onClose: () => void;
+}) {
+  const [whole, setWhole] = useState(false);
+  const { data, isLoading, error } = useGetApplicationJd(application.id);
+
+  return (
+    <Dialog open onOpenChange={(next) => (next ? null : onClose())}>
+      <DialogContent className="max-h-[85vh] max-w-3xl overflow-hidden">
+        <DialogHeader>
+          <DialogTitle>
+            {application.company} — {application.role}
+          </DialogTitle>
+          <DialogDescription data-testid="jd-source">
+            {data?.source
+              ? `Archived copy, taken from ${data.source}. The posting itself may be gone.`
+              : "Archived copy. The posting itself may be gone."}
+          </DialogDescription>
+        </DialogHeader>
+
+        {isLoading ? (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Opening the archived copy…
+          </div>
+        ) : error || !data ? (
+          <p className="text-sm text-destructive">Could not open the archived copy.</p>
+        ) : (
+          <>
+            {/* Said rather than assumed: a reader who does not know text was skipped cannot
+                tell a short job description from a trimmed one. */}
+            {data.trimmed ? (
+              <div
+                className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground"
+                data-testid="jd-trimmed"
+              >
+                <span>
+                  This copy was scraped from the page, so the site&apos;s menus and its other
+                  job listings were skipped past.
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  data-testid="show-full-jd"
+                  onClick={() => setWhole((was) => !was)}
+                >
+                  {whole ? "Show just the description" : "Show everything that was kept"}
+                </Button>
+              </div>
+            ) : null}
+            <div className="overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed">
+              {whole ? data.full_markdown : data.markdown}
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 /** The four this tracker uses, which are the four the owner's own folder uses. */
 const STATUSES = ["saved", "applied", "interview", "closed"] as const satisfies readonly ApplicationEditStatus[];
 
@@ -65,10 +148,12 @@ function knownStatus(value: string): value is ApplicationEditStatus {
 function Row({
   application,
   onEdit,
+  onOpenJd,
   failed,
 }: {
   application: Application;
   onEdit: (id: number, edit: ApplicationEdit) => void;
+  onOpenJd: (application: Application) => void;
   failed: boolean;
 }) {
   /**
@@ -177,16 +262,37 @@ function Row({
         />
       </TableCell>
       <TableCell className="align-top text-right whitespace-nowrap">
-        {application.url ? (
-          <a
-            className="text-sm underline underline-offset-4"
-            href={application.url}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Posting
-          </a>
-        ) : null}
+        <div className="flex flex-col items-end gap-1">
+          {application.has_jd ? (
+            <Button
+              size="sm"
+              variant="outline"
+              data-testid={`open-jd-${application.id}`}
+              onClick={() => onOpenJd(application)}
+            >
+              JD
+            </Button>
+          ) : (
+            /* The archive is why this column exists. Nothing kept is a fact worth stating —
+               the posting may already be a 404, and then there is nothing anywhere. */
+            <span
+              className="text-[11px] text-muted-foreground"
+              data-testid={`no-jd-${application.id}`}
+            >
+              no copy kept
+            </span>
+          )}
+          {application.url ? (
+            <a
+              className="text-xs underline underline-offset-4 text-muted-foreground"
+              href={application.url}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Posting
+            </a>
+          ) : null}
+        </div>
       </TableCell>
     </TableRow>
   );
@@ -201,6 +307,7 @@ export function Applications() {
    * they made is worse than one they know failed.
    */
   const [failed, setFailed] = useState<Set<number>>(new Set());
+  const [openJd, setOpenJd] = useState<Application | null>(null);
   const update = useUpdateApplication({
     mutation: {
       onSuccess: (_result, variables) => {
@@ -298,6 +405,7 @@ export function Applications() {
                   key={application.id}
                   application={application}
                   onEdit={edit}
+                  onOpenJd={setOpenJd}
                   failed={failed.has(application.id)}
                 />
               ))}
@@ -305,6 +413,10 @@ export function Applications() {
           </Table>
         </>
       )}
+
+      {openJd ? (
+        <ArchivedJd application={openJd} onClose={() => setOpenJd(null)} />
+      ) : null}
     </div>
   );
 }

@@ -25,6 +25,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import * as schema from "@workspace/db/schema";
 import { importFolder } from "./import";
+import { DrizzleApplicationStore } from "./store";
 
 const PG_URL = process.env["COACH_TEST_DATABASE_URL"];
 
@@ -166,13 +167,18 @@ describe.skipIf(!PG_URL)("importFolder (Postgres)", () => {
         ),
       );
 
-    // The owner, in the browser: this one is now an interview, with a note.
-    await database!.insert(schema.applicationStatusTable).values({
-      applicationId: solace!.id,
-      status: "interview",
-      stage: "OA 09-28",
-      note: "recruiter said the take-home is 3 hours",
-    });
+    // The owner, in the browser — through the same store the route uses, not a shortcut
+    // into the table. What is under test is the path that actually runs.
+    await new DrizzleApplicationStore(database! as never).update(
+      userId,
+      solace!.id,
+      {
+        status: "interview",
+        stage: "OA 09-28",
+        note: "recruiter said the take-home is 3 hours",
+      },
+      "browser",
+    );
     // And something the import owns drifts out of date in the database.
     await database!
       .update(schema.applicationsTable)
@@ -195,6 +201,14 @@ describe.skipIf(!PG_URL)("importFolder (Postgres)", () => {
       .where(eq(schema.applicationsTable.id, solace!.id));
     expect(refreshed?.company).toBe("Solace Health");
     expect(refreshed?.location).toBe("Redwood City, CA");
+
+    // And the trail of that change survived too — an import that kept the value but lost the
+    // history would pass the assertions above and still have destroyed the irreplaceable half.
+    const events = await database!
+      .select()
+      .from(schema.applicationEventsTable)
+      .where(eq(schema.applicationEventsTable.applicationId, solace!.id));
+    expect(events.filter((event) => event.hand === "browser")).toHaveLength(3);
   });
 
   it("reports the keys that matched nothing rather than dropping them", async () => {

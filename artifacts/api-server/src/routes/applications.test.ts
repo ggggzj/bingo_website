@@ -53,10 +53,26 @@ const record = (over: Partial<ApplicationRecord> = {}): ApplicationRecord => ({
  * trail it appends is proved there — a fake cannot lie convincingly about what a transaction
  * wrote, so it does not try. What is proved here is the gate, the vocabulary and the shape.
  */
-function fakeStore(rows: ApplicationRecord[]): ApplicationStore & { edits: unknown[] } {
+const ARCHIVED = `# Solace Health — Associate Software Engineer
+
+- 归档时间：2026-09-24（来源：Ashby API）
+
+---
+Job Description:
+
+We are looking for an associate software engineer.
+`;
+
+function fakeStore(
+  rows: ApplicationRecord[],
+  bodies: Record<number, string> = { 1: ARCHIVED },
+): ApplicationStore & { edits: unknown[] } {
   const edits: unknown[] = [];
   return {
     edits,
+    async jd(userId, id) {
+      return userId > 0 ? (bodies[id] ?? null) : null;
+    },
     async list(userId) {
       return userId > 0 ? rows : [];
     },
@@ -284,5 +300,70 @@ describe("PATCH /applications/:id", () => {
     const res = await owner.patch("/api/applications/999").send({ status: "closed" });
 
     expect(res.status).toBe(404);
+  });
+});
+
+describe("GET /applications/:id/jd", () => {
+  let store: InMemoryAuthStore;
+
+  beforeEach(() => {
+    process.env["OWNER_EMAIL"] = OWNER;
+    store = new InMemoryAuthStore();
+  });
+
+  it("serves the copy taken when the application was sent", async () => {
+    const app = testApp(store, fakeStore([record({ id: 1 })]));
+
+    const owner = await signedIn(app, store, OWNER);
+    const res = await owner.get("/api/applications/1/jd");
+
+    expect(res.status).toBe(200);
+    expect(res.body.markdown).toContain("We are looking for an associate software engineer");
+    expect(res.body.source).toBe("Ashby API");
+    expect(res.body.trimmed).toBe(false);
+  });
+
+  /**
+   * A row with nothing archived and a row belonging to somebody else give the same answer.
+   * Two of the owner's postings 404'd within five days, so "nothing was kept" is a real and
+   * ordinary state — it just must not be distinguishable from "not yours".
+   */
+  it("answers 404 when nothing was archived, and when the row is not theirs", async () => {
+    const app = testApp(store, fakeStore([record({ id: 1 }), record({ id: 2 })], { 1: ARCHIVED }));
+
+    const owner = await signedIn(app, store, OWNER);
+    const noArchive = await owner.get("/api/applications/2/jd");
+
+    const stranger = await signedIn(app, store, STRANGER);
+    const notTheirs = await stranger.get("/api/applications/1/jd");
+
+    expect(noArchive.status).toBe(404);
+    expect(notTheirs.status).toBe(404);
+    expect(noArchive.body).toEqual(notTheirs.body);
+  });
+
+  it("skips past a scraped page's furniture and says that it did", async () => {
+    const scraped = `# Wingspan — Software Engineer
+
+- 归档时间：2026-09-24（来源：HTML 抓取）
+
+---
+Skip navigation links
+
+3,293 jobs matched
+
+About the job
+
+Wingspan engineers build things.
+`;
+    const app = testApp(store, fakeStore([record({ id: 1 })], { 1: scraped }));
+
+    const owner = await signedIn(app, store, OWNER);
+    const res = await owner.get("/api/applications/1/jd");
+
+    expect(res.body.trimmed).toBe(true);
+    expect(res.body.markdown).not.toContain("3,293 jobs matched");
+    // And what was skipped is still reachable, rather than only hidden.
+    expect(res.body.full_markdown).toContain("3,293 jobs matched");
   });
 });

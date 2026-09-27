@@ -221,4 +221,61 @@ describe("Applications", () => {
       expect(screen.getByTestId("save-failed-1")).toBeInTheDocument(),
     );
   });
+
+  it("opens the archived description from the row", async () => {
+    const user = userEvent.setup();
+    list({ applications: [application({ id: 1, has_jd: true })] });
+    server.use(
+      http.get("/api/applications/1/jd", () =>
+        HttpResponse.json({
+          markdown: "Job Description:\n\nWe are looking for an associate engineer.",
+          trimmed: false,
+          full_markdown: "Job Description:\n\nWe are looking for an associate engineer.",
+          source: "Ashby API",
+        }),
+      ),
+    );
+    renderApp(<Applications />);
+
+    await user.click(await screen.findByTestId("open-jd-1"));
+
+    expect(await screen.findByText(/looking for an associate engineer/)).toBeInTheDocument();
+    expect(screen.getByTestId("jd-source")).toHaveTextContent("Ashby API");
+  });
+
+  /**
+   * The archive is the point of the column: a posting's page 404s when the req closes, and
+   * two of the owner's did within five days. A row with nothing kept says so rather than
+   * offering a control that opens nothing.
+   */
+  it("says no copy was kept rather than offering a dead control", async () => {
+    list({ applications: [application({ id: 1, has_jd: false })] });
+    renderApp(<Applications />);
+
+    expect(await screen.findByTestId("no-jd-1")).toBeInTheDocument();
+    expect(screen.queryByTestId("open-jd-1")).not.toBeInTheDocument();
+  });
+
+  it("says when a scraped page was skipped past, and can show the whole thing", async () => {
+    const user = userEvent.setup();
+    list({ applications: [application({ id: 1, has_jd: true })] });
+    server.use(
+      http.get("/api/applications/1/jd", () =>
+        HttpResponse.json({
+          markdown: "About the job\n\nWingspan engineers build things.",
+          trimmed: true,
+          full_markdown: "3,293 jobs matched\n\nAbout the job\n\nWingspan engineers build things.",
+          source: "HTML 抓取",
+        }),
+      ),
+    );
+    renderApp(<Applications />);
+
+    await user.click(await screen.findByTestId("open-jd-1"));
+    expect(await screen.findByTestId("jd-trimmed")).toBeInTheDocument();
+    expect(screen.queryByText(/3,293 jobs matched/)).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId("show-full-jd"));
+    expect(await screen.findByText(/3,293 jobs matched/)).toBeInTheDocument();
+  });
 });
