@@ -48,11 +48,27 @@ const record = (over: Partial<ApplicationRecord> = {}): ApplicationRecord => ({
   ...over,
 });
 
-/** The store seam, in memory. The drizzle-backed one is `lib/applications/store.ts`. */
-function fakeStore(rows: ApplicationRecord[]): ApplicationStore {
+/**
+ * The store seam, in memory. The drizzle-backed one is `lib/applications/store.ts`, and the
+ * trail it appends is proved there — a fake cannot lie convincingly about what a transaction
+ * wrote, so it does not try. What is proved here is the gate, the vocabulary and the shape.
+ */
+function fakeStore(rows: ApplicationRecord[]): ApplicationStore & { edits: unknown[] } {
+  const edits: unknown[] = [];
   return {
+    edits,
     async list(userId) {
       return userId > 0 ? rows : [];
+    },
+    async update(userId, id, edit, hand) {
+      edits.push({ userId, id, edit, hand });
+      const row = rows.find((candidate) => candidate.id === id);
+      if (!row || userId <= 0) return null;
+      // Absent leaves alone; null clears. The store the real one mirrors does the same.
+      if ("status" in edit) row.status = edit.status ?? null;
+      if ("stage" in edit) row.stage = edit.stage ?? null;
+      if ("note" in edit) row.note = edit.note ?? null;
+      return row;
     },
   };
 }
@@ -177,5 +193,96 @@ describe("GET /applications", () => {
 
     expect(res.body.applications[0].has_jd).toBe(true);
     expect(JSON.stringify(res.body)).not.toContain("jd_markdown");
+  });
+});
+
+describe("PATCH /applications/:id", () => {
+  let store: InMemoryAuthStore;
+
+  beforeEach(() => {
+    process.env["OWNER_EMAIL"] = OWNER;
+    store = new InMemoryAuthStore();
+  });
+
+  it("writes what the owner says, and says it is theirs afterwards", async () => {
+    const app = testApp(store, fakeStore([record({ id: 1 })]));
+
+    const owner = await signedIn(app, store, OWNER);
+    const res = await owner
+      .patch("/api/applications/1")
+      .send({ status: "interview", stage: "OA 09-28" });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      status: "interview",
+      status_source: "owner",
+      stage: "OA 09-28",
+    });
+  });
+
+  it("tells the store which hand wrote it", async () => {
+    const applications = fakeStore([record({ id: 1 })]);
+    const app = testApp(store, applications);
+
+    const owner = await signedIn(app, store, OWNER);
+    await owner.patch("/api/applications/1").send({ note: "recruiter emailed" });
+
+    expect(applications.edits).toEqual([
+      { userId: expect.any(Number), id: 1, edit: { note: "recruiter emailed" }, hand: "browser" },
+    ]);
+  });
+
+  /**
+   * Absent and null are different instructions. A PATCH that treated them alike would erase
+   * a note every time the owner changed a status, which is the one kind of loss this whole
+   * change exists to prevent.
+   */
+  it("leaves out what was left out, and clears what was sent as null", async () => {
+    const applications = fakeStore([
+      record({ id: 1, status: "applied", stage: "OA", note: "keep me" }),
+    ]);
+    const app = testApp(store, applications);
+
+    const owner = await signedIn(app, store, OWNER);
+    const res = await owner.patch("/api/applications/1").send({ status: "closed", stage: null });
+
+    expect(res.body).toMatchObject({ status: "closed", stage: null, note: "keep me" });
+    expect(applications.edits).toEqual([
+      expect.objectContaining({ edit: { status: "closed", stage: null } }),
+    ]);
+  });
+
+  it("refuses a status outside the vocabulary rather than storing it", async () => {
+    const applications = fakeStore([record({ id: 1 })]);
+    const app = testApp(store, applications);
+
+    const owner = await signedIn(app, store, OWNER);
+    const res = await owner.patch("/api/applications/1").send({ status: "ghosted" });
+
+    expect(res.status).toBe(400);
+    // Refused before the store is touched: a rejected value never reaches the trail.
+    expect(applications.edits).toEqual([]);
+  });
+
+  it("answers 404 to a stranger and to nobody, the same as the list does", async () => {
+    const applications = fakeStore([record({ id: 1 })]);
+    const app = testApp(store, applications);
+
+    const stranger = await signedIn(app, store, STRANGER);
+    const asStranger = await stranger.patch("/api/applications/1").send({ status: "closed" });
+    const anonymous = await request(app).patch("/api/applications/1").send({ status: "closed" });
+
+    expect(asStranger.status).toBe(404);
+    expect(anonymous.status).toBe(404);
+    expect(applications.edits).toEqual([]);
+  });
+
+  it("answers 404 for an application that is not theirs", async () => {
+    const app = testApp(store, fakeStore([record({ id: 1 })]));
+
+    const owner = await signedIn(app, store, OWNER);
+    const res = await owner.patch("/api/applications/999").send({ status: "closed" });
+
+    expect(res.status).toBe(404);
   });
 });

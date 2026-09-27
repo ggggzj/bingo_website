@@ -18,6 +18,8 @@ import type {
 
 import type {
   Account,
+  Application,
+  ApplicationEdit,
   ApplicationList,
   CoachConfig,
   CoachConfigInput,
@@ -858,6 +860,97 @@ export function useGetApplications<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Status, stage and note — the half of an application the account owns. The imported half (company, role, dates, link, archived description) is the import's and cannot be changed here.
+A field left out is left alone; a field sent as null is cleared. That distinction matters: "no stage yet" and "do not touch the stage" are different instructions, and a PATCH that could not tell them apart would erase notes by omission.
+Every change appends to a trail and overwrites nothing. A status that moved applied to interviewing to closed is three readable facts afterwards, not one.
+Owner-only; everyone else gets 404, including for an id that exists.
+ * @summary Change what the owner says about one application
+ */
+export const getUpdateApplicationUrl = (id: number) => {
+  return `/api/applications/${id}`;
+};
+
+export const updateApplication = async (
+  id: number,
+  applicationEdit: ApplicationEdit,
+  options?: RequestInit,
+): Promise<Application> => {
+  return customFetch<Application>(getUpdateApplicationUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(applicationEdit),
+  });
+};
+
+export const getUpdateApplicationMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateApplication>>,
+    TError,
+    { id: number; data: BodyType<ApplicationEdit> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateApplication>>,
+  TError,
+  { id: number; data: BodyType<ApplicationEdit> },
+  TContext
+> => {
+  const mutationKey = ["updateApplication"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateApplication>>,
+    { id: number; data: BodyType<ApplicationEdit> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateApplication(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateApplicationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateApplication>>
+>;
+export type UpdateApplicationMutationBody = BodyType<ApplicationEdit>;
+export type UpdateApplicationMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Change what the owner says about one application
+ */
+export const useUpdateApplication = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateApplication>>,
+    TError,
+    { id: number; data: BodyType<ApplicationEdit> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateApplication>>,
+  TError,
+  { id: number; data: BodyType<ApplicationEdit> },
+  TContext
+> => {
+  return useMutation(getUpdateApplicationMutationOptions(options));
+};
 
 /**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.

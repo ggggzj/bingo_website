@@ -317,6 +317,82 @@ export const GetApplicationsResponse = zod.object({
 });
 
 /**
+ * Status, stage and note — the half of an application the account owns. The imported half (company, role, dates, link, archived description) is the import's and cannot be changed here.
+A field left out is left alone; a field sent as null is cleared. That distinction matters: "no stage yet" and "do not touch the stage" are different instructions, and a PATCH that could not tell them apart would erase notes by omission.
+Every change appends to a trail and overwrites nothing. A status that moved applied to interviewing to closed is three readable facts afterwards, not one.
+Owner-only; everyone else gets 404, including for an id that exists.
+ * @summary Change what the owner says about one application
+ */
+export const UpdateApplicationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateApplicationBody = zod
+  .object({
+    status: zod
+      .enum(["saved", "applied", "interview", "closed"])
+      .optional()
+      .describe(
+        "The four the owner's own folder uses. A value outside them is refused rather than stored, so the vocabulary cannot drift one typo at a time.",
+      ),
+    stage: zod.string().nullish(),
+    note: zod.string().nullish(),
+  })
+  .describe(
+    'What the browser may write. Absent means \"leave it\"; null means \"clear it\".',
+  );
+
+export const UpdateApplicationResponse = zod
+  .object({
+    id: zod.number(),
+    company: zod.string(),
+    role: zod.string(),
+    location: zod.string().nullish(),
+    region: zod.string().nullish(),
+    ats: zod
+      .string()
+      .nullish()
+      .describe(
+        "Greenhouse \/ Ashby \/ Workday \/ 公司官网 \/ Oracle, as the folder classified it.",
+      ),
+    url: zod
+      .string()
+      .nullish()
+      .describe(
+        "The posting. Often dead — a req closes and the page 404s, which is why the archived body exists.",
+      ),
+    status: zod
+      .string()
+      .describe(
+        "What this application is: saved \/ applied \/ interview \/ closed. The owner's own answer where they have given one, otherwise what the imported CSV said. `status_source` says which, because presenting an import's guess as the owner's judgement is the lie this field could tell.",
+      ),
+    status_source: zod.enum(["owner", "import"]),
+    stage: zod
+      .string()
+      .nullish()
+      .describe(
+        'Free text the owner writes, e.g. \"OA\" \/ \"拒信 · 不提供 sponsorship\".',
+      ),
+    note: zod.string().nullish(),
+    applied_date: zod.coerce.date().nullish(),
+    saved_date: zod.coerce.date().nullish(),
+    days_waiting: zod
+      .number()
+      .nullable()
+      .describe(
+        "Days since the application was sent. Null when it was never sent — a saved row has nothing to wait for. A fact about two dates and nothing more; no deadline is predicted from it.",
+      ),
+    has_jd: zod
+      .boolean()
+      .describe(
+        "Whether a copy of the job description was archived. The body itself is a separate request, so a list of 94 does not carry 400 kB of text.",
+      ),
+  })
+  .describe(
+    "One application the owner sent, as the account holds it: the imported half plus whatever they have said about it themselves.",
+  );
+
+/**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
  * @summary Growth totals (owner only)
  */

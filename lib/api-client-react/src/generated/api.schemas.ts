@@ -183,6 +183,31 @@ export interface Application {
   has_jd: boolean;
 }
 
+/**
+ * The four the owner's own folder uses. A value outside them is refused rather than stored, so the vocabulary cannot drift one typo at a time.
+ */
+export type ApplicationEditStatus =
+  (typeof ApplicationEditStatus)[keyof typeof ApplicationEditStatus];
+
+export const ApplicationEditStatus = {
+  saved: "saved",
+  applied: "applied",
+  interview: "interview",
+  closed: "closed",
+} as const;
+
+/**
+ * What the browser may write. Absent means "leave it"; null means "clear it".
+ */
+export interface ApplicationEdit {
+  /** The four the owner's own folder uses. A value outside them is refused rather than stored, so the vocabulary cannot drift one typo at a time. */
+  status?: ApplicationEditStatus;
+  /** @nullable */
+  stage?: string | null;
+  /** @nullable */
+  note?: string | null;
+}
+
 export interface ApplicationList {
   applications: Application[];
   /**

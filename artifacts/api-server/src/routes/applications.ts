@@ -35,8 +35,80 @@ export type ApplicationRecord = {
   importedAt: Date;
 };
 
+/**
+ * What the browser may write. A key's **absence means "leave it"; null means "clear it"**, so
+ * this is an optional-key type rather than a nullable one: `{}` and `{ note: null }` are
+ * different instructions, and a type that could not tell them apart would erase a note every
+ * time a status changed.
+ */
+export type ApplicationEdit = {
+  status?: string | null;
+  stage?: string | null;
+  note?: string | null;
+};
+
+/** Which hand made a change. `script` arrives with `.harness/backlogs/025`. */
+export type EditHand = "browser" | "script";
+
 export interface ApplicationStore {
   list(userId: number): Promise<ApplicationRecord[]>;
+  /**
+   * Returns the row as it now stands, or null when it is not this user's — which the route
+   * answers as 404, the same answer a row that does not exist gets. Ownership is checked in
+   * the query, not after it.
+   */
+  update(
+    userId: number,
+    id: number,
+    edit: ApplicationEdit,
+    hand: EditHand,
+  ): Promise<ApplicationRecord | null>;
+}
+
+/**
+ * The four states this tracker uses, which are the four the owner's own folder uses. A value
+ * outside them is refused rather than stored: a vocabulary drifts one typo at a time, and a
+ * column holding both `closed` and `Closed` cannot be counted.
+ */
+const STATUSES = new Set(["saved", "applied", "interview", "closed"]);
+
+const EDITABLE = ["status", "stage", "note"] as const;
+
+type EditProblem = { error: string };
+
+/** Reads the body into an edit, or says why it will not. */
+export function readEdit(body: unknown): ApplicationEdit | EditProblem {
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return { error: "Expected an object" };
+  }
+  const given = body as Record<string, unknown>;
+
+  const unknownKeys = Object.keys(given).filter(
+    (key) => !(EDITABLE as readonly string[]).includes(key),
+  );
+  // Refused rather than ignored: a caller that sent a field believes it was written, and
+  // silently dropping it is how a note goes missing with nothing to point at.
+  if (unknownKeys.length > 0) {
+    return { error: `Cannot change: ${unknownKeys.join(", ")}` };
+  }
+
+  const edit: ApplicationEdit = {};
+  if ("status" in given) {
+    const status = given["status"];
+    if (typeof status !== "string" || !STATUSES.has(status)) {
+      return { error: `Status must be one of: ${[...STATUSES].join(", ")}` };
+    }
+    edit.status = status;
+  }
+  for (const field of ["stage", "note"] as const) {
+    if (!(field in given)) continue;
+    const value = given[field];
+    if (value !== null && typeof value !== "string") {
+      return { error: `${field} must be text or null` };
+    }
+    edit[field] = value;
+  }
+  return edit;
 }
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -128,6 +200,46 @@ export function createApplicationsRouter(
       });
     } catch (err) {
       req.log?.error({ err }, "Failed to list applications");
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  router.patch("/:id", async (req, res) => {
+    let signedIn;
+    try {
+      signedIn = await owner(req);
+    } catch (err) {
+      req.log?.error({ err }, "Failed to read session");
+      res.status(500).json({ error: "Internal server error" });
+      return;
+    }
+    if (!signedIn) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+
+    const id = Number(req.params["id"]);
+    if (!Number.isInteger(id)) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+
+    const edit = readEdit(req.body);
+    // Refused before the store is touched, so a rejected value never reaches the trail.
+    if ("error" in edit) {
+      res.status(400).json({ error: edit.error });
+      return;
+    }
+
+    try {
+      const row = await applications.update(signedIn.id, id, edit, "browser");
+      if (!row) {
+        res.status(404).json({ error: "Not found" });
+        return;
+      }
+      res.json(present(row));
+    } catch (err) {
+      req.log?.error({ err }, "Failed to update application");
       res.status(500).json({ error: "Internal server error" });
     }
   });

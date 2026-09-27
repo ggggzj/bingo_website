@@ -1,7 +1,17 @@
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useGetApplications, type Application } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  getGetApplicationsQueryKey,
+  useGetApplications,
+  useUpdateApplication,
+  type Application,
+  type ApplicationEdit,
+  type ApplicationEditStatus,
+} from "@workspace/api-client-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -45,7 +55,37 @@ function statusCounts(applications: Application[]): [string, number][] {
   return [...known, ...rest];
 }
 
-function Row({ application }: { application: Application }) {
+/** The four this tracker uses, which are the four the owner's own folder uses. */
+const STATUSES = ["saved", "applied", "interview", "closed"] as const satisfies readonly ApplicationEditStatus[];
+
+function knownStatus(value: string): value is ApplicationEditStatus {
+  return (STATUSES as readonly string[]).includes(value);
+}
+
+function Row({
+  application,
+  onEdit,
+  failed,
+}: {
+  application: Application;
+  onEdit: (id: number, edit: ApplicationEdit) => void;
+  failed: boolean;
+}) {
+  /**
+   * Local copies for the two text fields, so typing does not fight the refetch. They are
+   * sent on blur and only when they actually changed — leaving a field alone must not write
+   * a trail row saying it changed.
+   */
+  const [stage, setStage] = useState(application.stage ?? "");
+  const [note, setNote] = useState(application.note ?? "");
+
+  function commit(field: "stage" | "note", value: string, was: string | null | undefined) {
+    const next = value.trim();
+    const before = (was ?? "").trim();
+    if (next === before) return;
+    onEdit(application.id, { [field]: next.length > 0 ? next : null });
+  }
+
   return (
     <TableRow data-testid={`application-${application.id}`}>
       <TableCell className="align-top">
@@ -62,9 +102,32 @@ function Row({ application }: { application: Application }) {
       </TableCell>
       <TableCell className="align-top">
         <div className="flex flex-col items-start gap-1">
-          <Badge variant={application.status === "closed" ? "outline" : "secondary"}>
-            {application.status}
-          </Badge>
+          <select
+            className="w-full rounded-md border bg-background px-2 py-1 text-sm"
+            data-testid={`status-select-${application.id}`}
+            aria-label={`Status for ${application.company}`}
+            value={application.status}
+            onChange={(event) => {
+              // Narrowed rather than cast: the server refuses anything outside the four, so
+              // sending an unknown value would be asking for a 400 the owner cannot act on.
+              const picked = event.target.value;
+              if (knownStatus(picked)) onEdit(application.id, { status: picked });
+            }}
+          >
+            {STATUSES.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+            {/* A value the folder produced that this vocabulary does not contain stays
+                visible — the row is not silently rewritten to something the owner never
+                chose — but cannot be picked again, because the server would refuse it. */}
+            {knownStatus(application.status) ? null : (
+              <option value={application.status} disabled>
+                {application.status} (from the folder)
+              </option>
+            )}
+          </select>
           {/* Said plainly: this one is a line from a CSV, not something you decided. */}
           {application.status_source === "import" ? (
             <span
@@ -74,8 +137,22 @@ function Row({ application }: { application: Application }) {
               from the import
             </span>
           ) : null}
-          {application.stage ? (
-            <span className="text-xs text-muted-foreground">{application.stage}</span>
+          <Input
+            className="h-7 w-full text-xs"
+            placeholder="stage"
+            data-testid={`stage-input-${application.id}`}
+            aria-label={`Stage for ${application.company}`}
+            value={stage}
+            onChange={(event) => setStage(event.target.value)}
+            onBlur={() => commit("stage", stage, application.stage)}
+          />
+          {failed ? (
+            <span
+              className="text-[11px] text-destructive"
+              data-testid={`save-failed-${application.id}`}
+            >
+              Not saved — try again
+            </span>
           ) : null}
         </div>
       </TableCell>
@@ -89,11 +166,17 @@ function Row({ application }: { application: Application }) {
         </div>
       </TableCell>
       <TableCell className="align-top text-sm">
-        {application.note ? (
-          <span className="text-muted-foreground">{application.note}</span>
-        ) : null}
+        <Input
+          className="h-8 w-full text-xs"
+          placeholder="note"
+          data-testid={`note-input-${application.id}`}
+          aria-label={`Note for ${application.company}`}
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
+          onBlur={() => commit("note", note, application.note)}
+        />
       </TableCell>
-      <TableCell className="align-top text-right">
+      <TableCell className="align-top text-right whitespace-nowrap">
         {application.url ? (
           <a
             className="text-sm underline underline-offset-4"
@@ -110,7 +193,32 @@ function Row({ application }: { application: Application }) {
 }
 
 export function Applications() {
+  const queryClient = useQueryClient();
   const { data, isLoading, error } = useGetApplications();
+  /**
+   * Which rows failed to save. Kept per row rather than as one banner: at 94 rows a page-level
+   * "something went wrong" does not say which change was lost, and a change the owner believes
+   * they made is worse than one they know failed.
+   */
+  const [failed, setFailed] = useState<Set<number>>(new Set());
+  const update = useUpdateApplication({
+    mutation: {
+      onSuccess: (_result, variables) => {
+        setFailed((was) => {
+          const next = new Set(was);
+          next.delete(variables.id);
+          return next;
+        });
+        return queryClient.invalidateQueries({ queryKey: getGetApplicationsQueryKey() });
+      },
+      onError: (_error, variables) =>
+        setFailed((was) => new Set(was).add(variables.id)),
+    },
+  });
+
+  function edit(id: number, data: ApplicationEdit) {
+    update.mutate({ id, data });
+  }
 
   if (isLoading) {
     return (
@@ -169,20 +277,29 @@ export function Applications() {
             </span>
           </div>
 
-          <Table>
+          {/* table-fixed, or the percentages below are only a suggestion: with auto layout
+              the other columns' content decides, and the note ends up 20px wide. */}
+          <Table className="table-fixed">
             <TableHeader>
+              {/* Widths, because the default shares them evenly and the note is where the
+                  rejection emails get pasted — it needs the room, and Sent needs almost none. */}
               <TableRow>
-                <TableHead>Where</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Sent</TableHead>
-                <TableHead>Note</TableHead>
-                <TableHead />
+                <TableHead className="w-[23%]">Where</TableHead>
+                <TableHead className="w-[13%]">Location</TableHead>
+                <TableHead className="w-[15%]">Status</TableHead>
+                <TableHead className="w-[9%]">Sent</TableHead>
+                <TableHead className="w-[29%]">Note</TableHead>
+                <TableHead className="w-[11%]" />
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.applications.map((application) => (
-                <Row key={application.id} application={application} />
+                <Row
+                  key={application.id}
+                  application={application}
+                  onEdit={edit}
+                  failed={failed.has(application.id)}
+                />
               ))}
             </TableBody>
           </Table>

@@ -302,6 +302,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /applications/{id}:
+    patch:
+      operationId: updateApplication
+      tags: [applications]
+      summary: Change what the owner says about one application
+      description: >-
+        Status, stage and note — the half of an application the account owns. The imported
+        half (company, role, dates, link, archived description) is the import's and cannot
+        be changed here.
+
+        A field left out is left alone; a field sent as null is cleared. That distinction
+        matters: "no stage yet" and "do not touch the stage" are different instructions, and
+        a PATCH that could not tell them apart would erase notes by omission.
+
+        Every change appends to a trail and overwrites nothing. A status that moved
+        applied to interviewing to closed is three readable facts afterwards, not one.
+
+        Owner-only; everyone else gets 404, including for an id that exists.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationEdit"
+      responses:
+        "200":
+          description: The application as it now stands
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: A status outside the vocabulary this tracker uses
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /stats:
     get:
       operationId: getStatsTotals
@@ -866,6 +914,21 @@ components:
           description: >-
             Whether a copy of the job description was archived. The body itself is
             a separate request, so a list of 94 does not carry 400 kB of text.
+    ApplicationEdit:
+      type: object
+      description: >-
+        What the browser may write. Absent means "leave it"; null means "clear it".
+      properties:
+        status:
+          type: string
+          enum: [saved, applied, interview, closed]
+          description: >-
+            The four the owner's own folder uses. A value outside them is refused rather
+            than stored, so the vocabulary cannot drift one typo at a time.
+        stage:
+          type: [string, "null"]
+        note:
+          type: [string, "null"]
     ApplicationList:
       type: object
       required: [applications, imported_at]

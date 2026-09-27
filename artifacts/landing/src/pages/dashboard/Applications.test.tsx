@@ -1,4 +1,5 @@
 import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import Applications from "@/pages/dashboard/Applications";
@@ -141,6 +142,83 @@ describe("Applications", () => {
 
     await waitFor(() =>
       expect(screen.getByText(/could not load/i)).toBeInTheDocument(),
+    );
+  });
+
+  it("changes a status and shows what the row now says", async () => {
+    const user = userEvent.setup();
+    const patched: unknown[] = [];
+    let current = application({ id: 1, status: "applied", status_source: "import" });
+    server.use(
+      http.get("/api/applications", () =>
+        HttpResponse.json({ applications: [current], imported_at: "2026-09-24T12:00:00.000Z" }),
+      ),
+      http.patch("/api/applications/1", async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>;
+        patched.push(body);
+        current = { ...current, ...body, status_source: "owner" };
+        return HttpResponse.json(current);
+      }),
+    );
+    renderApp(<Applications />);
+
+    const status = await screen.findByTestId("status-select-1");
+    await user.selectOptions(status, "interview");
+
+    expect(patched).toEqual([{ status: "interview" }]);
+    // And the marker goes away, because the answer is now the owner's.
+    await waitFor(() =>
+      expect(screen.queryByTestId("status-from-import")).not.toBeInTheDocument(),
+    );
+  });
+
+  it("saves a note when the field is left, and sends nothing when it is unchanged", async () => {
+    const user = userEvent.setup();
+    const patched: unknown[] = [];
+    server.use(
+      http.get("/api/applications", () =>
+        HttpResponse.json({
+          applications: [application({ id: 1, note: null })],
+          imported_at: "2026-09-24T12:00:00.000Z",
+        }),
+      ),
+      http.patch("/api/applications/1", async ({ request }) => {
+        patched.push(await request.json());
+        return HttpResponse.json(application({ id: 1, note: "rejected, no sponsorship" }));
+      }),
+    );
+    renderApp(<Applications />);
+
+    const note = await screen.findByTestId("note-input-1");
+    await user.click(note);
+    await user.tab();
+    expect(patched).toEqual([]); // nothing typed, nothing sent
+
+    await user.click(note);
+    await user.type(note, "rejected, no sponsorship");
+    await user.tab();
+
+    await waitFor(() => expect(patched).toEqual([{ note: "rejected, no sponsorship" }]));
+  });
+
+  it("says so when a change could not be saved", async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get("/api/applications", () =>
+        HttpResponse.json({
+          applications: [application({ id: 1 })],
+          imported_at: "2026-09-24T12:00:00.000Z",
+        }),
+      ),
+      http.patch("/api/applications/1", () => new HttpResponse(null, { status: 500 })),
+    );
+    renderApp(<Applications />);
+
+    const status = await screen.findByTestId("status-select-1");
+    await user.selectOptions(status, "closed");
+
+    await waitFor(() =>
+      expect(screen.getByTestId("save-failed-1")).toBeInTheDocument(),
     );
   });
 });

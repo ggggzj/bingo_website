@@ -70,12 +70,12 @@ says whether one is still running on 127.0.0.1:55432 and how to recreate it.
 
 ## 4. The browser changes the human half, and nothing is overwritten
 
-- [ ] 4.1 Add `PATCH /applications/{id}` to `openapi.yaml` and **run codegen in this same task**.
-- [ ] 4.2 Extend `routes/applications.ts` — write status, stage and note, and **append to
+- [x] 4.1 Add `PATCH /applications/{id}` to `openapi.yaml` and **run codegen in this same task**.
+- [x] 4.2 Extend `routes/applications.ts` — write status, stage and note, and **append to
       `application_events` in the same transaction** with `hand: "browser"` and the previous
       value. Proven in `applications.test.ts`: a move applied → interviewing → closed leaves three
       trail rows and all three previous values readable; a non-owner gets 404.
-- [ ] 4.3 Add the editing control to `Applications.tsx`. Proven in `Applications.test.tsx`: a
+- [x] 4.3 Add the editing control to `Applications.tsx`. Proven in `Applications.test.tsx`: a
       status change posts once and the row shows the new value after the refetch.
 
 ## 5. A second import cannot touch what the browser wrote
@@ -92,6 +92,25 @@ says whether one is still running on 127.0.0.1:55432 and how to recreate it.
       404; a non-owner returns 404 for both.
 - [ ] 6.3 Open it from the row in `Applications.tsx`; a row with no archive says so rather than
       offering a dead control. Proven in `Applications.test.tsx`.
+      **Owner request 2026-09-27**, which is this group's whole point rather than an addition to
+      it: *"点击 posting 的 link，可以出来一个你整理好的内容，这样哪怕最后 posting 不在了，我依然
+      可以看到 JD 里面的内容"*. So the row's control opens the archived body **here**; the link to
+      the employer's page is the secondary one, because that is the half that dies.
+- [ ] 6.4 Render it legibly — which is two problems, not one, measured 2026-09-27 against the
+      real 80 bodies:
+      - **API-sourced bodies are already clean prose** (Workday / Greenhouse / Ashby): a
+        `Job Description:` heading and a list of responsibilities. They need rendering, nothing more.
+      - **HTML-scraped bodies carry the whole page.** Google's archive opens with `CareersCareers`,
+        `Skip navigation links`, `homehome`, `work_outlinework_outline` — a site's navigation,
+        doubled and interleaved with the text.
+      Strip the chrome by rule; do not rewrite the text. What makes an archive worth keeping is
+      that it is what the employer actually wrote, and a summary of a job description is a
+      different artifact from the job description — if one is wanted it goes beside the text,
+      never in place of it. Pinned by a fixture pair (one API-sourced, one scraped) so the
+      cleaning is tested against the mess it was written for.
+      **Not in scope:** the 14 rows with no body at all (Microsoft ×2, RTX, SpaceXAI, Zoom,
+      C3.ai, MintMCP, Axos, Vituity, three LexisNexis/RELX, and Trustpilot and Showpad, whose
+      pages 404'd before anything copied them). Re-fetching those is the folder's `add_jd.py`.
 
 ## 7. Say what changed
 

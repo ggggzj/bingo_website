@@ -8,6 +8,8 @@
 
 export * from "./account";
 export * from "./application";
+export * from "./applicationEdit";
+export * from "./applicationEditStatus";
 export * from "./applicationList";
 export * from "./applicationStatusSource";
 export * from "./coachAdherence";
