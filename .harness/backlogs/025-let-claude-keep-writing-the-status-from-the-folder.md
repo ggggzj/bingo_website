@@ -1,7 +1,9 @@
 ---
 id: 025
-title: Let Claude keep writing status from the folder — a fourth key, and one endpoint it opens
-status: open
+title: Let Claude keep writing status from the folder — a scoped personal token, not a fourth key
+status: picked-up — proposal written 2026-09-27, awaiting the owner's approval. Nothing is
+  implemented.
+change: openspec/changes/2026-09-27-a-scoped-token-for-the-folder/
 origin: Owner, 2026-09-24/25, while settling `024`'s decision 1. Choosing "the browser is where
   status changes" ends a loop the owner uses daily: paste the rejection email to Claude in
   `~/Desktop/job_dashboard`, Claude writes status, stage and the quoted text into `overrides.js`.
@@ -12,7 +14,9 @@ depends-on: .harness/backlogs/024 — until the human half lives in the account 
 related:
   - .harness/backlogs/017 — if this ever stops being owner-only, it stops being this ticket. See "The
     line this must not cross".
-grounded: 2026-09-25 — the token precedent below was read out of this repo, not recalled.
+grounded: 2026-09-27 — re-grounded, and the first draft's central premise was wrong. See the
+  correction below: this repo already has per-user API tokens with issue and revoke, built for
+  exactly this shape of caller.
 ---
 
 ## The loop this restores
@@ -27,27 +31,43 @@ After `024`, status lives in the account and only a signed-in browser can write 
 owner's laptop has no identity, so Claude editing the folder edits a retired file and the account
 never hears about it. This ticket gives that script a way in.
 
-## Why not reuse a key this repo already has
+## Correction, 2026-09-27 — this repo already has the mechanism, and it is not an env var
 
-The repo runs three secrets and a test that exists only to stop them substituting for one another
-(`artifacts/api-server/src/lib/jobs/upstream.test.ts`: *"Three doors, three keys"*). Each is
-server-to-server, read-only, and never reaches a browser: `STATS_TOKEN` opens the owner's own
-numbers, `POSTINGS_TOKEN` the job postings, `FEED_TOKEN` the feed.
+The section this replaces proposed "a fourth key" beside `STATS_TOKEN`, `POSTINGS_TOKEN` and
+`FEED_TOKEN`. **That was the wrong shape and grounding it found the right one.**
 
-**This one is a fourth door and differs from all three in the way that matters: it writes, and it
-lives on a laptop.** The existing keys sit in a deployment's environment. This one sits in a folder
-on a personal machine, beside a `.claude` directory and inside whatever backup or sync that machine
-runs. Treat it as a password for one account, because that is what it is:
+Those three are deployment secrets for this server talking to another one. What this ticket
+needs is a *person's* credential on a *laptop*, and that already exists here:
 
-- Its own variable, never a fallback to any of the three. Add the case to that same test.
-- It writes **only the human half of the owner's own application rows** — status, stage, note. Not
-  other tables, not other accounts, not the machine half (`024` decision 1 already says the import
-  owns that).
-- Revocable without touching anyone else's sign-in, and rotating it is a documented step rather than
-  a code change.
-- It lives in a `.env` the folder does not commit. Worth one line in the ticket's proposal about what
-  happens if that folder is ever shared, zipped, or pushed — `../CLAUDE.md`'s map already lists
-  folders on this desktop that get copied around.
+| | |
+|---|---|
+| `coach_api_tokens` | per-user, stored hashed, revocable, with `revoked_at` |
+| `POST /coach/token` | issues one. **Session-only — a bearer token cannot mint its successor.** Plaintext returned exactly once; issuing revokes the previous ones |
+| `DELETE /coach/token` | revokes, idempotent |
+| `lib/coach/auth.ts` | `currentCoachUser` resolves a caller from **either** the session cookie **or** a bearer token; `coachGate` answers the uniform 404 when it cannot |
+
+Its own header says who it was built for: *"a personal bearer token (the local grill bridge)"* —
+a local tool on the owner's machine, authenticating as them. That is this ticket, one feature over.
+
+So this is not a new secret. It is **one question**: may an existing token write applications?
+
+**No, and that is the whole design problem.** A coach token already issued and sitting on some
+machine was granted for practice. If applications quietly fall inside what it opens, a credential
+the owner handed out for one thing starts writing the one table that holds the only copy of their
+rejection letters. The token needs a **scope**, and the scope has to be decided when the token is
+issued rather than inferred at the call.
+
+Three ways, for the proposal to choose between:
+
+1. **A `scope` column on `coach_api_tokens`**, defaulting to `coach` so every existing token keeps
+   exactly the access it already has. Smallest change; the table's name becomes wrong.
+2. **Rename to `api_tokens` and add `scope`.** Honest naming; touches a table the coach depends on
+   and the rename buys nothing the column does not.
+3. **A second table for application tokens.** No migration of anything live; two mechanisms doing
+   one job, which is what `008` called the failure mode for view registries.
+
+Recommend 1, and say in the column's comment why the table's name is stale rather than renaming a
+table three routes read.
 
 ## The line this must not cross
 
