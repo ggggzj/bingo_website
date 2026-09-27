@@ -19,6 +19,8 @@ import { currentUser } from "./auth";
 /** One row as the store hands it over — the two halves still distinguishable. */
 export type ApplicationRecord = {
   id: number;
+  /** The folder's own key. What a tool on the owner's machine matches on. */
+  sourceKey: string;
   company: string;
   role: string;
   location: string | null;
@@ -140,6 +142,7 @@ export function daysWaiting(appliedDate: string | null, now: Date = new Date()):
 function present(record: ApplicationRecord) {
   return {
     id: record.id,
+    source_key: record.sourceKey,
     company: record.company,
     role: record.role,
     location: record.location,

@@ -33,6 +33,7 @@ const IMPORTED = new Date("2026-09-24T12:00:00Z");
 
 const record = (over: Partial<ApplicationRecord> = {}): ApplicationRecord => ({
   id: 1,
+  sourceKey: "ashby:db008474",
   company: "Solace Health",
   role: "Associate Software Engineer",
   location: "Redwood City, CA",

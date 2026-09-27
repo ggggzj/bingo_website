@@ -261,6 +261,11 @@ export const GetApplicationsResponse = zod.object({
     zod
       .object({
         id: zod.number(),
+        source_key: zod
+          .string()
+          .describe(
+            "The folder's own key for this posting — a normalised apply URL, or `\"公司名|职位名\"` where there is no link. Returned so a tool on the owner's machine can find the row it already knows about, instead of guessing from a company name.",
+          ),
         company: zod.string(),
         role: zod.string(),
         location: zod.string().nullish(),
@@ -345,6 +350,11 @@ export const UpdateApplicationBody = zod
 export const UpdateApplicationResponse = zod
   .object({
     id: zod.number(),
+    source_key: zod
+      .string()
+      .describe(
+        "The folder's own key for this posting — a normalised apply URL, or `\"公司名|职位名\"` where there is no link. Returned so a tool on the owner's machine can find the row it already knows about, instead of guessing from a company name.",
+      ),
     company: zod.string(),
     role: zod.string(),
     location: zod.string().nullish(),

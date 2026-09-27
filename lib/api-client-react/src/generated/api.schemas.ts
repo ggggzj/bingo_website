@@ -144,6 +144,8 @@ export const ApplicationStatusSource = {
  */
 export interface Application {
   id: number;
+  /** The folder's own key for this posting — a normalised apply URL, or `"公司名|职位名"` where there is no link. Returned so a tool on the owner's machine can find the row it already knows about, instead of guessing from a company name. */
+  source_key: string;
   company: string;
   role: string;
   /** @nullable */

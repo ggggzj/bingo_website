@@ -34,14 +34,14 @@ Each group leaves the system working end to end. Close each with the `replit.md`
 
 ## 4. The folder can call it
 
-- [ ] 4.1 `~/Desktop/job_dashboard/scripts/update_status.py` — reads the token from `account.env`,
+- [x] 4.1 `~/Desktop/job_dashboard/scripts/update_status.py` — reads the token from `account.env`,
       PATCHes one application by key, prints what changed. No token: one line, exit zero.
-- [ ] 4.2 The folder's README gains the one line that makes this usable: what to say to Claude
+- [x] 4.2 The folder's README gains the one line that makes this usable: what to say to Claude
       when a rejection email arrives.
 
 ## 5. Say what changed
 
-- [ ] 5.1 `replit.md`: the scope column and its default, the two issuing routes, and the fact that
+- [x] 5.1 `replit.md`: the scope column and its default, the two issuing routes, and the fact that
       a coach token cannot write an application. Append the scope-as-column decision to
       "Architecture decisions" with the two shapes that were rejected.
-- [ ] 5.2 `.harness/backlogs/025` to built, with a pointer here.
+- [x] 5.2 `.harness/backlogs/025` to built, with a pointer here.

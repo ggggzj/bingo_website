@@ -28,6 +28,7 @@ import type {
 /** One shape for both paths, so a column added to the list cannot go missing from a write. */
 const COLUMNS = {
   id: applicationsTable.id,
+  sourceKey: applicationsTable.sourceKey,
   company: applicationsTable.company,
   role: applicationsTable.role,
   location: applicationsTable.location,
