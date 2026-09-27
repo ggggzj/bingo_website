@@ -55,11 +55,14 @@ says whether one is still running on 127.0.0.1:55432 and how to recreate it.
 
 ## 3. The rail lists it, and the page says how old it is
 
-- [ ] 3.1 Add the fourth entry to `artifacts/landing/src/pages/dashboard/views.tsx` —
+- [x] 3.1 Add the fourth entry to `artifacts/landing/src/pages/dashboard/views.tsx` —
       `id: "applications"`, label `Applications`, after New grad, `entitled: (viewer) =>
-      viewer.isOwner`. Proven by `Shell.test.tsx`: the owner's rail lists four views, a
-      signed-in non-owner's lists one.
-- [ ] 3.2 Add `artifacts/landing/src/pages/dashboard/Applications.tsx` — the table (company, role,
+      viewer.isOwner`. Proven by a new `views.test.tsx`: the owner's rail
+      lists four views in order, a signed-in non-owner's lists only practice, an anonymous
+      visitor's is empty. **Not `Shell.test.tsx`, as this task first said** — that file tests
+      the shell against a fake VIEWS array, which is right for the shell and says nothing
+      about the views this deployment actually has.
+- [x] 3.2 Add `artifacts/landing/src/pages/dashboard/Applications.tsx` — the table (company, role,
       location, ATS, status, stage, applied date, days waiting, apply link), the status counts,
       and a header stating **when the import last ran**. Proven by `Applications.test.tsx` through
       MSW: 94 rows render, the counts match, the header shows the import date, and the empty state

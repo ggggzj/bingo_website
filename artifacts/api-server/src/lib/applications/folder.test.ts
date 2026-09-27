@@ -100,6 +100,14 @@ describe("readFolder", () => {
   });
 });
 
+describe("a folder that is not there", () => {
+  it("says the folder is missing rather than blaming its contents", () => {
+    // A wrong path and a malformed file need different fixes; one message for both sends
+    // the reader to look inside a file that does not exist.
+    expect(() => readFolder(path.join(FIXTURES, "nope"))).toThrow(/No job folder at/);
+  });
+});
+
 describe("readJdBody", () => {
   it("reads the archived body from the path the archive names", () => {
     const body = readJdBody(FIXTURES, "jobs/solace-health-82/jd.md");

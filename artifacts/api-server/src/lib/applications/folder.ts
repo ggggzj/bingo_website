@@ -112,13 +112,20 @@ function readOverride(raw: unknown): FolderOverride {
 }
 
 export function readFolder(root: string): Folder {
-  const data = readWindowValue(path.join(root, "data", "applications.js"), "JOB_DATA") as
-    | Unknown
-    | undefined;
-  if (!data || !Array.isArray(data["applications"])) {
+  const applicationsFile = path.join(root, "data", "applications.js");
+  /**
+   * "Not there" and "there but not what I expected" are different problems with different
+   * fixes — a wrong path against a malformed file — and one message for both sends the reader
+   * to look inside a file that does not exist.
+   */
+  if (!fs.existsSync(applicationsFile)) {
     throw new Error(
-      `No window.JOB_DATA.applications in ${path.join(root, "data", "applications.js")}`,
+      `No job folder at ${root} — expected ${path.join("data", "applications.js")} inside it`,
     );
+  }
+  const data = readWindowValue(applicationsFile, "JOB_DATA") as Unknown | undefined;
+  if (!data || !Array.isArray(data["applications"])) {
+    throw new Error(`No window.JOB_DATA.applications in ${applicationsFile}`);
   }
 
   const overrides = (readWindowValue(path.join(root, "data", "overrides.js"), "JOB_OVERRIDES") ??
