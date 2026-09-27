@@ -77,12 +77,9 @@ export interface CoachStore {
 
   putConfig(userId: number, config: CoachConfig): Promise<CoachConfig>;
 
-  /** Store a new token hash, revoking every live token the user had. */
-  createToken(userId: number, tokenHash: string): Promise<void>;
-
-  /** Idempotent: revoking with no live tokens is a no-op. */
-  revokeTokens(userId: number): Promise<void>;
-
-  /** The owner of a live (unrevoked) token, or null; touches last_used_at. */
-  findUserByLiveToken(tokenHash: string, now: Date): Promise<CoachUser | null>;
+  /**
+   * Personal tokens moved to `lib/tokens/store.ts` on 2026-09-27, when a second caller needed
+   * them and a token grew a scope. Moved rather than copied: two implementations reading one
+   * table drift, and what they would drift about is who a credential belongs to.
+   */
 }

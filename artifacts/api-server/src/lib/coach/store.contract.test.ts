@@ -1,7 +1,8 @@
 /**
  * One behavioral contract, two implementations. The memory store always
  * runs; the drizzle store runs when COACH_TEST_DATABASE_URL points at a
- * scratch Postgres with the schema pushed (it seeds and cleans up its own
+ * scratch Postgres with `lib/db/drizzle/0000_young_peter_parker.sql` applied —
+ * `push` no longer exists (2026-09-20) — (it seeds and cleans up its own
  * rows). A distinct variable on purpose — vitest pins DATABASE_URL to a
  * dummy so the db package can load without a server.
  */
@@ -134,25 +135,6 @@ function runContract(name: string, setup: () => Promise<Harness>) {
       expect(Object.keys(narrow)).toContain(DAY);
     });
 
-    it("token lifecycle: live lookup, rotation revokes, revoke kills", async () => {
-      const now = new Date();
-      await h.store.createToken(h.userId, "hash-one");
-      expect(await h.store.findUserByLiveToken("hash-one", now)).toMatchObject({
-        id: h.userId,
-      });
-      expect(await h.store.findUserByLiveToken("hash-unknown", now)).toBeNull();
-
-      await h.store.createToken(h.userId, "hash-two");
-      expect(await h.store.findUserByLiveToken("hash-one", now)).toBeNull();
-      expect(await h.store.findUserByLiveToken("hash-two", now)).toMatchObject({
-        id: h.userId,
-      });
-
-      await h.store.revokeTokens(h.userId);
-      expect(await h.store.findUserByLiveToken("hash-two", now)).toBeNull();
-      // Idempotent on an empty slate.
-      await h.store.revokeTokens(h.userId);
-    });
   });
 }
 

@@ -4,11 +4,14 @@ Each group leaves the system working end to end. Close each with the `replit.md`
 
 ## 1. A token can carry a scope, and every token that exists keeps its own
 
-- [ ] 1.1 Add `scope` to `coachApiTokensTable` in `lib/db/src/schema/coach.ts`: `text`, not null,
+- [x] 1.1 Add `scope` to `coachApiTokensTable` in `lib/db/src/schema/coach.ts`: `text`, not null,
       default `'coach'`, with the comment saying why the table's name is now stale and why it is
       not being renamed. `generate`, read the SQL, record it as `1-add-token-scope.sql`.
-- [ ] 1.2 `createToken` takes a scope; `findUserByLiveToken` takes the scope it requires and
-      matches on it. Proven in `coach/store.contract.test.ts`: a token issued for `coach` does not
+- [x] 1.2 `createToken` takes a scope; `findUserByLiveToken` takes the scope it requires and
+      matches on it. **Wider than this task said, and deliberately:** the three methods were
+      *moved* off `CoachStore` into `lib/tokens/` rather than extended in place, because the
+      applications routes would otherwise have had to depend on the coach's store to check a
+      credential. One mechanism, two callers — not two implementations reading one table. Proven in `coach/store.contract.test.ts`: a token issued for `coach` does not
       resolve when `applications` is required, and every pre-existing row reads as `coach`.
 
 ## 2. Issuing, owner-only, session-only

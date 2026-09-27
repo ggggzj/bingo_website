@@ -42,6 +42,7 @@ import type {
 import { hashToken, newSessionToken } from "../lib/auth/session";
 import type { AuthStore } from "../lib/auth/store";
 import { COACH_USER, coachGate } from "../lib/coach/auth";
+import type { TokenStore } from "../lib/tokens/store";
 import type { CoachStore, CoachUser } from "../lib/coach/store";
 import { currentUser } from "./auth";
 
@@ -167,6 +168,7 @@ function serializeConfig(
 export function createCoachRouter(
   authStore: AuthStore,
   store: CoachStore,
+  tokens: TokenStore,
 ): IRouter {
   const router: IRouter = Router();
 
@@ -189,16 +191,16 @@ export function createCoachRouter(
       return;
     }
     const token = newSessionToken();
-    await store.createToken(signedIn.id, hashToken(token));
+    await tokens.createToken(signedIn.id, hashToken(token), "coach");
     res.status(201).json({ token });
   });
 
-  router.use(coachGate(authStore, store));
+  router.use(coachGate(authStore, tokens));
 
   const user = (res: Response): CoachUser => res.locals[COACH_USER] as CoachUser;
 
   router.delete("/token", async (_req, res) => {
-    await store.revokeTokens(user(res).id);
+    await tokens.revokeTokens(user(res).id, "coach");
     res.json({ ok: true });
   });
 
