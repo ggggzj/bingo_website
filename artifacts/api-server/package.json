@@ -10,7 +10,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "set-owner-password": "tsx ./src/set-owner-password.ts"
+    "set-owner-password": "tsx ./src/set-owner-password.ts",
+    "import-applications": "tsx ./src/lib/applications/cli.ts"
   },
   "dependencies": {
     "@workspace/api-zod": "workspace:*",

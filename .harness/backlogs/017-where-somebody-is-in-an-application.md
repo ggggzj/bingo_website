@@ -12,6 +12,12 @@ blocked-by: .harness/backlogs/018 (this repo's half of one account) and its coun
   Also .harness/backlogs/008 — the tracker is a view in that rail.
 counterpart: none for v1 (the site is the only writer). v2 — the extension writing APPLIED — is
   ../h1_checker/.harness/backlogs/020-notice-an-application-being-submitted.md (written 2026-09-17).
+see-also: .harness/backlogs/024 — the owner's own 94 applications, imported from their folder and
+  **edited in the browser** (owner decision 2026-09-24, kept out of this ticket deliberately). Read it
+  before picking this one up. It carries 94 real rows and 18 real rejection notes, which is the best
+  test data this tracker will ever get; it is bound by the two non-negotiable rules below because it
+  writes; and it is meant to be **adopted** by this ticket rather than replaced — same status
+  vocabulary, same event trail.
 ---
 
 ## How a row is born and how it moves — grounded 2026-09-17

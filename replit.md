@@ -13,6 +13,12 @@ dashboard that only the owner can see.
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
+- `DATABASE_URL=… OWNER_EMAIL=… pnpm --filter @workspace/api-server run import-applications [folder]`
+  — pushes the owner's job-search folder (default `~/Desktop/job_dashboard`) into their
+  account. Refreshes company/role/location/link/dates/JD body; **seeds status, stage and
+  note once and never touches them again** — those belong to the browser. Safe to re-run.
+  The folder's own `scripts/push_to_account.py` wraps it and `add_job.py` calls that, so
+  applying to a job stays one command; with no `account.env` it prints a line and carries on.
 - `pnpm --filter @workspace/db run generate` — emit SQL for a schema change. **There is no
   `push` any more**, and that is deliberate rather than an oversight: it reconciles the
   *whole* schema, and after the move onto h1_checker's database (2026-09-20) this repo's
@@ -103,7 +109,13 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   codegen script — `lib/api-client-react/src/generated` and `lib/api-zod/src/generated`
   are generated and should never be edited by hand.
 - **DB schema, source of truth:** `lib/db/src/schema/` (`auth.ts`, `coach.ts`,
-  `new-grad.ts`).
+  `new-grad.ts`, `applications.ts`).
+- **The owner's applications:** `artifacts/api-server/src/lib/applications/` —
+  `folder.ts` (reads `~/Desktop/job_dashboard`'s three data files, which are JavaScript
+  rather than JSON and are parsed by running them in a bare `node:vm` context),
+  `import.ts` (upserts the imported half, seeds the hand-written half once and never
+  updates it), `cli.ts` (what the owner runs). `fixtures/` holds the shapes the tests
+  pin; the live folder is never read by a test.
 - **Auth:** `artifacts/api-server/src/lib/auth/` — `password.ts` (scrypt),
   `session.ts` (cookie + token hashing), `owner.ts` (who the owner is),
   `store.ts` (the storage interface) with `drizzle-store.ts` and `memory-store.ts`.
@@ -237,6 +249,29 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   dropped by hand with one `drop table waitlist;`, deliberately not
   `pnpm --filter @workspace/db run push`, which reconciles the whole schema and would
   carry any drift along with it.
+
+### The owner's own applications, 2026-09-25
+
+- **Two tables, not one, and the import's SQL is the guarantee.** `applications` is the
+  imported half and `application_status` is the half the owner types in the browser. One
+  table with an UPSERT naming only the machine columns was the obvious design and was
+  rejected: the promise would then live in a `SET` clause, one column added carelessly away
+  from losing the only copy of 18 rows that quote rejection emails Simplify never saw. Two
+  tables make it structural — the import cannot touch a table it never mentions — and
+  `import.contract.test.ts` proves it by editing a status, re-importing, and reading it back.
+- **The folder stays the editor of the imported half; the account becomes the editor of the
+  human half** (owner decision 2026-09-25, reversing their own read-only answer the same
+  day). So the page states when the import last ran: those rows are exactly that old, and an
+  empty week must not read as a quiet week.
+- **The import connects to the database; it is not an endpoint.** An HTTP import would need a
+  credential for a script on a laptop. This reuses the access the owner already has
+  (`railway variables`, read per run, never stored). That is **not** credential-free — a
+  connection string is broader than an API token would be — and an earlier draft of the
+  proposal said so wrongly. The narrow token is `.harness/backlogs/025`, deliberately not built.
+- **`jd_markdown` is a column, not a table.** 80 bodies, ~8 KB each, 418 kB in production;
+  Postgres TOASTs values that size out of line, so a list query that does not name the column
+  does not pay for it. These bodies are unrecoverable — two postings 404'd within five days of
+  the owner applying, which is why the folder started archiving them at all.
 
 ### The owner's new-grad list, 2026-09-18
 
