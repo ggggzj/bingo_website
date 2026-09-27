@@ -272,6 +272,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /applications:
+    get:
+      operationId: getApplications
+      tags: [applications]
+      summary: The applications the owner has already sent
+      description: >-
+        Imported from the owner's own job-search folder and kept in their account.
+        The imported half — company, role, location, link, dates, the archived job
+        description — is rewritten by each import; status, stage and note belong to
+        the account and are changed through PATCH /applications/{id}.
+
+        Owner-only. Every other caller gets 404, never 403 — the same refusal the
+        coach and new-grad routes make, so the route's existence gives nothing away.
+
+        `imported_at` is the age of the imported half and the page states it. These
+        rows are exactly as fresh as the last time the owner ran the import, and an
+        empty week must not be read as a quiet week.
+      responses:
+        "200":
+          description: The applications and when they were last imported
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationList"
+        "404":
+          description: Not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /stats:
     get:
       operationId: getStatsTotals
@@ -788,6 +818,68 @@ components:
             What this list cannot see, in words the page shows verbatim. Employers
             running their own careers sites are not among the boards behind it, and
             a reader who does not know that will read an absence as an answer.
+    Application:
+      type: object
+      description: >-
+        One application the owner sent, as the account holds it: the imported half
+        plus whatever they have said about it themselves.
+      required:
+        [id, company, role, status, status_source, days_waiting, has_jd]
+      properties:
+        id: { type: integer }
+        company: { type: string }
+        role: { type: string }
+        location: { type: [string, "null"] }
+        region: { type: [string, "null"] }
+        ats:
+          type: [string, "null"]
+          description: Greenhouse / Ashby / Workday / 公司官网 / Oracle, as the folder classified it.
+        url:
+          type: [string, "null"]
+          description: >-
+            The posting. Often dead — a req closes and the page 404s, which is why
+            the archived body exists.
+        status:
+          type: string
+          description: >-
+            What this application is: saved / applied / interview / closed. The
+            owner's own answer where they have given one, otherwise what the
+            imported CSV said. `status_source` says which, because presenting an
+            import's guess as the owner's judgement is the lie this field could tell.
+        status_source:
+          type: string
+          enum: [owner, import]
+        stage:
+          type: [string, "null"]
+          description: Free text the owner writes, e.g. "OA" / "拒信 · 不提供 sponsorship".
+        note: { type: [string, "null"] }
+        applied_date: { type: [string, "null"], format: date }
+        saved_date: { type: [string, "null"], format: date }
+        days_waiting:
+          type: [integer, "null"]
+          description: >-
+            Days since the application was sent. Null when it was never sent — a
+            saved row has nothing to wait for. A fact about two dates and nothing
+            more; no deadline is predicted from it.
+        has_jd:
+          type: boolean
+          description: >-
+            Whether a copy of the job description was archived. The body itself is
+            a separate request, so a list of 94 does not carry 400 kB of text.
+    ApplicationList:
+      type: object
+      required: [applications, imported_at]
+      properties:
+        applications:
+          type: array
+          items:
+            $ref: "#/components/schemas/Application"
+        imported_at:
+          type: [string, "null"]
+          format: date-time
+          description: >-
+            When the import last ran. Null when nothing has been imported yet, which
+            the page states rather than drawing an empty table.
     StatsTotals:
       type: object
       required:

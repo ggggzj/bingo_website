@@ -41,14 +41,17 @@ says whether one is still running on 127.0.0.1:55432 and how to recreate it.
 
 ## 2. The server answers with them
 
-- [ ] 2.1 Add `GET /applications` to `lib/api-spec/openapi.yaml` and **run codegen in this same
+- [x] 2.1 Add `GET /applications` to `lib/api-spec/openapi.yaml` and **run codegen in this same
       task** (`pnpm --filter @workspace/api-spec run codegen`). Generated files are never
       hand-edited.
-- [ ] 2.2 Add `artifacts/api-server/src/routes/applications.ts` — list the owner's rows with their
+- [x] 2.2 Add `artifacts/api-server/src/routes/applications.ts` — list the owner's rows with their
       status, stage, note and whether a JD exists; never the JD body itself. Owner-only through
       `OWNER_EMAIL`, **404 for everyone else**, the uniform answer `routes/new-grad.ts` gives.
-      Proven by `applications.test.ts`: the owner sees 94; a signed-in non-owner gets 404; no
-      session gets 404; the response carries no `jd_markdown`.
+      Proven by `applications.test.ts`: the owner sees their rows; a signed-in non-owner gets
+      404 byte-identical to an anonymous one; the response carries no `jd_markdown`; and
+      `status_source` says whether a status is the owner's or the import's.
+      **Also added, beyond the task:** `lib/applications/store.contract.test.ts`, because the
+      query holds a left join and a raw `desc nulls last` that only a database can call true.
 
 ## 3. The rail lists it, and the page says how old it is
 

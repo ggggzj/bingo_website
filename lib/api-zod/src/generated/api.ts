@@ -251,6 +251,72 @@ export const GetNewGradListResponse = zod.object({
 });
 
 /**
+ * Imported from the owner's own job-search folder and kept in their account. The imported half — company, role, location, link, dates, the archived job description — is rewritten by each import; status, stage and note belong to the account and are changed through PATCH /applications/{id}.
+Owner-only. Every other caller gets 404, never 403 — the same refusal the coach and new-grad routes make, so the route's existence gives nothing away.
+`imported_at` is the age of the imported half and the page states it. These rows are exactly as fresh as the last time the owner ran the import, and an empty week must not be read as a quiet week.
+ * @summary The applications the owner has already sent
+ */
+export const GetApplicationsResponse = zod.object({
+  applications: zod.array(
+    zod
+      .object({
+        id: zod.number(),
+        company: zod.string(),
+        role: zod.string(),
+        location: zod.string().nullish(),
+        region: zod.string().nullish(),
+        ats: zod
+          .string()
+          .nullish()
+          .describe(
+            "Greenhouse \/ Ashby \/ Workday \/ 公司官网 \/ Oracle, as the folder classified it.",
+          ),
+        url: zod
+          .string()
+          .nullish()
+          .describe(
+            "The posting. Often dead — a req closes and the page 404s, which is why the archived body exists.",
+          ),
+        status: zod
+          .string()
+          .describe(
+            "What this application is: saved \/ applied \/ interview \/ closed. The owner's own answer where they have given one, otherwise what the imported CSV said. `status_source` says which, because presenting an import's guess as the owner's judgement is the lie this field could tell.",
+          ),
+        status_source: zod.enum(["owner", "import"]),
+        stage: zod
+          .string()
+          .nullish()
+          .describe(
+            'Free text the owner writes, e.g. \"OA\" \/ \"拒信 · 不提供 sponsorship\".',
+          ),
+        note: zod.string().nullish(),
+        applied_date: zod.coerce.date().nullish(),
+        saved_date: zod.coerce.date().nullish(),
+        days_waiting: zod
+          .number()
+          .nullable()
+          .describe(
+            "Days since the application was sent. Null when it was never sent — a saved row has nothing to wait for. A fact about two dates and nothing more; no deadline is predicted from it.",
+          ),
+        has_jd: zod
+          .boolean()
+          .describe(
+            "Whether a copy of the job description was archived. The body itself is a separate request, so a list of 94 does not carry 400 kB of text.",
+          ),
+      })
+      .describe(
+        "One application the owner sent, as the account holds it: the imported half plus whatever they have said about it themselves.",
+      ),
+  ),
+  imported_at: zod.coerce
+    .date()
+    .nullable()
+    .describe(
+      "When the import last ran. Null when nothing has been imported yet, which the page states rather than drawing an empty table.",
+    ),
+});
+
+/**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
  * @summary Growth totals (owner only)
  */

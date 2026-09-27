@@ -1,11 +1,13 @@
 import { Router, type IRouter } from "express";
 
+import { DrizzleApplicationStore } from "../lib/applications/store";
 import { DrizzleAuthStore } from "../lib/auth/drizzle-store";
 import { DrizzleCoachStore } from "../lib/coach/drizzle-store";
 import { createUpstreamJobs } from "../lib/jobs/upstream";
 import { DrizzleMarkerStore } from "../lib/new-grad/marker-store";
 import { createUpstreamStats } from "../lib/stats/upstream";
 import healthRouter from "./health";
+import { createApplicationsRouter } from "./applications";
 import { createAuthRouter } from "./auth";
 import { createGoogleVerifier } from "../lib/auth/google";
 import { createCoachRouter } from "./coach";
@@ -18,6 +20,7 @@ import { createStatsRouter } from "./stats";
 const authStore = new DrizzleAuthStore();
 const coachStore = new DrizzleCoachStore();
 const markerStore = new DrizzleMarkerStore();
+const applicationStore = new DrizzleApplicationStore();
 
 const router: IRouter = Router();
 
@@ -33,5 +36,8 @@ router.use(
   "/new-grad-list",
   createNewGradRouter(authStore, createUpstreamJobs(), markerStore),
 );
+// Owner-only, and the only route here whose rows came from outside this system: the
+// owner's own folder, pushed in by `run import-applications`.
+router.use("/applications", createApplicationsRouter(authStore, applicationStore));
 
 export default router;

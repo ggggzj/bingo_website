@@ -18,6 +18,7 @@ import type {
 
 import type {
   Account,
+  ApplicationList,
   CoachConfig,
   CoachConfigInput,
   CoachForecast,
@@ -779,6 +780,84 @@ export const useAckNewGradList = <
 > => {
   return useMutation(getAckNewGradListMutationOptions(options));
 };
+
+/**
+ * Imported from the owner's own job-search folder and kept in their account. The imported half — company, role, location, link, dates, the archived job description — is rewritten by each import; status, stage and note belong to the account and are changed through PATCH /applications/{id}.
+Owner-only. Every other caller gets 404, never 403 — the same refusal the coach and new-grad routes make, so the route's existence gives nothing away.
+`imported_at` is the age of the imported half and the page states it. These rows are exactly as fresh as the last time the owner ran the import, and an empty week must not be read as a quiet week.
+ * @summary The applications the owner has already sent
+ */
+export const getGetApplicationsUrl = () => {
+  return `/api/applications`;
+};
+
+export const getApplications = async (
+  options?: RequestInit,
+): Promise<ApplicationList> => {
+  return customFetch<ApplicationList>(getGetApplicationsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetApplicationsQueryKey = () => {
+  return [`/api/applications`] as const;
+};
+
+export const getGetApplicationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApplications>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApplications>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApplicationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplications>>> = ({
+    signal,
+  }) => getApplications({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApplications>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetApplicationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApplications>>
+>;
+export type GetApplicationsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary The applications the owner has already sent
+ */
+
+export function useGetApplications<
+  TData = Awaited<ReturnType<typeof getApplications>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApplications>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetApplicationsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
