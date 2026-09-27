@@ -131,6 +131,138 @@ export interface NewGradList {
   board_note: string;
 }
 
+export type ApplicationStatusSource =
+  (typeof ApplicationStatusSource)[keyof typeof ApplicationStatusSource];
+
+export const ApplicationStatusSource = {
+  owner: "owner",
+  import: "import",
+} as const;
+
+/**
+ * One application the owner sent, as the account holds it: the imported half plus whatever they have said about it themselves.
+ */
+export interface Application {
+  id: number;
+  /** The folder's own key for this posting — a normalised apply URL, or `"公司名|职位名"` where there is no link. Returned so a tool on the owner's machine can find the row it already knows about, instead of guessing from a company name. */
+  source_key: string;
+  company: string;
+  role: string;
+  /** @nullable */
+  location?: string | null;
+  /** @nullable */
+  region?: string | null;
+  /**
+   * Greenhouse / Ashby / Workday / 公司官网 / Oracle, as the folder classified it.
+   * @nullable
+   */
+  ats?: string | null;
+  /**
+   * The posting. Often dead — a req closes and the page 404s, which is why the archived body exists.
+   * @nullable
+   */
+  url?: string | null;
+  /** What this application is: saved / applied / interview / closed. The owner's own answer where they have given one, otherwise what the imported CSV said. `status_source` says which, because presenting an import's guess as the owner's judgement is the lie this field could tell. */
+  status: string;
+  status_source: ApplicationStatusSource;
+  /**
+   * Free text the owner writes, e.g. "OA" / "拒信 · 不提供 sponsorship".
+   * @nullable
+   */
+  stage?: string | null;
+  /** @nullable */
+  note?: string | null;
+  /** @nullable */
+  applied_date?: string | null;
+  /** @nullable */
+  saved_date?: string | null;
+  /**
+   * Days since the application was sent. Null when it was never sent — a saved row has nothing to wait for. A fact about two dates and nothing more; no deadline is predicted from it.
+   * @nullable
+   */
+  days_waiting: number | null;
+  /** Whether a copy of the job description was archived. The body itself is a separate request, so a list of 94 does not carry 400 kB of text. */
+  has_jd: boolean;
+}
+
+/**
+ * The four the owner's own folder uses. A value outside them is refused rather than stored, so the vocabulary cannot drift one typo at a time.
+ */
+export type ApplicationEditStatus =
+  (typeof ApplicationEditStatus)[keyof typeof ApplicationEditStatus];
+
+export const ApplicationEditStatus = {
+  saved: "saved",
+  applied: "applied",
+  interview: "interview",
+  closed: "closed",
+} as const;
+
+/**
+ * What the browser may write. Absent means "leave it"; null means "clear it".
+ */
+export interface ApplicationEdit {
+  /** The four the owner's own folder uses. A value outside them is refused rather than stored, so the vocabulary cannot drift one typo at a time. */
+  status?: ApplicationEditStatus;
+  /** @nullable */
+  stage?: string | null;
+  /** @nullable */
+  note?: string | null;
+}
+
+/**
+ * What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen.
+ */
+export type TokenRequestScope =
+  (typeof TokenRequestScope)[keyof typeof TokenRequestScope];
+
+export const TokenRequestScope = {
+  coach: "coach",
+  applications: "applications",
+} as const;
+
+export interface TokenRequest {
+  /** What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen. */
+  scope: TokenRequestScope;
+}
+
+export type IssuedTokenScope =
+  (typeof IssuedTokenScope)[keyof typeof IssuedTokenScope];
+
+export const IssuedTokenScope = {
+  coach: "coach",
+  applications: "applications",
+} as const;
+
+export interface IssuedToken {
+  /** The plaintext, returned this once. Only its hash is stored. */
+  token: string;
+  scope: IssuedTokenScope;
+}
+
+export interface ApplicationJd {
+  /** What to show — the archive's own header, then the description. */
+  markdown: string;
+  /** Whether page furniture was skipped past. Stated rather than assumed: a reader who does not know text was cut cannot tell a short job description from a trimmed one. */
+  trimmed: boolean;
+  /** Everything the archive holds, so nothing is only hidden. */
+  full_markdown: string;
+  /**
+   * "Greenhouse API", "Workday API", "HTML 抓取" — how the copy was taken.
+   * @nullable
+   */
+  source?: string | null;
+}
+
+export interface ApplicationList {
+  applications: Application[];
+  /**
+   * When the import last ran. Null when nothing has been imported yet, which the page states rather than drawing an empty table.
+   * @nullable
+   */
+  imported_at: string | null;
+}
+
 export type StatsTotalsReferralSources = { [key: string]: number };
 
 export interface StatsTotals {

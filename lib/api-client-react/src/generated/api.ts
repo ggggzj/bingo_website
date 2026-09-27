@@ -18,6 +18,10 @@ import type {
 
 import type {
   Account,
+  Application,
+  ApplicationEdit,
+  ApplicationJd,
+  ApplicationList,
   CoachConfig,
   CoachConfigInput,
   CoachForecast,
@@ -38,12 +42,14 @@ import type {
   GoogleAccount,
   GoogleCredential,
   HealthStatus,
+  IssuedToken,
   JobsPage,
   NewGradList,
   Ok,
   StatsDaily,
   StatsRegistrations,
   StatsTotals,
+  TokenRequest,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -778,6 +784,443 @@ export const useAckNewGradList = <
   TContext
 > => {
   return useMutation(getAckNewGradListMutationOptions(options));
+};
+
+/**
+ * Imported from the owner's own job-search folder and kept in their account. The imported half — company, role, location, link, dates, the archived job description — is rewritten by each import; status, stage and note belong to the account and are changed through PATCH /applications/{id}.
+Owner-only. Every other caller gets 404, never 403 — the same refusal the coach and new-grad routes make, so the route's existence gives nothing away.
+`imported_at` is the age of the imported half and the page states it. These rows are exactly as fresh as the last time the owner ran the import, and an empty week must not be read as a quiet week.
+ * @summary The applications the owner has already sent
+ */
+export const getGetApplicationsUrl = () => {
+  return `/api/applications`;
+};
+
+export const getApplications = async (
+  options?: RequestInit,
+): Promise<ApplicationList> => {
+  return customFetch<ApplicationList>(getGetApplicationsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetApplicationsQueryKey = () => {
+  return [`/api/applications`] as const;
+};
+
+export const getGetApplicationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApplications>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApplications>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApplicationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplications>>> = ({
+    signal,
+  }) => getApplications({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApplications>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetApplicationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApplications>>
+>;
+export type GetApplicationsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary The applications the owner has already sent
+ */
+
+export function useGetApplications<
+  TData = Awaited<ReturnType<typeof getApplications>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApplications>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetApplicationsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Status, stage and note — the half of an application the account owns. The imported half (company, role, dates, link, archived description) is the import's and cannot be changed here.
+A field left out is left alone; a field sent as null is cleared. That distinction matters: "no stage yet" and "do not touch the stage" are different instructions, and a PATCH that could not tell them apart would erase notes by omission.
+Every change appends to a trail and overwrites nothing. A status that moved applied to interviewing to closed is three readable facts afterwards, not one.
+Owner-only; everyone else gets 404, including for an id that exists.
+ * @summary Change what the owner says about one application
+ */
+export const getUpdateApplicationUrl = (id: number) => {
+  return `/api/applications/${id}`;
+};
+
+export const updateApplication = async (
+  id: number,
+  applicationEdit: ApplicationEdit,
+  options?: RequestInit,
+): Promise<Application> => {
+  return customFetch<Application>(getUpdateApplicationUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(applicationEdit),
+  });
+};
+
+export const getUpdateApplicationMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateApplication>>,
+    TError,
+    { id: number; data: BodyType<ApplicationEdit> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateApplication>>,
+  TError,
+  { id: number; data: BodyType<ApplicationEdit> },
+  TContext
+> => {
+  const mutationKey = ["updateApplication"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateApplication>>,
+    { id: number; data: BodyType<ApplicationEdit> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateApplication(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateApplicationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateApplication>>
+>;
+export type UpdateApplicationMutationBody = BodyType<ApplicationEdit>;
+export type UpdateApplicationMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Change what the owner says about one application
+ */
+export const useUpdateApplication = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateApplication>>,
+    TError,
+    { id: number; data: BodyType<ApplicationEdit> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateApplication>>,
+  TError,
+  { id: number; data: BodyType<ApplicationEdit> },
+  TContext
+> => {
+  return useMutation(getUpdateApplicationMutationOptions(options));
+};
+
+/**
+ * The copy taken when the application was sent. This is the half that cannot be re-fetched: a posting's page 404s when the req closes, and two of the owner's did within five days of applying.
+Served one row at a time rather than with the list, because 80 bodies are 400 kB of text and the list needs only to know that one exists.
+Nothing is rewritten. Where the archive was scraped from a page rather than read from an applicant tracking system, the site's menus and its list of other jobs are skipped past — `trimmed` says when that happened and `full_markdown` carries everything, so what was skipped is reachable rather than hidden.
+Owner-only; everyone else gets 404, as does an application with no archive.
+ * @summary The archived job description for one application
+ */
+export const getGetApplicationJdUrl = (id: number) => {
+  return `/api/applications/${id}/jd`;
+};
+
+export const getApplicationJd = async (
+  id: number,
+  options?: RequestInit,
+): Promise<ApplicationJd> => {
+  return customFetch<ApplicationJd>(getGetApplicationJdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetApplicationJdQueryKey = (id: number) => {
+  return [`/api/applications/${id}/jd`] as const;
+};
+
+export const getGetApplicationJdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApplicationJd>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getApplicationJd>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApplicationJdQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApplicationJd>>
+  > = ({ signal }) => getApplicationJd(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApplicationJd>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetApplicationJdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApplicationJd>>
+>;
+export type GetApplicationJdQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary The archived job description for one application
+ */
+
+export function useGetApplicationJd<
+  TData = Awaited<ReturnType<typeof getApplicationJd>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getApplicationJd>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetApplicationJdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Authenticates a script on the owner's own machine as them — today the folder that pushes their applications, `~/Desktop/job_dashboard`.
+**Session-only.** A bearer token cannot mint its successor, so a leaked one cannot quietly grow a wider scope. The plaintext is returned exactly once; issuing revokes the caller's previous tokens **of that scope only**, so asking for a folder token does not sign the practice bridge out.
+The scope is stored on the token and is read from there, never from a later request. A token issued for one scope is refused everywhere else with the same 404 an unauthenticated caller gets.
+Owner-only for now. This is not a feature users are offered: per-user credentials bring storage, rotation, abuse and support with them, and that is a decision this change does not make.
+ * @summary Issue a personal token for a tool the owner runs
+ */
+export const getCreateTokenUrl = () => {
+  return `/api/tokens`;
+};
+
+export const createToken = async (
+  tokenRequest: TokenRequest,
+  options?: RequestInit,
+): Promise<IssuedToken> => {
+  return customFetch<IssuedToken>(getCreateTokenUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(tokenRequest),
+  });
+};
+
+export const getCreateTokenMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createToken>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createToken>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  const mutationKey = ["createToken"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createToken>>,
+    { data: BodyType<TokenRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createToken(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateTokenMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createToken>>
+>;
+export type CreateTokenMutationBody = BodyType<TokenRequest>;
+export type CreateTokenMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Issue a personal token for a tool the owner runs
+ */
+export const useCreateToken = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createToken>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createToken>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  return useMutation(getCreateTokenMutationOptions(options));
+};
+
+/**
+ * Idempotent. Session-only, for the same reason issuing is.
+ * @summary Revoke the caller's tokens of one scope
+ */
+export const getRevokeTokensUrl = () => {
+  return `/api/tokens`;
+};
+
+export const revokeTokens = async (
+  tokenRequest: TokenRequest,
+  options?: RequestInit,
+): Promise<Ok> => {
+  return customFetch<Ok>(getRevokeTokensUrl(), {
+    ...options,
+    method: "DELETE",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(tokenRequest),
+  });
+};
+
+export const getRevokeTokensMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof revokeTokens>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof revokeTokens>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  const mutationKey = ["revokeTokens"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof revokeTokens>>,
+    { data: BodyType<TokenRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return revokeTokens(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RevokeTokensMutationResult = NonNullable<
+  Awaited<ReturnType<typeof revokeTokens>>
+>;
+export type RevokeTokensMutationBody = BodyType<TokenRequest>;
+export type RevokeTokensMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Revoke the caller's tokens of one scope
+ */
+export const useRevokeTokens = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof revokeTokens>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof revokeTokens>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  return useMutation(getRevokeTokensMutationOptions(options));
 };
 
 /**

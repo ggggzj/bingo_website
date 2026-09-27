@@ -13,6 +13,7 @@ import type { Problem } from "@workspace/coach-engine";
 import { InMemoryAuthStore } from "../lib/auth/memory-store";
 import { InMemoryCoachStore } from "../lib/coach/memory-store";
 import { createAuthRouter } from "./auth";
+import { InMemoryTokenStore } from "../lib/tokens/store";
 import { createCoachRouter } from "./coach";
 
 const PASSWORD = "correct horse battery staple";
@@ -61,18 +62,23 @@ function utcToday(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function testApp(auth: InMemoryAuthStore, coach: InMemoryCoachStore): Express {
+function testApp(
+  auth: InMemoryAuthStore,
+  coach: InMemoryCoachStore,
+  tokens: InMemoryTokenStore,
+): Express {
   const app = express();
   app.use(express.json());
   app.use(cookieParser());
   app.use("/api/auth", createAuthRouter(auth));
-  app.use("/api/coach", createCoachRouter(auth, coach));
+  app.use("/api/coach", createCoachRouter(auth, coach, tokens));
   return app;
 }
 
 describe("coach routes", () => {
   let auth: InMemoryAuthStore;
   let coach: InMemoryCoachStore;
+  let tokens: InMemoryTokenStore;
   let app: Express;
 
   beforeEach(() => {
@@ -82,7 +88,8 @@ describe("coach routes", () => {
     vi.setSystemTime(FROZEN_NOW);
     auth = new InMemoryAuthStore();
     coach = new InMemoryCoachStore(BANK);
-    app = testApp(auth, coach);
+    tokens = new InMemoryTokenStore();
+    app = testApp(auth, coach, tokens);
   });
 
   afterEach(() => {
@@ -99,6 +106,8 @@ describe("coach routes", () => {
     expect(res.status).toBe(201);
     const user = await auth.findUserByEmail(email);
     coach.seedUser({ id: user!.id, email: user!.email });
+    // The token store holds identities too — it is what a bearer resolves to.
+    tokens.seedUser({ id: user!.id, email: user!.email });
     return { agent, userId: user!.id };
   }
 

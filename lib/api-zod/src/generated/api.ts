@@ -251,6 +251,220 @@ export const GetNewGradListResponse = zod.object({
 });
 
 /**
+ * Imported from the owner's own job-search folder and kept in their account. The imported half — company, role, location, link, dates, the archived job description — is rewritten by each import; status, stage and note belong to the account and are changed through PATCH /applications/{id}.
+Owner-only. Every other caller gets 404, never 403 — the same refusal the coach and new-grad routes make, so the route's existence gives nothing away.
+`imported_at` is the age of the imported half and the page states it. These rows are exactly as fresh as the last time the owner ran the import, and an empty week must not be read as a quiet week.
+ * @summary The applications the owner has already sent
+ */
+export const GetApplicationsResponse = zod.object({
+  applications: zod.array(
+    zod
+      .object({
+        id: zod.number(),
+        source_key: zod
+          .string()
+          .describe(
+            "The folder's own key for this posting — a normalised apply URL, or `\"公司名|职位名\"` where there is no link. Returned so a tool on the owner's machine can find the row it already knows about, instead of guessing from a company name.",
+          ),
+        company: zod.string(),
+        role: zod.string(),
+        location: zod.string().nullish(),
+        region: zod.string().nullish(),
+        ats: zod
+          .string()
+          .nullish()
+          .describe(
+            "Greenhouse \/ Ashby \/ Workday \/ 公司官网 \/ Oracle, as the folder classified it.",
+          ),
+        url: zod
+          .string()
+          .nullish()
+          .describe(
+            "The posting. Often dead — a req closes and the page 404s, which is why the archived body exists.",
+          ),
+        status: zod
+          .string()
+          .describe(
+            "What this application is: saved \/ applied \/ interview \/ closed. The owner's own answer where they have given one, otherwise what the imported CSV said. `status_source` says which, because presenting an import's guess as the owner's judgement is the lie this field could tell.",
+          ),
+        status_source: zod.enum(["owner", "import"]),
+        stage: zod
+          .string()
+          .nullish()
+          .describe(
+            'Free text the owner writes, e.g. \"OA\" \/ \"拒信 · 不提供 sponsorship\".',
+          ),
+        note: zod.string().nullish(),
+        applied_date: zod.coerce.date().nullish(),
+        saved_date: zod.coerce.date().nullish(),
+        days_waiting: zod
+          .number()
+          .nullable()
+          .describe(
+            "Days since the application was sent. Null when it was never sent — a saved row has nothing to wait for. A fact about two dates and nothing more; no deadline is predicted from it.",
+          ),
+        has_jd: zod
+          .boolean()
+          .describe(
+            "Whether a copy of the job description was archived. The body itself is a separate request, so a list of 94 does not carry 400 kB of text.",
+          ),
+      })
+      .describe(
+        "One application the owner sent, as the account holds it: the imported half plus whatever they have said about it themselves.",
+      ),
+  ),
+  imported_at: zod.coerce
+    .date()
+    .nullable()
+    .describe(
+      "When the import last ran. Null when nothing has been imported yet, which the page states rather than drawing an empty table.",
+    ),
+});
+
+/**
+ * Status, stage and note — the half of an application the account owns. The imported half (company, role, dates, link, archived description) is the import's and cannot be changed here.
+A field left out is left alone; a field sent as null is cleared. That distinction matters: "no stage yet" and "do not touch the stage" are different instructions, and a PATCH that could not tell them apart would erase notes by omission.
+Every change appends to a trail and overwrites nothing. A status that moved applied to interviewing to closed is three readable facts afterwards, not one.
+Owner-only; everyone else gets 404, including for an id that exists.
+ * @summary Change what the owner says about one application
+ */
+export const UpdateApplicationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateApplicationBody = zod
+  .object({
+    status: zod
+      .enum(["saved", "applied", "interview", "closed"])
+      .optional()
+      .describe(
+        "The four the owner's own folder uses. A value outside them is refused rather than stored, so the vocabulary cannot drift one typo at a time.",
+      ),
+    stage: zod.string().nullish(),
+    note: zod.string().nullish(),
+  })
+  .describe(
+    'What the browser may write. Absent means \"leave it\"; null means \"clear it\".',
+  );
+
+export const UpdateApplicationResponse = zod
+  .object({
+    id: zod.number(),
+    source_key: zod
+      .string()
+      .describe(
+        "The folder's own key for this posting — a normalised apply URL, or `\"公司名|职位名\"` where there is no link. Returned so a tool on the owner's machine can find the row it already knows about, instead of guessing from a company name.",
+      ),
+    company: zod.string(),
+    role: zod.string(),
+    location: zod.string().nullish(),
+    region: zod.string().nullish(),
+    ats: zod
+      .string()
+      .nullish()
+      .describe(
+        "Greenhouse \/ Ashby \/ Workday \/ 公司官网 \/ Oracle, as the folder classified it.",
+      ),
+    url: zod
+      .string()
+      .nullish()
+      .describe(
+        "The posting. Often dead — a req closes and the page 404s, which is why the archived body exists.",
+      ),
+    status: zod
+      .string()
+      .describe(
+        "What this application is: saved \/ applied \/ interview \/ closed. The owner's own answer where they have given one, otherwise what the imported CSV said. `status_source` says which, because presenting an import's guess as the owner's judgement is the lie this field could tell.",
+      ),
+    status_source: zod.enum(["owner", "import"]),
+    stage: zod
+      .string()
+      .nullish()
+      .describe(
+        'Free text the owner writes, e.g. \"OA\" \/ \"拒信 · 不提供 sponsorship\".',
+      ),
+    note: zod.string().nullish(),
+    applied_date: zod.coerce.date().nullish(),
+    saved_date: zod.coerce.date().nullish(),
+    days_waiting: zod
+      .number()
+      .nullable()
+      .describe(
+        "Days since the application was sent. Null when it was never sent — a saved row has nothing to wait for. A fact about two dates and nothing more; no deadline is predicted from it.",
+      ),
+    has_jd: zod
+      .boolean()
+      .describe(
+        "Whether a copy of the job description was archived. The body itself is a separate request, so a list of 94 does not carry 400 kB of text.",
+      ),
+  })
+  .describe(
+    "One application the owner sent, as the account holds it: the imported half plus whatever they have said about it themselves.",
+  );
+
+/**
+ * The copy taken when the application was sent. This is the half that cannot be re-fetched: a posting's page 404s when the req closes, and two of the owner's did within five days of applying.
+Served one row at a time rather than with the list, because 80 bodies are 400 kB of text and the list needs only to know that one exists.
+Nothing is rewritten. Where the archive was scraped from a page rather than read from an applicant tracking system, the site's menus and its list of other jobs are skipped past — `trimmed` says when that happened and `full_markdown` carries everything, so what was skipped is reachable rather than hidden.
+Owner-only; everyone else gets 404, as does an application with no archive.
+ * @summary The archived job description for one application
+ */
+export const GetApplicationJdParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetApplicationJdResponse = zod.object({
+  markdown: zod
+    .string()
+    .describe("What to show — the archive's own header, then the description."),
+  trimmed: zod
+    .boolean()
+    .describe(
+      "Whether page furniture was skipped past. Stated rather than assumed: a reader who does not know text was cut cannot tell a short job description from a trimmed one.",
+    ),
+  full_markdown: zod
+    .string()
+    .describe("Everything the archive holds, so nothing is only hidden."),
+  source: zod
+    .string()
+    .nullish()
+    .describe(
+      '\"Greenhouse API\", \"Workday API\", \"HTML 抓取\" — how the copy was taken.',
+    ),
+});
+
+/**
+ * Authenticates a script on the owner's own machine as them — today the folder that pushes their applications, `~/Desktop/job_dashboard`.
+**Session-only.** A bearer token cannot mint its successor, so a leaked one cannot quietly grow a wider scope. The plaintext is returned exactly once; issuing revokes the caller's previous tokens **of that scope only**, so asking for a folder token does not sign the practice bridge out.
+The scope is stored on the token and is read from there, never from a later request. A token issued for one scope is refused everywhere else with the same 404 an unauthenticated caller gets.
+Owner-only for now. This is not a feature users are offered: per-user credentials bring storage, rotation, abuse and support with them, and that is a decision this change does not make.
+ * @summary Issue a personal token for a tool the owner runs
+ */
+export const CreateTokenBody = zod.object({
+  scope: zod
+    .enum(["coach", "applications"])
+    .describe(
+      "What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen.",
+    ),
+});
+
+/**
+ * Idempotent. Session-only, for the same reason issuing is.
+ * @summary Revoke the caller's tokens of one scope
+ */
+export const RevokeTokensBody = zod.object({
+  scope: zod
+    .enum(["coach", "applications"])
+    .describe(
+      "What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen.",
+    ),
+});
+
+export const RevokeTokensResponse = zod.object({
+  ok: zod.boolean(),
+});
+
+/**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
  * @summary Growth totals (owner only)
  */

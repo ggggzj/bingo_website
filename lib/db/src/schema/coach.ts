@@ -154,6 +154,19 @@ export const coachApiTokensTable = pgTable(
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
     tokenHash: text("token_hash").notNull().unique(),
+    /**
+     * What this token opens: `coach` or `applications`.
+     *
+     * **The default is the guarantee.** Every token issued before 2026-09-27 was issued for
+     * practice, and reads as `coach` without a migration touching it — so adding a second
+     * thing a token can reach cannot widen one that is already in somebody's hands. Scope is
+     * read from this row and never from the request; a caller cannot ask for one.
+     *
+     * The table's name is stale from here on: the mechanism is no longer the coach's. It is
+     * not renamed because three coach routes read it and a rename buys nothing this column
+     * does not.
+     */
+    scope: text("scope").notNull().default("coach"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     lastUsedAt: timestamp("last_used_at"),
     revokedAt: timestamp("revoked_at"),

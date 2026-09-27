@@ -18,7 +18,8 @@ import type { NextFunction, Request, Response } from "express";
 import { hashToken } from "../auth/session";
 import type { AuthStore } from "../auth/store";
 import { currentUser } from "../../routes/auth";
-import type { CoachStore, CoachUser } from "./store";
+import type { TokenStore } from "../tokens/store";
+import type { CoachUser } from "./store";
 
 function bearerToken(req: Request): string | null {
   const header = req.headers.authorization;
@@ -31,7 +32,7 @@ function bearerToken(req: Request): string | null {
 /** The calling coach user via session or bearer token, or null. Never throws. */
 export async function currentCoachUser(
   authStore: AuthStore,
-  coachStore: CoachStore,
+  tokens: TokenStore,
   req: Request,
 ): Promise<CoachUser | null> {
   const viaSession = await currentUser(authStore, req);
@@ -39,7 +40,9 @@ export async function currentCoachUser(
 
   const token = bearerToken(req);
   if (!token) return null;
-  return coachStore.findUserByLiveToken(hashToken(token), new Date());
+  // Scoped: a token issued for the folder is not a way into practice, and the other way
+  // round. The scope is a condition of the lookup, never something the caller states.
+  return tokens.findUserByLiveToken(hashToken(token), "coach", new Date());
 }
 
 export const COACH_USER = "coachUser";
@@ -50,11 +53,11 @@ export const COACH_USER = "coachUser";
  * which is also the only place a user id comes from — no coach route takes
  * one as a parameter, so no caller can ask for another user's rows.
  */
-export function coachGate(authStore: AuthStore, coachStore: CoachStore) {
+export function coachGate(authStore: AuthStore, tokens: TokenStore) {
   return async (req: Request, res: Response, next: NextFunction) => {
     let user: CoachUser | null;
     try {
-      user = await currentCoachUser(authStore, coachStore, req);
+      user = await currentCoachUser(authStore, tokens, req);
     } catch (err) {
       req.log?.error({ err }, "Failed to resolve coach caller");
       res.status(500).json({ error: "Internal server error" });

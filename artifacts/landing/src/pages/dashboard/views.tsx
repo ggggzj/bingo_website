@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
-import { BarChart3, Dumbbell, GraduationCap } from "lucide-react";
+import { BarChart3, Dumbbell, GraduationCap, Send } from "lucide-react";
 
+import Applications from "@/pages/dashboard/Applications";
 import Coach from "@/pages/Coach";
 import NewGradList from "@/pages/dashboard/NewGradList";
 import Dashboard from "@/pages/Dashboard";
@@ -67,6 +68,14 @@ export const VIEWS: DashboardView[] = [
     entitled: (viewer) => viewer.isSignedIn,
     Status: PracticeStatus,
     Component: Coach,
+  },
+  {
+    id: "applications",
+    label: "Applications",
+    blurb: "What you already sent, and where each one stands.",
+    icon: Send,
+    entitled: (viewer) => viewer.isOwner,
+    Component: Applications,
   },
 ];
 

@@ -1,0 +1,1 @@
+ALTER TABLE "coach_api_tokens" ADD COLUMN "scope" text DEFAULT 'coach' NOT NULL;

@@ -134,25 +134,6 @@ function runContract(name: string, setup: () => Promise<Harness>) {
       expect(Object.keys(narrow)).toContain(DAY);
     });
 
-    it("token lifecycle: live lookup, rotation revokes, revoke kills", async () => {
-      const now = new Date();
-      await h.store.createToken(h.userId, "hash-one");
-      expect(await h.store.findUserByLiveToken("hash-one", now)).toMatchObject({
-        id: h.userId,
-      });
-      expect(await h.store.findUserByLiveToken("hash-unknown", now)).toBeNull();
-
-      await h.store.createToken(h.userId, "hash-two");
-      expect(await h.store.findUserByLiveToken("hash-one", now)).toBeNull();
-      expect(await h.store.findUserByLiveToken("hash-two", now)).toMatchObject({
-        id: h.userId,
-      });
-
-      await h.store.revokeTokens(h.userId);
-      expect(await h.store.findUserByLiveToken("hash-two", now)).toBeNull();
-      // Idempotent on an empty slate.
-      await h.store.revokeTokens(h.userId);
-    });
   });
 }
 

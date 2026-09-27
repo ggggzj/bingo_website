@@ -143,24 +143,4 @@ export class InMemoryCoachStore implements CoachStore {
     return config;
   }
 
-  async createToken(userId: number, tokenHash: string): Promise<void> {
-    await this.revokeTokens(userId);
-    this.tokens.set(tokenHash, { userId, revoked: false, lastUsedAt: null });
-  }
-
-  async revokeTokens(userId: number): Promise<void> {
-    for (const token of this.tokens.values()) {
-      if (token.userId === userId) token.revoked = true;
-    }
-  }
-
-  async findUserByLiveToken(
-    tokenHash: string,
-    now: Date,
-  ): Promise<CoachUser | null> {
-    const token = this.tokens.get(tokenHash);
-    if (!token || token.revoked) return null;
-    token.lastUsedAt = now;
-    return this.users.get(token.userId) ?? null;
-  }
 }

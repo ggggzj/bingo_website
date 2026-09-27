@@ -13,6 +13,15 @@ dashboard that only the owner can see.
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
+- `POST /api/tokens` with `{"scope":"applications"}` while signed in as the owner — issues
+  the token `~/Desktop/job_dashboard/scripts/update_status.py` uses. The plaintext is
+  returned once; `DELETE /api/tokens` revokes it.
+- `DATABASE_URL=… OWNER_EMAIL=… pnpm --filter @workspace/api-server run import-applications [folder]`
+  — pushes the owner's job-search folder (default `~/Desktop/job_dashboard`) into their
+  account. Refreshes company/role/location/link/dates/JD body; **seeds status, stage and
+  note once and never touches them again** — those belong to the browser. Safe to re-run.
+  The folder's own `scripts/push_to_account.py` wraps it and `add_job.py` calls that, so
+  applying to a job stays one command; with no `account.env` it prints a line and carries on.
 - `pnpm --filter @workspace/db run generate` — emit SQL for a schema change. **There is no
   `push` any more**, and that is deliberate rather than an oversight: it reconciles the
   *whole* schema, and after the move onto h1_checker's database (2026-09-20) this repo's
@@ -103,7 +112,16 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   codegen script — `lib/api-client-react/src/generated` and `lib/api-zod/src/generated`
   are generated and should never be edited by hand.
 - **DB schema, source of truth:** `lib/db/src/schema/` (`auth.ts`, `coach.ts`,
-  `new-grad.ts`).
+  `new-grad.ts`, `applications.ts`).
+- **The owner's applications:** `artifacts/api-server/src/lib/applications/` —
+  `folder.ts` (reads `~/Desktop/job_dashboard`'s three data files, which are JavaScript
+  rather than JSON and are parsed by running them in a bare `node:vm` context),
+  `import.ts` (upserts the imported half, seeds the hand-written half once and never
+  updates it), `store.ts` (reads the list, writes the owner's half with its trail, serves one
+  archived body), `jd.ts` (makes a scraped archive readable), `cli.ts` (what the owner runs).
+  `fixtures/` holds the shapes the tests pin; the live folder is never read by a test.
+- **Personal tokens:** `artifacts/api-server/src/lib/tokens/` — moved off `CoachStore` on
+  2026-09-27 when a second caller needed them. The table behind it is still `coach_api_tokens`.
 - **Auth:** `artifacts/api-server/src/lib/auth/` — `password.ts` (scrypt),
   `session.ts` (cookie + token hashing), `owner.ts` (who the owner is),
   `store.ts` (the storage interface) with `drizzle-store.ts` and `memory-store.ts`.
@@ -237,6 +255,51 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   dropped by hand with one `drop table waitlist;`, deliberately not
   `pnpm --filter @workspace/db run push`, which reconciles the whole schema and would
   carry any drift along with it.
+
+### The owner's own applications, 2026-09-25
+
+- **Two tables, not one, and the import's SQL is the guarantee.** `applications` is the
+  imported half and `application_status` is the half the owner types in the browser. One
+  table with an UPSERT naming only the machine columns was the obvious design and was
+  rejected: the promise would then live in a `SET` clause, one column added carelessly away
+  from losing the only copy of 18 rows that quote rejection emails Simplify never saw. Two
+  tables make it structural — the import cannot touch a table it never mentions — and
+  `import.contract.test.ts` proves it by editing a status, re-importing, and reading it back.
+- **The folder stays the editor of the imported half; the account becomes the editor of the
+  human half** (owner decision 2026-09-25, reversing their own read-only answer the same
+  day). So the page states when the import last ran: those rows are exactly that old, and an
+  empty week must not read as a quiet week.
+- **The import connects to the database; it is not an endpoint.** An HTTP import would need a
+  credential for a script on a laptop. This reuses the access the owner already has
+  (`railway variables`, read per run, never stored). That is **not** credential-free — a
+  connection string is broader than an API token would be — and an earlier draft of the
+  proposal said so wrongly. The narrow token is `.harness/backlogs/025`, deliberately not built.
+- **The browser writes three fields, and a field left out is not the same as one cleared.**
+  `PATCH /applications/{id}` takes status, stage and note; absent means leave it, null means
+  clear it. A PATCH that could not tell those apart would erase a note every time a status
+  changed. The status vocabulary is four values and anything else is refused **before the store
+  is touched**, so a rejected value never reaches the trail.
+- **The trail is written in the same transaction as the change, and a no-op writes nothing.**
+  `application_events` carries what each field read before, and `hand` says who wrote it.
+- **The hand is which credential was accepted** — a session means `browser`, a scoped personal
+  token means `script` — never anything the caller sends. Two writers on one row stay
+  attributable, which is the whole reason that column exists.
+- **A personal token says what it opens, and its default is the guarantee.** `coach_api_tokens`
+  carries `scope` (`coach` | `applications`) defaulting to `coach`, so every token issued before
+  2026-09-27 — including the live one the grill bridge uses — keeps its old reach and cannot
+  touch an application. Scope is a condition of the lookup, never something a caller states.
+  Tokens are issued from a session only (`POST /tokens`, owner-only), so a leaked one cannot
+  mint a successor with a wider scope; issuing and revoking are per scope, so asking for a
+  folder token does not sign the practice bridge out.
+- **A scraped job description is skipped past, never rewritten.** Measured 2026-09-27 over 87
+  archived bodies: 80 come from an ATS API and are clean prose, 7 were scraped and carry the
+  whole page (Google's is 421 lines whose description starts at line 282). `jd.ts` decides by
+  the archive's **own source line**, not by the text. Nothing is summarised: a summary of a job
+  description is a different artifact from the job description.
+- **`jd_markdown` is a column, not a table.** 80 bodies, ~8 KB each, 418 kB in production;
+  Postgres TOASTs values that size out of line, so a list query that does not name the column
+  does not pay for it. These bodies are unrecoverable — two postings 404'd within five days of
+  the owner applying, which is why the folder started archiving them at all.
 
 ### The owner's new-grad list, 2026-09-18
 
