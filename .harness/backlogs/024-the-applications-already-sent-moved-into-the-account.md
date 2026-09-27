@@ -1,8 +1,11 @@
 ---
 id: 024
 title: The 94 applications already sent, moved into the account — imported from the folder, changed in the browser
-status: picked-up — proposal written 2026-09-25, awaiting the owner's approval. Nothing is
-  implemented; the two gates (approval, then `/implement`) are the owner's.
+status: built — delivered 2026-09-27 through the change below. The three tables are in the
+  surviving database, the owner's 94 applications are in their account, the view is in the rail
+  and the browser writes the half the account owns. **Not yet deployed**: the work is on
+  `implement/2026-09-25-the-applications-i-already-sent` and bingocareer.com still runs the
+  previous build.
 change: openspec/changes/2026-09-25-the-applications-i-already-sent/
   Takes all six of this ticket's open questions; the answers are in that proposal's
   "The decisions this settles" table, reversible until `/implement` is invoked.

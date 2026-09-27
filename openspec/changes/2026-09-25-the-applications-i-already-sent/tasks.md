@@ -114,10 +114,10 @@ says whether one is still running on 127.0.0.1:55432 and how to recreate it.
 
 ## 7. Say what changed
 
-- [ ] 7.1 Update `replit.md`: the three tables and who owns which half, the import and how the
+- [x] 7.1 Update `replit.md`: the three tables and who owns which half, the import and how the
       owner runs it, the fourth view, and the fact that the machine half is as old as the last
       import. Append the two-tables-not-one decision to "Architecture decisions" with the option
       that was rejected.
-- [ ] 7.2 Set `.harness/backlogs/024` to `status: built` with a pointer to this change, and write
+- [x] 7.2 Set `.harness/backlogs/024` to `status: built` with a pointer to this change, and write
       a session-todo for the folder's own `dashboard.html` — after cutover it must stop showing a
       status it no longer owns.
