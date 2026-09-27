@@ -1,8 +1,7 @@
 /**
  * One behavioral contract, two implementations. The memory store always
  * runs; the drizzle store runs when COACH_TEST_DATABASE_URL points at a
- * scratch Postgres with `lib/db/drizzle/0000_young_peter_parker.sql` applied —
- * `push` no longer exists (2026-09-20) — (it seeds and cleans up its own
+ * scratch Postgres with the schema pushed (it seeds and cleans up its own
  * rows). A distinct variable on purpose — vitest pins DATABASE_URL to a
  * dummy so the db package can load without a server.
  */
