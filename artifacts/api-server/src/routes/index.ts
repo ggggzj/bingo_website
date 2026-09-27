@@ -15,6 +15,7 @@ import { createCoachRouter } from "./coach";
 import { createJobsRouter } from "./jobs";
 import { createNewGradRouter } from "./new-grad";
 import { createStatsRouter } from "./stats";
+import { createTokensRouter } from "./tokens";
 
 // One store for the process. The routes take it as an argument rather than reaching
 // for `db` themselves, which is what lets the tests run them without a Postgres.
@@ -41,6 +42,8 @@ router.use(
 );
 // Owner-only, and the only route here whose rows came from outside this system: the
 // owner's own folder, pushed in by `run import-applications`.
-router.use("/applications", createApplicationsRouter(authStore, applicationStore));
+router.use("/applications", createApplicationsRouter(authStore, applicationStore, tokenStore));
+// Session-only, owner-only: the credential a tool on the owner's machine uses as them.
+router.use("/tokens", createTokensRouter(authStore, tokenStore));
 
 export default router;

@@ -1,8 +1,10 @@
 import { Router, type IRouter } from "express";
 
 import { isOwner } from "../lib/auth/owner";
+import { hashToken } from "../lib/auth/session";
 import type { AuthStore } from "../lib/auth/store";
 import { readableJd } from "../lib/applications/jd";
+import type { TokenStore } from "../lib/tokens/store";
 import { currentUser } from "./auth";
 
 /**
@@ -160,20 +162,48 @@ function present(record: ApplicationRecord) {
   };
 }
 
+function bearerToken(req: { headers: Record<string, unknown> }): string | null {
+  const header = req.headers["authorization"];
+  if (typeof header !== "string") return null;
+  const [scheme, value] = header.split(" ");
+  if (scheme?.toLowerCase() !== "bearer" || !value) return null;
+  return value;
+}
+
 export function createApplicationsRouter(
   store: AuthStore,
   applications: ApplicationStore,
+  tokens: TokenStore,
 ): IRouter {
   const router: IRouter = Router();
 
   /**
-   * Uniform 404 for everyone who is not the owner — no session, an expired one, or somebody
-   * else's perfectly good account. The same refusal `new-grad.ts` and the coach routes make,
-   * so the route's existence gives nothing away.
+   * Who is calling, and **by which hand** — the session cookie, or a personal token scoped to
+   * applications. The hand is not a parameter anyone sends: it is which credential was
+   * accepted, which is what makes the trail's attribution worth anything.
+   *
+   * Uniform 404 for everyone else — no session, an expired one, somebody else's account, or a
+   * token issued for practice. The same refusal `new-grad.ts` and the coach routes make.
    */
-  async function owner(req: Parameters<Parameters<IRouter["get"]>[1]>[0]) {
+  async function owner(
+    req: Parameters<Parameters<IRouter["get"]>[1]>[0],
+  ): Promise<{ id: number; email: string; hand: EditHand } | null> {
     const signedIn = await currentUser(store, req);
-    return signedIn && isOwner(signedIn.email) ? signedIn : null;
+    if (signedIn) {
+      return isOwner(signedIn.email)
+        ? { id: signedIn.id, email: signedIn.email, hand: "browser" }
+        : null;
+    }
+
+    const token = bearerToken(req as unknown as { headers: Record<string, unknown> });
+    if (!token) return null;
+    const byToken = await tokens.findUserByLiveToken(
+      hashToken(token),
+      "applications",
+      new Date(),
+    );
+    if (!byToken || !isOwner(byToken.email)) return null;
+    return { id: byToken.id, email: byToken.email, hand: "script" };
   }
 
   router.get("/", async (req, res) => {
@@ -239,7 +269,7 @@ export function createApplicationsRouter(
     }
 
     try {
-      const row = await applications.update(signedIn.id, id, edit, "browser");
+      const row = await applications.update(signedIn.id, id, edit, signedIn.hand);
       if (!row) {
         res.status(404).json({ error: "Not found" });
         return;

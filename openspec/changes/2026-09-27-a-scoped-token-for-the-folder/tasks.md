@@ -16,20 +16,20 @@ Each group leaves the system working end to end. Close each with the `replit.md`
 
 ## 2. Issuing, owner-only, session-only
 
-- [ ] 2.1 `POST /tokens` and `DELETE /tokens` in `lib/api-spec/openapi.yaml`, with the scope in the
+- [x] 2.1 `POST /tokens` and `DELETE /tokens` in `lib/api-spec/openapi.yaml`, with the scope in the
       body, **and codegen in this same task**.
-- [ ] 2.2 `artifacts/api-server/src/routes/tokens.ts`: session cookie only — a bearer may not mint
+- [x] 2.2 `artifacts/api-server/src/routes/tokens.ts`: session cookie only — a bearer may not mint
       a token — owner-only, 404 otherwise, plaintext returned exactly once. Proven in
       `tokens.test.ts`: a bearer token is refused at issuing; a non-owner gets 404; issuing twice
       revokes the first.
 
 ## 3. The applications routes accept a scoped token
 
-- [ ] 3.1 A gate beside `lib/coach/auth.ts`'s, resolving session **or** a bearer whose scope is
+- [x] 3.1 A gate beside `lib/coach/auth.ts`'s, resolving session **or** a bearer whose scope is
       `applications`, answering the same uniform 404. Proven in `applications.test.ts`: a valid
       coach-scoped token gets 404 on `PATCH /applications/{id}`, an applications-scoped one
       succeeds, and a revoked one gets 404.
-- [ ] 3.2 Writes arriving by token record `hand: 'script'`. Proven in
+- [x] 3.2 Writes arriving by token record `hand: 'script'`. Proven in
       `applications/store.contract.test.ts`: the trail distinguishes the two hands on the same row.
 
 ## 4. The folder can call it

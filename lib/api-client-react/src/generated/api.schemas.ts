@@ -208,6 +208,36 @@ export interface ApplicationEdit {
   note?: string | null;
 }
 
+/**
+ * What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen.
+ */
+export type TokenRequestScope =
+  (typeof TokenRequestScope)[keyof typeof TokenRequestScope];
+
+export const TokenRequestScope = {
+  coach: "coach",
+  applications: "applications",
+} as const;
+
+export interface TokenRequest {
+  /** What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen. */
+  scope: TokenRequestScope;
+}
+
+export type IssuedTokenScope =
+  (typeof IssuedTokenScope)[keyof typeof IssuedTokenScope];
+
+export const IssuedTokenScope = {
+  coach: "coach",
+  applications: "applications",
+} as const;
+
+export interface IssuedToken {
+  /** The plaintext, returned this once. Only its hash is stored. */
+  token: string;
+  scope: IssuedTokenScope;
+}
+
 export interface ApplicationJd {
   /** What to show — the archive's own header, then the description. */
   markdown: string;

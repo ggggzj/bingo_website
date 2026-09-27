@@ -15,7 +15,9 @@ import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { InMemoryAuthStore } from "../lib/auth/memory-store";
+import { InMemoryTokenStore } from "../lib/tokens/store";
 import { hashPassword } from "../lib/auth/password";
+import { hashToken, newSessionToken } from "../lib/auth/session";
 import { createAuthRouter } from "./auth";
 import {
   createApplicationsRouter,
@@ -89,12 +91,16 @@ function fakeStore(
   };
 }
 
-function testApp(store: InMemoryAuthStore, applications: ApplicationStore): Express {
+function testApp(
+  store: InMemoryAuthStore,
+  applications: ApplicationStore,
+  tokens: InMemoryTokenStore = new InMemoryTokenStore(),
+): Express {
   const app = express();
   app.use(express.json());
   app.use(cookieParser());
   app.use("/api/auth", createAuthRouter(store));
-  app.use("/api/applications", createApplicationsRouter(store, applications));
+  app.use("/api/applications", createApplicationsRouter(store, applications, tokens));
   return app;
 }
 
@@ -365,5 +371,85 @@ Wingspan engineers build things.
     expect(res.body.markdown).not.toContain("3,293 jobs matched");
     // And what was skipped is still reachable, rather than only hidden.
     expect(res.body.full_markdown).toContain("3,293 jobs matched");
+  });
+});
+
+/**
+ * The folder's hand. What is under test is that a credential's reach is decided when it is
+ * issued, and that the trail can tell the two writers apart afterwards — the second of which
+ * is the only thing standing between two writers and a status nobody can explain.
+ */
+describe("a token writes as the script", () => {
+  let store: InMemoryAuthStore;
+  let tokens: InMemoryTokenStore;
+
+  beforeEach(() => {
+    process.env["OWNER_EMAIL"] = OWNER;
+    store = new InMemoryAuthStore();
+    tokens = new InMemoryTokenStore();
+  });
+
+  async function ownerToken(scope: "coach" | "applications") {
+    store.seedUser(OWNER, await hashPassword(PASSWORD));
+    const user = await store.findUserByEmail(OWNER);
+    tokens.seedUser({ id: user!.id, email: OWNER });
+    const token = newSessionToken();
+    await tokens.createToken(user!.id, hashToken(token), scope);
+    return token;
+  }
+
+  it("accepts an applications token and records the hand as the script", async () => {
+    const applications = fakeStore([record({ id: 1 })]);
+    const app = testApp(store, applications, tokens);
+    const token = await ownerToken("applications");
+
+    const res = await request(app)
+      .patch("/api/applications/1")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "closed" });
+
+    expect(res.status).toBe(200);
+    expect(applications.edits).toEqual([expect.objectContaining({ hand: "script" })]);
+  });
+
+  it("refuses a token issued for practice", async () => {
+    const applications = fakeStore([record({ id: 1 })]);
+    const app = testApp(store, applications, tokens);
+    const token = await ownerToken("coach");
+
+    const res = await request(app)
+      .patch("/api/applications/1")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "closed" });
+
+    expect(res.status).toBe(404);
+    expect(applications.edits).toEqual([]);
+  });
+
+  it("refuses a revoked token", async () => {
+    const applications = fakeStore([record({ id: 1 })]);
+    const app = testApp(store, applications, tokens);
+    const token = await ownerToken("applications");
+    const user = await store.findUserByEmail(OWNER);
+    await tokens.revokeTokens(user!.id, "applications");
+
+    const res = await request(app)
+      .patch("/api/applications/1")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ status: "closed" });
+
+    expect(res.status).toBe(404);
+  });
+
+  it("lets a token read the list too, so the script can find a row by key", async () => {
+    const app = testApp(store, fakeStore([record({ id: 1 })]), tokens);
+    const token = await ownerToken("applications");
+
+    const res = await request(app)
+      .get("/api/applications")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.applications).toHaveLength(1);
   });
 });

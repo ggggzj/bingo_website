@@ -192,4 +192,28 @@ describe.skipIf(!PG_URL)("DrizzleApplicationStore (Postgres)", () => {
 
     await database!.delete(schema.usersTable).where(eq(schema.usersTable.id, other!.id));
   });
+
+  /**
+   * Two writers from 2026-09-27: the browser, and the folder's script through a scoped token.
+   * Being able to tell them apart afterwards is the whole reason `hand` exists — a status
+   * nobody can attribute is a status nobody can argue with six weeks later.
+   */
+  it("attributes each change to the hand that made it", async () => {
+    const store = new DrizzleApplicationStore(database! as never);
+    const solace = (await store.list(userId)).find((row) => row.company === "Solace Health")!;
+
+    await store.update(userId, solace.id, { status: "interview" }, "browser");
+    await store.update(userId, solace.id, { note: "OA invite, from the inbox" }, "script");
+
+    const events = await database!
+      .select()
+      .from(schema.applicationEventsTable)
+      .where(eq(schema.applicationEventsTable.applicationId, solace.id));
+
+    const byHand = Object.fromEntries(
+      events.map((event) => [`${event.hand}:${event.field}`, event.value]),
+    );
+    expect(byHand["browser:status"]).toBe("interview");
+    expect(byHand["script:note"]).toBe("OA invite, from the inbox");
+  });
 });

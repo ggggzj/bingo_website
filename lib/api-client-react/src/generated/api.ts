@@ -42,12 +42,14 @@ import type {
   GoogleAccount,
   GoogleCredential,
   HealthStatus,
+  IssuedToken,
   JobsPage,
   NewGradList,
   Ok,
   StatsDaily,
   StatsRegistrations,
   StatsTotals,
+  TokenRequest,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -1043,6 +1045,183 @@ export function useGetApplicationJd<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Authenticates a script on the owner's own machine as them — today the folder that pushes their applications, `~/Desktop/job_dashboard`.
+**Session-only.** A bearer token cannot mint its successor, so a leaked one cannot quietly grow a wider scope. The plaintext is returned exactly once; issuing revokes the caller's previous tokens **of that scope only**, so asking for a folder token does not sign the practice bridge out.
+The scope is stored on the token and is read from there, never from a later request. A token issued for one scope is refused everywhere else with the same 404 an unauthenticated caller gets.
+Owner-only for now. This is not a feature users are offered: per-user credentials bring storage, rotation, abuse and support with them, and that is a decision this change does not make.
+ * @summary Issue a personal token for a tool the owner runs
+ */
+export const getCreateTokenUrl = () => {
+  return `/api/tokens`;
+};
+
+export const createToken = async (
+  tokenRequest: TokenRequest,
+  options?: RequestInit,
+): Promise<IssuedToken> => {
+  return customFetch<IssuedToken>(getCreateTokenUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(tokenRequest),
+  });
+};
+
+export const getCreateTokenMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createToken>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createToken>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  const mutationKey = ["createToken"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createToken>>,
+    { data: BodyType<TokenRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createToken(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateTokenMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createToken>>
+>;
+export type CreateTokenMutationBody = BodyType<TokenRequest>;
+export type CreateTokenMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Issue a personal token for a tool the owner runs
+ */
+export const useCreateToken = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createToken>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createToken>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  return useMutation(getCreateTokenMutationOptions(options));
+};
+
+/**
+ * Idempotent. Session-only, for the same reason issuing is.
+ * @summary Revoke the caller's tokens of one scope
+ */
+export const getRevokeTokensUrl = () => {
+  return `/api/tokens`;
+};
+
+export const revokeTokens = async (
+  tokenRequest: TokenRequest,
+  options?: RequestInit,
+): Promise<Ok> => {
+  return customFetch<Ok>(getRevokeTokensUrl(), {
+    ...options,
+    method: "DELETE",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(tokenRequest),
+  });
+};
+
+export const getRevokeTokensMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof revokeTokens>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof revokeTokens>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  const mutationKey = ["revokeTokens"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof revokeTokens>>,
+    { data: BodyType<TokenRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return revokeTokens(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RevokeTokensMutationResult = NonNullable<
+  Awaited<ReturnType<typeof revokeTokens>>
+>;
+export type RevokeTokensMutationBody = BodyType<TokenRequest>;
+export type RevokeTokensMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Revoke the caller's tokens of one scope
+ */
+export const useRevokeTokens = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof revokeTokens>>,
+    TError,
+    { data: BodyType<TokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof revokeTokens>>,
+  TError,
+  { data: BodyType<TokenRequest> },
+  TContext
+> => {
+  return useMutation(getRevokeTokensMutationOptions(options));
+};
 
 /**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.

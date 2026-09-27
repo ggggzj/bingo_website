@@ -424,6 +424,37 @@ export const GetApplicationJdResponse = zod.object({
 });
 
 /**
+ * Authenticates a script on the owner's own machine as them — today the folder that pushes their applications, `~/Desktop/job_dashboard`.
+**Session-only.** A bearer token cannot mint its successor, so a leaked one cannot quietly grow a wider scope. The plaintext is returned exactly once; issuing revokes the caller's previous tokens **of that scope only**, so asking for a folder token does not sign the practice bridge out.
+The scope is stored on the token and is read from there, never from a later request. A token issued for one scope is refused everywhere else with the same 404 an unauthenticated caller gets.
+Owner-only for now. This is not a feature users are offered: per-user credentials bring storage, rotation, abuse and support with them, and that is a decision this change does not make.
+ * @summary Issue a personal token for a tool the owner runs
+ */
+export const CreateTokenBody = zod.object({
+  scope: zod
+    .enum(["coach", "applications"])
+    .describe(
+      "What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen.",
+    ),
+});
+
+/**
+ * Idempotent. Session-only, for the same reason issuing is.
+ * @summary Revoke the caller's tokens of one scope
+ */
+export const RevokeTokensBody = zod.object({
+  scope: zod
+    .enum(["coach", "applications"])
+    .describe(
+      "What the token opens. Decided when it is issued, because a credential's reach must not be something a later request can widen.",
+    ),
+});
+
+export const RevokeTokensResponse = zod.object({
+  ok: zod.boolean(),
+});
+
+/**
  * Proxied from the extension's API. Anyone who is not the owner gets 404, the same answer as a path that does not exist.
  * @summary Growth totals (owner only)
  */
