@@ -3,8 +3,8 @@ id: 025
 title: Let Claude keep writing status from the folder — a scoped personal token, not a fourth key
 status: built — delivered 2026-09-27. The scope column is in the surviving database, `/tokens`
   issues and revokes, the applications routes accept a scoped bearer and record it as `script`,
-  and the folder has `update_status.py`. **Not deployed**, and the owner has not issued a
-  production token yet — that is theirs to do, signed in.
+  and the folder has `update_status.py`. Deployed 2026-09-27 (merge `11b075a`). The owner has not issued a
+  production token yet — that step needs their session and is theirs to take.
 change: openspec/changes/2026-09-27-a-scoped-token-for-the-folder/
 origin: Owner, 2026-09-24/25, while settling `024`'s decision 1. Choosing "the browser is where
   status changes" ends a loop the owner uses daily: paste the rejection email to Claude in

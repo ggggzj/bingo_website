@@ -3,9 +3,9 @@ id: 024
 title: The 94 applications already sent, moved into the account — imported from the folder, changed in the browser
 status: built — delivered 2026-09-27 through the change below. The three tables are in the
   surviving database, the owner's 94 applications are in their account, the view is in the rail
-  and the browser writes the half the account owns. **Not yet deployed**: the work is on
-  `implement/2026-09-25-the-applications-i-already-sent` and bingocareer.com still runs the
-  previous build.
+  and the browser writes the half the account owns. Deployed 2026-09-27 (merge `11b075a`): the API and the page are
+  live on bingocareer.com, verified by the route's own refusal shape and by the four UI strings
+  in the served bundle.
 change: openspec/changes/2026-09-25-the-applications-i-already-sent/
   Takes all six of this ticket's open questions; the answers are in that proposal's
   "The decisions this settles" table, reversible until `/implement` is invoked.
