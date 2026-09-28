@@ -5,7 +5,13 @@ no group 1 — and group 1 is what the rest is built on.
 
 ## 1. Look before writing a rule
 
-- [ ] 1.1 `scripts/check_mail.py --survey` in the folder: connect over IMAP with the app
+- [x] 1.1 `scripts/check_mail.py` in the folder — **written 2026-09-27, waiting on a password.**
+      Verified as far as a mailbox-less machine allows: no credentials prints one line and exits
+      zero; it reads all 94 applications; 75 of them have a company name long enough to match on
+      and 87 carry a link domain. Two details that are not style — it selects the mailbox
+      `readonly=True` and fetches with `BODY.PEEK`, so nothing is marked read; a survey that
+      leaves footprints in a mailbox is not a survey.
+      Original text of this task: connect over IMAP with the app
       password from `account.env`, read the last N days, and print every message whose sender
       domain or subject touches *anything* in the applications list — deliberately wide, because
       this run is for reading, not for filtering. For each: sender, date, subject, the phrase
