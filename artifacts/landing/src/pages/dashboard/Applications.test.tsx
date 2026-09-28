@@ -189,6 +189,7 @@ describe("Applications", () => {
     );
     renderApp(<Applications />);
 
+    await user.click(await screen.findByTestId("open-row-1"));
     const note = await screen.findByTestId("note-input-1");
     await user.click(note);
     await user.tab();
@@ -277,5 +278,71 @@ describe("Applications", () => {
 
     await user.click(screen.getByTestId("show-full-jd"));
     expect(await screen.findByText(/3,293 jobs matched/)).toBeInTheDocument();
+  });
+});
+
+/**
+ * 76 of the owner's 94 rows have nothing written on them. An empty box on each was the page
+ * asking 76 questions at once; the answer is to ask when the row is opened.
+ */
+describe("a row opens to be written on", () => {
+  it("shows no empty boxes until the row is opened", async () => {
+    const user = userEvent.setup();
+    list({ applications: [application({ id: 1, stage: null, note: null })] });
+    renderApp(<Applications />);
+
+    await screen.findByText("Solace Health");
+    expect(screen.queryByTestId("stage-input-1")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("note-input-1")).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId("open-row-1"));
+
+    expect(await screen.findByTestId("stage-input-1")).toBeInTheDocument();
+    expect(screen.getByTestId("note-input-1")).toBeInTheDocument();
+  });
+
+  it("shows what is written without opening anything", async () => {
+    list({
+      applications: [
+        application({ id: 1, stage: "简历被拒", note: "2026-09-23 拒信：identified other candidates" }),
+      ],
+    });
+    renderApp(<Applications />);
+
+    // Readable at a glance — the reason to open a row is to change it, not to read it.
+    expect(await screen.findByText("简历被拒")).toBeInTheDocument();
+    expect(screen.getByText(/identified other candidates/)).toBeInTheDocument();
+    expect(screen.queryByTestId("note-input-1")).not.toBeInTheDocument();
+  });
+
+  it("does not open the row when the status dropdown is used", async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get("/api/applications", () =>
+        HttpResponse.json({
+          applications: [application({ id: 1 })],
+          imported_at: "2026-09-24T12:00:00.000Z",
+        }),
+      ),
+      http.patch("/api/applications/1", () => HttpResponse.json(application({ id: 1 }))),
+    );
+    renderApp(<Applications />);
+
+    await user.selectOptions(await screen.findByTestId("status-select-1"), "interview");
+
+    // Changing a status is one click and must stay one click.
+    expect(screen.queryByTestId("note-input-1")).not.toBeInTheDocument();
+  });
+
+  it("closes again when the row is clicked a second time", async () => {
+    const user = userEvent.setup();
+    list({ applications: [application({ id: 1 })] });
+    renderApp(<Applications />);
+
+    await user.click(await screen.findByTestId("open-row-1"));
+    expect(await screen.findByTestId("note-input-1")).toBeInTheDocument();
+
+    await user.click(screen.getByTestId("open-row-1"));
+    expect(screen.queryByTestId("note-input-1")).not.toBeInTheDocument();
   });
 });

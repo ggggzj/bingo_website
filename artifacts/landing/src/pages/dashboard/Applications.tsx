@@ -145,15 +145,28 @@ function knownStatus(value: string): value is ApplicationEditStatus {
   return (STATUSES as readonly string[]).includes(value);
 }
 
+/**
+ * Clicks that belong to a control are the control's, not the row's. Changing a status is one
+ * click and has to stay one click — opening the row underneath it would be a second thing
+ * happening that nobody asked for.
+ */
+function fromAControl(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest("select, input, textarea, a, button") !== null;
+}
+
 function Row({
   application,
   onEdit,
   onOpenJd,
+  open,
+  onToggle,
   failed,
 }: {
   application: Application;
   onEdit: (id: number, edit: ApplicationEdit) => void;
   onOpenJd: (application: Application) => void;
+  open: boolean;
+  onToggle: (id: number) => void;
   failed: boolean;
 }) {
   /**
@@ -172,9 +185,16 @@ function Row({
   }
 
   return (
-    <TableRow data-testid={`application-${application.id}`}>
+    <>
+    <TableRow
+      data-testid={`application-${application.id}`}
+      className="cursor-pointer"
+      onClick={(event) => {
+        if (!fromAControl(event.target)) onToggle(application.id);
+      }}
+    >
       <TableCell className="align-top">
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col gap-0.5" data-testid={`open-row-${application.id}`}>
           <span className="font-medium">{application.company}</span>
           <span className="text-sm text-muted-foreground">{application.role}</span>
         </div>
@@ -222,15 +242,12 @@ function Row({
               from the import
             </span>
           ) : null}
-          <Input
-            className="h-7 w-full text-xs"
-            placeholder="stage"
-            data-testid={`stage-input-${application.id}`}
-            aria-label={`Stage for ${application.company}`}
-            value={stage}
-            onChange={(event) => setStage(event.target.value)}
-            onBlur={() => commit("stage", stage, application.stage)}
-          />
+          {/* Written: readable at a glance. Empty: nothing, until the row is opened —
+              76 of the owner's 94 rows have nothing here, and an empty box on each of them
+              was the page asking 76 questions at once. */}
+          {application.stage ? (
+            <span className="text-xs text-muted-foreground">{application.stage}</span>
+          ) : null}
           {failed ? (
             <span
               className="text-[11px] text-destructive"
@@ -250,16 +267,8 @@ function Row({
           )}
         </div>
       </TableCell>
-      <TableCell className="align-top text-sm">
-        <Input
-          className="h-8 w-full text-xs"
-          placeholder="note"
-          data-testid={`note-input-${application.id}`}
-          aria-label={`Note for ${application.company}`}
-          value={note}
-          onChange={(event) => setNote(event.target.value)}
-          onBlur={() => commit("note", note, application.note)}
-        />
+      <TableCell className="align-top text-sm text-muted-foreground">
+        {application.note ?? null}
       </TableCell>
       <TableCell className="align-top text-right whitespace-nowrap">
         <div className="flex flex-col items-end gap-1">
@@ -295,6 +304,47 @@ function Row({
         </div>
       </TableCell>
     </TableRow>
+
+    {/* The row, opened. Also where `.harness/backlogs/027` is meant to land: a message from
+        the inbox that looks like it is about this application goes beside these two fields,
+        for the owner to read and act on — never into them. */}
+    {open ? (
+      <TableRow data-testid={`open-${application.id}`}>
+        <TableCell colSpan={6} className="bg-muted/40">
+          <div className="flex flex-col gap-2 py-1">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-muted-foreground" htmlFor={`stage-${application.id}`}>
+                Stage — where it stands, in a few words
+              </label>
+              <Input
+                id={`stage-${application.id}`}
+                className="h-8 text-sm"
+                placeholder="OA · HR 面试 · 拒信 · 不提供 sponsorship"
+                data-testid={`stage-input-${application.id}`}
+                value={stage}
+                onChange={(event) => setStage(event.target.value)}
+                onBlur={() => commit("stage", stage, application.stage)}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-muted-foreground" htmlFor={`note-${application.id}`}>
+                Note — the employer&apos;s own words are worth keeping whole
+              </label>
+              <Input
+                id={`note-${application.id}`}
+                className="h-8 text-sm"
+                placeholder="拒信原文 / 面试安排 / 你想三个月后还记得的事"
+                data-testid={`note-input-${application.id}`}
+                value={note}
+                onChange={(event) => setNote(event.target.value)}
+                onBlur={() => commit("note", note, application.note)}
+              />
+            </div>
+          </div>
+        </TableCell>
+      </TableRow>
+    ) : null}
+    </>
   );
 }
 
@@ -308,6 +358,8 @@ export function Applications() {
    */
   const [failed, setFailed] = useState<Set<number>>(new Set());
   const [openJd, setOpenJd] = useState<Application | null>(null);
+  /** Which row is open for writing. One at a time: two open rows is a form, not a table. */
+  const [openRow, setOpenRow] = useState<number | null>(null);
   const update = useUpdateApplication({
     mutation: {
       onSuccess: (_result, variables) => {
@@ -406,6 +458,8 @@ export function Applications() {
                   application={application}
                   onEdit={edit}
                   onOpenJd={setOpenJd}
+                  open={openRow === application.id}
+                  onToggle={(id) => setOpenRow((was) => (was === id ? null : id))}
                   failed={failed.has(application.id)}
                 />
               ))}

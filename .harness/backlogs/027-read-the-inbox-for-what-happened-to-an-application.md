@@ -95,6 +95,25 @@ link already stored on the row, the ATS's own sending domains (`greenhouse.io`, 
 - **Not the whole inbox.** Search a window (say 60 days) and only for messages matching an
   employer this account has applied to. A tool that reads everything is a different tool.
 
+## Where a candidate message lands — owner, 2026-09-27
+
+The applications view collapses each row's stage and note until the row is clicked (that change
+went in the same day, because 76 of 94 rows had nothing written and the empty boxes were noise).
+**That expanded row is this ticket's landing spot**, and the owner named it as such.
+
+So the shape this should aim at: the script finds a message that looks like it is about an
+application, and the row for that application opens with the message beside the two fields the
+owner is about to fill — sender, date, subject, and the sentence that matched. The owner reads
+it and types, or picks a status, and what gets stored is what they decided.
+
+That keeps the rule intact rather than bending it. The message is **shown next to** the fields;
+it never fills them. A rejection and an automated "we have received your application" look alike
+to a matcher, and a row closed from the wrong one costs the owner a company they stop chasing.
+
+It also means this ticket does not need a page of its own. One more thing in a row that already
+opens is a smaller surface than an inbox view, and the owner is already looking at the row when
+they care.
+
 ## What done looks like
 
 - One command in the folder — `python3 scripts/check_mail.py` — that prints the messages from the
