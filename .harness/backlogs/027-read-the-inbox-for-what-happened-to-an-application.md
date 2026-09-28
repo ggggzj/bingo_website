@@ -1,7 +1,9 @@
 ---
 id: 027
 title: Read the owner's inbox for what happened to an application — theirs only, and it never decides
-status: open
+status: picked-up — proposal written 2026-09-27, awaiting the owner's approval **and an app
+  password**. Nothing is implemented; group 1 cannot start without a mailbox.
+change: openspec/changes/2026-09-27-what-the-inbox-already-knows/
 origin: Owner request 2026-09-27 — "自动读取我的 email 信息，然后显示是否有 next step 或者是被
   拒绝了". Asked after seeing the account's applications view, and asked knowing `017` had already
   ruled inbox reading out; the owner's addition is the part that changes the answer —
