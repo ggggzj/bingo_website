@@ -87,3 +87,59 @@ rule needs a denylist of those or needs dropping for anything but true ATS vendo
 
 That finding survives whichever mailbox is read next, so it is written down here rather than
 re-derived.
+
+## Group 1, second run, 2026-09-29 — the right mailbox, and the rule it handed over
+
+The owner named a third address: `christineguo778@gmail.com`. It is a small, dedicated mailbox —
+**273 messages in 60 days against 2,174 in the other one** — and it holds the mail this feature
+exists to find, including the `identified other candidates` rejection quoted in `overrides.js`.
+
+### The rule, which the mail wrote rather than we did
+
+**Workday and iCIMS carry the join key in the sender's address.**
+
+| Sender | Existing `source_key` |
+|---|---|
+| `visa@myworkday.com` | `workday:visa/Visa/…` |
+| `cox@myworkday.com` | `workday:cox/Cox_External_Career_Site_1/…` |
+| `pacificlife@myworkday.com` | `workday:pacificlife/PacificLifeCareers/…` |
+| `ctg+autoreply@talent.icims.com` | the CTG application |
+
+The local part before `@` (and before any `+`) **is the Workday tenant already stored in the
+key**. That is an exact join, not a similarity — and it is what makes this feature possible at
+all, given that 62 of 82 company names are single words like Visa and Zoom.
+
+**Greenhouse, Ashby, Lever and BambooHR send from a shared no-reply address** —
+`no-reply@us.greenhouse-mail.io`, `no-reply@ashbyhq.com`, `no-reply@hire.lever.co` — so the
+sender identifies the vendor and nothing else. For those, **the company is in the subject**, and
+in a consistent shape: `Thanks for applying to MintMCP!`, `Thank you for applying to Accordience
+Group`. The rule there is to read the subject after "applying to", not to search for company
+names inside it.
+
+Note also that `greenhouse.io` never appears as a sender. The real domain is
+`us.greenhouse-mail.io` (and `eu.` for the European one). A vendor list written from the vendor's
+website would have missed every Greenhouse message.
+
+### What the false positives cost, and the denylist they earned
+
+Of 155 matches over 60 days, the wrong ones came from exactly three sources: `linkedin.com` (20),
+`google.com` / `accounts.google.com` (24) and `glassdoor.com` (6) — all matched because an
+application's apply link happens to live on that domain. **Apply-link-domain matching is dropped
+for any domain that is a job board or a megacorp**; it stays only for an employer's own domain.
+
+### The finding nobody asked for: the mailbox knows about applications the tracker does not
+
+Four Workday tenants sent application confirmations with no matching row in the owner's 94:
+
+- `adobe@myworkday.com` — *Thanks for Applying to Adobe*
+- `aspentech@myworkday.com` — *Thank you for applying to AspenTech!*
+- `cadence@myworkday.com` — *Application Received for Software Engineer (Circuit Analysis…)*
+- `hpe@myworkday.com` — *Complete your application with Hewlett Packard Enterprise*
+
+So the inbox is a **more complete record of what was applied to** than the folder is. That was
+not what this ticket set out to do, and it is arguably worth more than what it did: a tracker
+that is missing four applications cannot tell the owner what they are waiting on.
+
+This does not change the rule that nothing is written automatically. It changes what the script
+should print: alongside "here is mail about an application you have", **"here is mail about an
+application you do not have"**.
