@@ -51,3 +51,39 @@ marker, and running it twice says the same thing, so nothing can be silently "co
 If a later version puts a message beside the two fields in an opened row, it goes *beside* them.
 Pre-filling a note with a message the owner has not read would make the field's contents
 something they did not write, which is the one property that makes those 18 rows worth keeping.
+
+## Group 1's result, 2026-09-29 — the survey answered a bigger question than it was asked
+
+The survey ran against `christineguo610@gmail.com`. It was written to discover *what identifies*
+a message about an application. It discovered instead that **there are none in that mailbox.**
+
+Measured, not inferred:
+
+| | |
+|---|---|
+| Messages in that account since 2026-08-01 (All Mail) | **2,174** |
+| From **any** ATS domain — Greenhouse, Ashby, Workday, Lever, iCIMS, BambooHR, Avature, Oracle, SmartRecruiters | **0** |
+| Containing `identified other candidates` — the owner's own quoted rejection | **0** |
+| Containing `visa sponsorship` | 1, a Simplify marketing email |
+| Matches the wide survey did produce, over 14 days | 40, **all false** — 28 LinkedIn notifications, 5 Google security alerts, 3 Search Console, plus Notion, Kaggle and GitHub |
+
+So the rejections quoted in `overrides.js` — `identified other candidates who are better aligned`,
+`not able to support work authorization sponsorship` — were sent to the **USC address**, which
+the owner had ruled out of scope two turns earlier on the reasonable assumption that the
+applications were tied to the address the account signs in with. They are not.
+
+**This makes the USC mailbox the one that matters, and it has an expiry date.** That address
+stops working at the end of 2026 (`.harness/backlogs/023`, and the owner's own note). Every
+rejection letter this feature exists to find is in a mailbox that is going away, which turns a
+convenience into something with a deadline attached.
+
+### What the false positives taught anyway
+
+The wide net matched on "sender domain = the apply link's domain", and that rule is broken by
+generic domains. Two applications have LinkedIn apply links, so **every LinkedIn notification
+matched**; one has a `google.com` link, so **Search Console mail about bingocareer.com matched**.
+A domain shared with a job board or a megacorp is not evidence about an application, and the
+rule needs a denylist of those or needs dropping for anything but true ATS vendor domains.
+
+That finding survives whichever mailbox is read next, so it is written down here rather than
+re-derived.

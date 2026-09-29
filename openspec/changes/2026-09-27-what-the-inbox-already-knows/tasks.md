@@ -16,7 +16,12 @@ no group 1 — and group 1 is what the rest is built on.
       domain or subject touches *anything* in the applications list — deliberately wide, because
       this run is for reading, not for filtering. For each: sender, date, subject, the phrase
       that touched, and which application it might belong to. Writes nothing.
-- [ ] 1.2 Read that output **with the owner** and write down, in `design.md`, what actually
+- [x] 1.2 Ran 2026-09-29 against the gmail account. **The answer was that the mailbox is the
+      wrong one**: 2,174 messages since August, zero from any ATS domain, zero containing the
+      owner's own quoted rejection. Written up in `design.md` under "Group 1's result",
+      including the one rule the false positives did kill. Blocked here until the owner
+      decides about the USC mailbox.
+      Original text: Read that output **with the owner** and write down, in `design.md`, what actually
       identifies a message about an application: which vendors send from their own domain,
       whether the posting title appears in subjects, what the rejections have in common, and —
       as importantly — what the false positives look like. Keep a de-identified sample as a
