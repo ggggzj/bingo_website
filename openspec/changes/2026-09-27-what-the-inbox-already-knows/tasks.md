@@ -29,17 +29,17 @@ no group 1 — and group 1 is what the rest is built on.
 
 ## 2. A rule that earned itself
 
-- [ ] 2.1 Write the matcher from what 1.2 found, in `scripts/mail_match.py`, with the fixture
+- [x] 2.1 Write the matcher from what 1.2 found, in `scripts/mail_match.py`, with the fixture
       from 1.2 as its test. **Not the company column** — 62 of 82 names are one word and include
       Visa, Zoom, Arch and Apex.
-- [ ] 2.2 `check_mail.py` uses it: prints the matches, prints the unplaced separately so the
+- [x] 2.2 `check_mail.py` uses it: prints the matches, prints the unplaced separately so the
       owner can see what the rule is missing, and still writes nothing. Running it twice prints
       the same thing.
-- [ ] 2.3 No app password configured: one line, exit zero — the rule `push_to_account.py` and
+- [x] 2.3 No app password configured: one line, exit zero — the rule `push_to_account.py` and
       `update_status.py` already follow.
 
 ## 3. Say what changed
 
-- [ ] 3.1 The folder's README gains the daily line: what to run when you think something arrived.
+- [x] 3.1 The folder's README gains the daily line: what to run when you think something arrived.
 - [ ] 3.2 `.harness/backlogs/027` to built, with what 1.2 measured recorded on it — the next
       person will otherwise re-derive it from the same mailbox.

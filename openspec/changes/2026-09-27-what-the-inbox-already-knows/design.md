@@ -143,3 +143,45 @@ that is missing four applications cannot tell the owner what they are waiting on
 This does not change the rule that nothing is written automatically. It changes what the script
 should print: alongside "here is mail about an application you have", **"here is mail about an
 application you do not have"**.
+
+## Group 2's result — the rule, and what it cost to get right
+
+Written against the real mail, tested with 24 cases in `scripts/test_mail_match.py` that use the
+actual senders and subjects. Four rules, in order of how much they can be trusted:
+
+1. **The sender's local part is the join key** — `visa@myworkday.com` against
+   `workday:visa/…`, `ctg+autoreply@talent.icims.com` against CTG. Exact.
+2. **The sender's display name** — `Commure Talent Team`, `Notion's Recruiting Team`,
+   `Applied Intuition - Job Board`. Set by the employer, and far steadier than the subject,
+   whose shapes include `Update from Notion`, `Miter | Thank you for Applying!` and
+   `MintMCP Application Update`. Team words are stripped; a display name that only names the
+   vendor (`Greenhouse`, `no-reply`) matches nothing.
+3. **The subject**, in the shapes actually seen: after "applying to", before or after a `|`,
+   or the first word. Segments beginning with a sentence word are refused.
+4. **The employer's own domain** against the apply link's, with the denylist.
+
+Three bugs the tests caught, each of which would have failed silently in production:
+
+- **The From header was parsed as an address.** `Visa People Team <visa@myworkday.com>` split
+  into local `visa people team <visa`, so *every* rule missed. Nothing errored; matches were
+  just always empty.
+- **String prefixes matched across word boundaries.** `Arch` matched
+  `Architecture Firm LLC`, which is `f6fc12f`'s Internship bug exactly. Comparison is now
+  word-by-word.
+- **A rule that fired and found nothing stopped the search.** A Workday sender for an
+  application whose key is not a Workday key — Zoom's is `Zoom|Software Engineer`, recorded from
+  an email — could never match. Rules now fall through.
+
+### Result over the owner's real 60 days
+
+| | |
+|---|---|
+| Messages read | 273 |
+| About an application they have | **101** |
+| From a recruiting system with no matching application | **15** |
+| False positives from LinkedIn / Google / Glassdoor | **0** (155 → 0 once the denylist landed) |
+
+The 15 are the finding, not the residue. Most are real applications the folder never recorded —
+Adobe, AspenTech, Cadence, HPE, Acuity Brands, FiscalNote, Headlands Technologies, Netic — and a
+few are name mismatches worth leaving unmatched rather than guessing at (`Nexthop Systems Inc`
+against `Nexthop.ai`).

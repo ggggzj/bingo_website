@@ -1,8 +1,12 @@
 ---
 id: 027
 title: Read the owner's inbox for what happened to an application — theirs only, and it never decides
-status: picked-up — proposal written 2026-09-27, awaiting the owner's approval **and an app
-  password**. Nothing is implemented; group 1 cannot start without a mailbox.
+status: built — delivered 2026-09-29. The matcher, its 24 sample tests and `check_mail.py` are
+  in the owner's folder. Over their real 60 days: 273 messages read, 101 matched to an
+  application, 15 from a recruiting system with no matching application, **0 false positives**
+  (155 before the denylist). Nothing is written anywhere by it.
+  **The mailbox is `christineguo778@gmail.com`**, not either address this ticket first assumed —
+  see the change's design.md.
 change: openspec/changes/2026-09-27-what-the-inbox-already-knows/
 origin: Owner request 2026-09-27 — "自动读取我的 email 信息，然后显示是否有 next step 或者是被
   拒绝了". Asked after seeing the account's applications view, and asked knowing `017` had already
