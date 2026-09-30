@@ -1,9 +1,13 @@
 ---
 id: 030
 title: The dashboard says when the feed last moved — the owner's own page reports a stopped crawl
-status: open — the owner's three decisions are answered (2026-09-30: one threshold red past 30
-  hours; a line above the tile row, not a sixth tile; nothing on a non-owner's screen). Ready for
-  `/pickup` with nothing left to ask.
+status: picked-up — proposal, tasks and one spec delta drafted 2026-09-30,
+  **awaiting the owner's approval**. Classified a bounded change: two optional nullable properties
+  on an existing schema plus codegen, one element on a page that already runs that query, no new
+  route, secret, table or migration, and `lib/stats/upstream.ts` (the `STATS_TOKEN` file) is not
+  opened. All three owner decisions were answered before drafting (one threshold red past 30 hours;
+  a line above the tile row; nothing on a non-owner's screen), so nothing is left to ask.
+produced: openspec/changes/2026-09-30-the-dashboard-says-when-the-feed-last-moved/
 origin: Owner request 2026-09-29, at the end of a session that measured the public job feed and
   found it stopped since 2026-09-18. The request is for the half that belongs to **this** repo:
   the ingest is `../h1_checker`'s and its bug goes through that repo's bugfix door, but *nobody
