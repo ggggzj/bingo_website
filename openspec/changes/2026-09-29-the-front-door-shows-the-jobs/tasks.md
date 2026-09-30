@@ -16,6 +16,21 @@ before starting rather than trusting these two lines:
 - `pnpm --filter @workspace/landing run test` → **12 files, 64 passing**
 - `pnpm --filter @workspace/api-server run test` → **18 files passed / 3 skipped, 204 passing / 31 skipped**
 
+**Re-measured 2026-09-30 in a clean worktree, and the header above was indeed wrong** — it was
+taken on a tree carrying an earlier session's uncommitted `Login.test.tsx` (+2 tests) and an
+untracked `drizzle-store.contract.test.ts` (the third skipped file). The real baseline, and
+where this change left it:
+
+| | baseline | after |
+|---|---|---|
+| landing | 12 files, **62** passing | 14 files, **87** passing |
+| api-server | 18 files / 2 skipped, **204** passing | 20 files / 2 skipped, **226** passing |
+| `pnpm run typecheck` | clean | clean |
+
+Nothing that passed before fails now. One existing test changed meaning rather than breaking:
+`Shell.test.tsx`'s signed-out visitor lands on `/` instead of `/login`, which is the forward
+6.4 blesses, and it now asserts the landing.
+
 ## 1. The intern net, and the one list it shares
 
 - [x] 1.1 In `artifacts/api-server/src/lib/new-grad/titles.ts`, export the existing `SOFTWARE`
@@ -138,19 +153,19 @@ before starting rather than trusting these two lines:
 
 ## 7. Say what changed
 
-- [ ] 7.1 Append to `replit.md` "Architecture decisions": the front door now carries postings; a
+- [x] 7.1 Append to `replit.md` "Architecture decisions": the front door now carries postings; a
       public route whose session changes the size of the answer rather than the existence of the
       route, and why that is not the 404 pattern; the preview cut and the per-employer cap with the
       measurement that forced it; filtering never labelling, inherited from the new-grad list; and
       the vintage rule with the number that made it necessary (newest row 2026-09-18, measured
       2026-09-29). `replit.md` carries uncommitted changes from an earlier session — re-read it
       before writing rather than appending to a stale copy.
-- [ ] 7.2 Run both suites and record the numbers against the baseline at the top of this file.
-- [ ] 7.3 Do **not** sync the `sign-in` delta into `openspec/specs/sign-in/`: that spec has no base
+- [x] 7.2 Run both suites and record the numbers against the baseline at the top of this file.
+- [x] 7.3 Do **not** sync the `sign-in` delta into `openspec/specs/sign-in/`: that spec has no base
       there — it lives only inside the unarchived `2026-09-18-one-way-in-and-it-is-google`.
       Whoever archives this change reconciles both, or that one syncs first. `front-door` is a new
       capability and syncs normally.
-- [ ] 7.4 Close with the `replit.md` working loop, and say plainly in the reply that **the feed
+- [x] 7.4 Close with the `replit.md` working loop, and say plainly in the reply that **the feed
       itself is stale** (newest row 2026-09-18) and that nothing should link to this page until
       `../h1_checker`'s ingest is running again —
       `.harness/session-todos/2026-09-29-the-public-job-feed-stopped-eleven-days-ago.md`.

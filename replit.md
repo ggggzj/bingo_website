@@ -344,6 +344,60 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   a second shape is exactly what would have forced a third copy of that judgement, and
   `../h1_checker`'s 401 defect was a two-place bug for precisely that reason.
 
+- **The front door carries the jobs** (owner, 2026-09-29). `/` was a 453-line marketing page
+  with no way in and not one posting on it. It is now two columns at `lg` — the jobs and the
+  introduction on the left, the way in on the right and sticky — and one column below it, in
+  the order what-this-is, the way in, the extension link, the jobs, the introduction. `/login`
+  is an address rather than a destination: it forwards to `/`, except `?password=1`, which
+  still renders the form. `/` redirects nobody, because sending a signed-in visitor away is
+  how nobody ever sees the block the page was rebuilt for.
+
+- **`GET /api/internships` is public, and the session changes the SIZE of the answer rather
+  than the existence of the route.** Every other narrowed route here — coach, new-grad,
+  applications, stats — answers a stranger with a uniform 404 so that probing cannot confirm
+  the route exists. This one deliberately does not, and the reason is that it feeds the front
+  door: a front door that 404s at strangers is not a door. Do not "fix" it to match the others.
+  What it keeps from them is that it writes nothing on either path — no row, no cookie,
+  nothing recorded about who asked — which its tests assert by recording calls through a proxy
+  and naming the six mutating store methods.
+
+- **The preview cut, and why it has a per-employer cap.** A caller with no session gets
+  `PREVIEW_ROWS` (8) rows, at most `PREVIEW_MAX_PER_EMPLOYER` (2) from any one employer. The
+  cap is a measurement, not a taste: sorted by date, the newest twenty rows of the live feed
+  on 2026-09-29 were 1 OpenAI, 3 Twilio and **16 Stripe**, so eight uncapped rows are one
+  company's advertisement. `total` is the count **before** the cut and is the same number in
+  both answers — the page's "N more" line counts against it, and a total that shrank with the
+  list would make that line say nothing.
+
+- **It filters and never labels**, inherited verbatim from `/new-grad-list` (2026-09-18). A
+  posting that is not a US software internship is **absent**; no row carries a seniority, a
+  category or an experience level, and none is inferred from a title. The single thing that is
+  marked is `location_read: unknown`, which says the location string could not be read rather
+  than claiming anything about it — never "assume American".
+
+- **The block states its vintage and may not say live, daily or updated.** It prints the date
+  of the newest row it is actually showing. The number that forced this: on 2026-09-30 the
+  feed's newest posting was 2026-09-18, twelve days old, because the ingest in `../h1_checker`
+  had stopped — so a block headed "latest, updated daily" would have been the page lying on
+  its own, with no code change required to make it lie. `newest_posted_at` is the newest row
+  **returned**, not the newest that matched: the per-employer cap can drop the newest row
+  when an older one names the season and sorts ahead, and dating the block from the whole list
+  would have printed 09-30 above rows stopping at 09-05.
+
+- **One `SignInPanel`, because two pages render it.** It holds the Google control, the failure
+  line, the password-cleared notice, the `?password=1` form and the missing-client-id
+  fallback. That last pair is why it must be imported and never copied: a second copy is a
+  second place for the back door and the dead end to disagree. Where you land is a prop, since
+  the callers genuinely differ — Google has always gone to `/jobs`, the form to `/dashboard`
+  or `/account`, and `/` says stay put. `.harness/backlogs/023` is that disagreement and is
+  not settled here.
+
+- **Known limit: the narrowing sees one upstream page per term.** `PER_TERM_LIMIT` is 100 and
+  the feed held 194 intern-matching titles on 2026-09-30, so `total` means "matching among the
+  rows we fetched", not "matching in the feed". `/new-grad-list` has the same limit and the
+  same caveat. It has not bitten yet because the narrowing is far more selective than the
+  fetch, but the day an employer posts 100 internships it will.
+
 ## Product
 
 - A landing page for the **BingoCareer** Chrome extension: what the four badges
