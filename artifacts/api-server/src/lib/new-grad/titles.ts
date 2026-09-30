@@ -71,7 +71,7 @@ const EARLY_CAREER = [
  * filter rule says the same thing — a title must be software AND early-career — and
  * every accepted title in the tests carries one of these outright.
  */
-const SOFTWARE = [
+export const SOFTWARE = [
   /\bsoftware\b/,
   /\bdeveloper\b/,
   /\bswe\b/,

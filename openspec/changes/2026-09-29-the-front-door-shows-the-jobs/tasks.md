@@ -18,21 +18,21 @@ before starting rather than trusting these two lines:
 
 ## 1. The intern net, and the one list it shares
 
-- [ ] 1.1 In `artifacts/api-server/src/lib/new-grad/titles.ts`, export the existing `SOFTWARE`
+- [x] 1.1 In `artifacts/api-server/src/lib/new-grad/titles.ts`, export the existing `SOFTWARE`
       patterns. Nothing else in the file changes. The comment above `EARLY_CAREER_TERMS` already
       gives the reason one list must not become two; add nothing that repeats it.
-- [ ] 1.2 New `artifacts/api-server/src/lib/internships/titles.ts`: `INTERN_TERMS` (the upstream
+- [x] 1.2 New `artifacts/api-server/src/lib/internships/titles.ts`: `INTERN_TERMS` (the upstream
       queries, one per term) and `isSoftwareInternship(title)`, which imports `SOFTWARE` from 1.1
       rather than restating it, requires a word-boundary `intern` / `internship`, and applies the
       same seniority exclusions. Also `namesTargetSeason(title)` and `TARGET_SEASON` as a constant,
       not a literal — this page outlives one hiring cycle.
-- [ ] 1.3 New `artifacts/api-server/src/lib/internships/titles.test.ts` proves, at minimum:
+- [x] 1.3 New `artifacts/api-server/src/lib/internships/titles.test.ts` proves, at minimum:
       `Software Engineer Intern (Summer 2027)` is accepted and names the season;
       `International Program Manager` is **refused** (the word-boundary case the owner's own
       collection run was burned by); `Senior Software Engineer Intern` is refused;
       `Marketing Intern` is refused for having no software signal; `Data Engineer Intern` is
       accepted; and a title naming no season is accepted with `names_target_season` false.
-- [ ] 1.4 Same test file: one test that imports `SOFTWARE` and asserts
+- [x] 1.4 Same test file: one test that imports `SOFTWARE` and asserts
       `isSoftwareInternship` and `isEarlyCareerSoftware` agree on the software half for a shared
       fixture, so a pattern added to one cannot silently miss the other.
 
