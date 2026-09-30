@@ -1,7 +1,10 @@
 ---
 id: 028
 title: Read Muse's export the way the folder reads Simplify's — and stop asking the inbox to be a source it cannot be
-status: open
+status: picked-up — proposal written 2026-09-29, awaiting the owner's approval. One export
+  was merged by hand that day (JD archive 80 → 94, three applications recovered, five
+  duplicate rows created and deleted); the proposal is built on what that cost.
+change: openspec/changes/2026-09-29-read-muses-export/
 origin: Owner, 2026-09-29, in two steps that reversed each other.
   First — "是的", the inbox should replace Simplify as the source of applications.
   Then — "我现在都是用 muse 帮我投简历的", with the export
