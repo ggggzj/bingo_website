@@ -93,3 +93,35 @@ is the single home for this:
 success to `sync_runs` for eleven days, so nothing upstream would ever have alerted either — a
 freshness line on the owner's own dashboard is the only place this becomes visible in an hour
 rather than a fortnight.
+
+## Status 2026-09-29, later the same day: the fix is written, not shipped
+
+Re-measured from this side — `GET /api/jobs` on production, unchanged: 7,286 total, **0 rows
+inside 10 days**, 272 inside 14. So nothing has reached production.
+
+But the fix exists. Read (not edited) from `../h1_checker`, **uncommitted in its working tree**:
+
+- `jobfeed/adapters.py` — `ProviderRouter.fetch` now takes `already_held` and forwards it to both
+  leaf adapters, with a docstring naming why the signature is copied from the port rather than
+  from the caller written first.
+- `tests/test_job_boards.py` + `tests/test_job_sync.py` — 79 lines, three tests: the call the core
+  actually makes; that the keyword is *forwarded* and not merely accepted (accepting and dropping
+  it would pass the first test and cost the Workday saving); and the core polling a board through
+  the **real** router. That third one is the gap that let this ship — every existing test handed
+  `sync_boards` a `FakeJobBoard` that implemented the port correctly, so the router's own
+  signature was never exercised end to end.
+
+**What is left is not writing code.** Run that repo's suite, commit through its bugfix door, and
+deploy. D-043's scheduler wakes hourly, so the feed should move within an hour of the deploy.
+
+## What this repo does with that
+
+`.harness/backlogs/028` (jobs on the home page) is held here, by the owner's decision on
+2026-09-29 to fix the feed first. Its proposal, design, tasks and two spec deltas are drafted at
+`openspec/changes/2026-09-29-the-front-door-shows-the-jobs/` and **still awaiting approval** — no
+code was written against it.
+
+Re-measure before building it. The change's block is "latest US SDE internships", grounded at 31
+rows / 11 employers / **13 posted within 30 days** — and that 13 was shrinking daily while nothing
+new arrived. Once the feed moves, those numbers change, and the tasks' baseline should be taken
+again rather than inherited.
