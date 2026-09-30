@@ -55,3 +55,26 @@ reads "built" as "reviewed".
 - **12 JD bodies are re-fetchable** with `add_jd.py` — the ones whose postings were still live.
 - **`CLAUDE.md` Rule 4 says no opsx is installed here, but `.claude/commands/opsx/apply.md` exists.**
   One of the two is wrong, and the engine predicate reads the file, not the rule.
+
+### Owed entry — the feed's freshness is on the page, and why thirty
+
+Added 2026-09-30 by `2026-09-30-the-dashboard-says-when-the-feed-last-moved`, whose task 3.1
+deferred for the reason this file already gives: `replit.md` still carries another session's
+uncommitted migration notes, and merging a branch that edits it would either be refused or sweep
+them up. **This is now three owed entries. They are all one paste.**
+
+> **The Growth view reports job-feed freshness, at one threshold, as a line.**
+> The feed stopped twice — 2026-08-20 for twenty days, 2026-09-18 for twelve — and both times the
+> owner found out by accident, because the page they open daily said nothing. D-043 had already
+> shipped the detection (`feed_last_sync`, `feed_hours_stale` on the upstream `/stats`) and this
+> repo forwarded both and read neither, so the number reached the browser and was dropped one
+> layer short of the screen. Declaring the two fields on `StatsTotals` was the whole fix.
+> **One threshold at 30 hours, not amber/red**: the sync is daily, so a healthy value sits under
+> ~24 and 30 is one cycle plus headroom; a warning level left standing becomes the new normal,
+> which is what twelve days of grey was. **A line above the tile row, not a sixth tile**: every
+> number in that row means more-is-better and this one is the page's only alarm.
+> **It reads `feed_last_sync`, never the newest posting's date** — that is the employer's date, so
+> a sync that runs and stores nothing would leave it frozen while the sync time moves, and those
+> two disagreeing is a diagnosis rather than a substitute.
+> The threshold constant lives in `Dashboard.tsx` alone; `Dashboard.test.tsx` crosses it with its
+> own literals at 29 and 31, because a test that imports the number can only agree with the page.

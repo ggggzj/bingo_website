@@ -1,12 +1,13 @@
 ---
 id: 030
 title: The dashboard says when the feed last moved — the owner's own page reports a stopped crawl
-status: picked-up — proposal, tasks and one spec delta drafted 2026-09-30,
-  **awaiting the owner's approval**. Classified a bounded change: two optional nullable properties
-  on an existing schema plus codegen, one element on a page that already runs that query, no new
-  route, secret, table or migration, and `lib/stats/upstream.ts` (the `STATS_TOKEN` file) is not
-  opened. All three owner decisions were answered before drafting (one threshold red past 30 hours;
-  a line above the tile row; nothing on a non-owner's screen), so nothing is left to ask.
+status: built — delivered 2026-09-30. The Growth view states when the job feed last synced,
+  red past 30 hours, with "never synced" as its own state rather than a zero. Two optional
+  nullable properties on `StatsTotals` plus codegen, one line above the tile row, five tests
+  (landing 62 -> 67). `lib/stats/upstream.ts` was not opened and the owner gate is unchanged.
+  **One task deferred**: the `replit.md` architecture entry, because that file carries another
+  session's uncommitted work — the paragraph is written out in
+  `.harness/session-todos/2026-09-29-read-muses-export-residue.md`.
 produced: openspec/changes/2026-09-30-the-dashboard-says-when-the-feed-last-moved/
 origin: Owner request 2026-09-29, at the end of a session that measured the public job feed and
   found it stopped since 2026-09-18. The request is for the half that belongs to **this** repo:

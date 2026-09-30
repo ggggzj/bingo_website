@@ -62,7 +62,7 @@ harness.
 
 ## 3. Say what changed
 
-- [ ] 3.1 Append to `replit.md` "Architecture decisions": the Growth view now reports job-feed
+- [~] 3.1 Append to `replit.md` "Architecture decisions": the Growth view now reports job-feed
       freshness; one threshold at 30 hours rather than a graded scale, because a warning level left
       standing becomes the new normal — which is what twelve days of grey was; a line rather than a
       sixth tile, because the tile row's polarity is "more is better" and this one is an alarm; and
@@ -72,8 +72,32 @@ harness.
       work (the `Postgres` / `Postgres-EBWW` migration notes). If that is still true, stage only
       your own hunk — never `git add replit.md` wholesale — or defer this task and say so plainly.
       Sweeping another session's lines into a commit is what produced `9041824`.
-- [ ] 3.2 Run both suites and record the numbers against the baseline at the top of this file.
+- [x] 3.2 Run both suites and record the numbers against the baseline at the top of this file.
       Say plainly in the reply that **this does not fix the feed**: the crawl is `../h1_checker`'s
       bug, and if it is still stopped, this line is expected to be red on arrival and is correct.
-- [ ] 3.3 Close with the `replit.md` working loop, and set
-      `.harness/backlogs/030` to built with a pointer to this change.
+- [~] 3.3 Close with the `replit.md` working loop, and set
+      `.harness/backlogs/030` to built with a pointer to this change. **Second half done, first
+      half deferred**: the working loop's "update replit.md" step *is* 3.1, so it carries that
+      same deferral rather than a separate one.
+
+## Outcome
+
+    landing:    62 -> 67 passed  (5 added, 0 broken)
+    api-server: 204 passed, 26 skipped — unchanged, as intended
+    typecheck:  clean
+
+**3.1 and the first half of 3.3 are deferred, not done** — marked `[~]`, not `[x]`. `replit.md` still carries another
+session's uncommitted migration notes at the time of writing, and a branch that edits it would
+either be refused at merge or sweep them into a commit, which is what produced `9041824`. The
+entry is written out verbatim in
+`.harness/session-todos/2026-09-29-read-muses-export-residue.md`, where it is now the third
+owed paragraph and all three are one paste once that session lands.
+
+**No browser check was run.** `CLAUDE.md` requires all three ports to move together in a worktree
+and says `API_PROXY_TARGET` is checked by nobody; the failure mode is a login that silently does
+nothing. The four states are driven through the real component and the real generated client by
+`Dashboard.test.tsx` instead.
+
+**This does not fix the feed.** The crawl is `../h1_checker`'s bug — `ProviderRouter.fetch`
+missing `already_held` — and was still unfixed and undeployed on 2026-09-30. This line is
+therefore expected to arrive red, and that is correct: it is displaying the truth.
