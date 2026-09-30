@@ -78,6 +78,42 @@ export interface JobsPage {
 }
 
 /**
+ * `elsewhere` never appears — those are absent. `unknown` means the location string could not be read and the row SHALL be marked, not assumed American.
+ */
+export type InternshipPostingLocationRead =
+  (typeof InternshipPostingLocationRead)[keyof typeof InternshipPostingLocationRead];
+
+export const InternshipPostingLocationRead = {
+  us: "us",
+  unknown: "unknown",
+} as const;
+
+/**
+ * One internship. It IS a JobPosting — same shape, so the component that renders the two sponsorship facts is imported rather than re-implemented — plus the two things this narrowing knows.
+ */
+export type InternshipPosting = JobPosting & {
+  /** `elsewhere` never appears — those are absent. `unknown` means the location string could not be read and the row SHALL be marked, not assumed American. */
+  location_read: InternshipPostingLocationRead;
+  /** Whether the title names the season this list is for. Sorts first, and is never the condition for appearing: a posting naming no season is listed, after the ones that do. A property of the posting, never a score about the reader. */
+  names_target_season: boolean;
+};
+
+export interface InternshipList {
+  /** How many postings the narrowing matched, **before the preview cut, in both answers**. It is what the page's "N more" line counts against, so a total that shrank along with the list would make that line say nothing at all. */
+  total: number;
+  postings: InternshipPosting[];
+  /**
+   * The date of the newest posting actually returned, or null when there is none. The page states it, because a block headed "latest" over a date it does not show is how a stopped feed reads as a running one.
+   * @nullable
+   */
+  newest_posted_at: string | null;
+  /** What this list cannot see, in words the page shows verbatim. Employers running their own careers sites are not among the boards behind it, and a reader who does not know that will read an absence as an answer. */
+  board_note: string;
+  /** Whether `postings` was cut. True for a caller with no session, so the page offers the way in because it was told to rather than by inferring it from a count comparison. */
+  preview: boolean;
+}
+
+/**
  * Whether the title names the class this list is for. `other` never appears: a posting naming a different class is absent, not ranked low. Sorts first; it is a property of the posting, never a score about the reader.
  */
 export type NewGradPostingClassYear =

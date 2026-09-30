@@ -42,6 +42,7 @@ import type {
   GoogleAccount,
   GoogleCredential,
   HealthStatus,
+  InternshipList,
   IssuedToken,
   JobsPage,
   NewGradList,
@@ -620,6 +621,84 @@ export function useGetJobs<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetJobsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Built from the intern terms as several /jobs upstream queries, merged and narrowed here — the division of labour /new-grad-list already uses, and for the same reason: the upstream matches one title substring with no word boundary and cannot intersect two conditions, so the coarse net goes out and the precise test runs on this server.
+Public, and **the session changes the size of the answer rather than the existence of the route** — the opposite of the 404 the coach, new-grad and applications routes give a stranger. Without a session it answers a preview and the true total; with one it answers the whole list.
+Read-only for both callers: it writes no row, sets no cookie, and records nothing about who asked.
+ * @summary US software internships, for the front page
+ */
+export const getGetInternshipsUrl = () => {
+  return `/api/internships`;
+};
+
+export const getInternships = async (
+  options?: RequestInit,
+): Promise<InternshipList> => {
+  return customFetch<InternshipList>(getGetInternshipsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetInternshipsQueryKey = () => {
+  return [`/api/internships`] as const;
+};
+
+export const getGetInternshipsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInternships>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getInternships>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInternshipsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInternships>>> = ({
+    signal,
+  }) => getInternships({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInternships>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetInternshipsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInternships>>
+>;
+export type GetInternshipsQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary US software internships, for the front page
+ */
+
+export function useGetInternships<
+  TData = Awaited<ReturnType<typeof getInternships>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getInternships>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetInternshipsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

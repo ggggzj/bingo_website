@@ -38,7 +38,7 @@ before starting rather than trusting these two lines:
 
 ## 2. The contract, and the shape it does not duplicate
 
-- [ ] 2.1 `lib/api-spec/openapi.yaml`: add `GET /internships` and the schemas
+- [x] 2.1 `lib/api-spec/openapi.yaml`: add `GET /internships` and the schemas
       `InternshipPosting` (`allOf` the existing `JobPosting` plus `location_read`:
       `us` | `unknown` and `names_target_season`: boolean) and `InternshipList`
       (`total`, `postings`, `newest_posted_at`, `board_note`, `preview`). `total` is documented as
@@ -47,7 +47,7 @@ before starting rather than trusting these two lines:
       marked, not assumed American — the same three words the `NewGradPosting` schema already uses.
       **Run codegen in this task**, per `openspec/config.yaml`; nothing else regenerates the
       frontend hooks.
-- [ ] 2.2 Confirm the generated output changed and is not hand-edited: `lib/api-client-react` and
+- [x] 2.2 Confirm the generated output changed and is not hand-edited: `lib/api-client-react` and
       `lib/api-zod` carry the new hook and schema, and `git diff --stat` on `src/generated` shows
       only generated churn.
 

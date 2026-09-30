@@ -169,6 +169,82 @@ export const GetJobsResponse = zod.object({
 });
 
 /**
+ * Built from the intern terms as several /jobs upstream queries, merged and narrowed here — the division of labour /new-grad-list already uses, and for the same reason: the upstream matches one title substring with no word boundary and cannot intersect two conditions, so the coarse net goes out and the precise test runs on this server.
+Public, and **the session changes the size of the answer rather than the existence of the route** — the opposite of the 404 the coach, new-grad and applications routes give a stranger. Without a session it answers a preview and the true total; with one it answers the whole list.
+Read-only for both callers: it writes no row, sets no cookie, and records nothing about who asked.
+ * @summary US software internships, for the front page
+ */
+export const GetInternshipsResponse = zod.object({
+  total: zod
+    .number()
+    .describe(
+      'How many postings the narrowing matched, \*\*before the preview cut, in both answers\*\*. It is what the page\'s \"N more\" line counts against, so a total that shrank along with the list would make that line say nothing at all.',
+    ),
+  postings: zod.array(
+    zod
+      .object({
+        job_id: zod.number(),
+        employer_name: zod.string(),
+        title: zod.string(),
+        url: zod
+          .string()
+          .nullish()
+          .describe(
+            "Absent when upstream withheld it, which it does for any scheme that is not http or https. A card with no url renders no apply link.",
+          ),
+        location: zod.string().nullish(),
+        is_remote: zod.boolean(),
+        posted_at: zod.string().nullish(),
+        tier: zod.enum(["strong", "weak"]),
+        total_h1b_certified: zod.number(),
+        last_active_year: zod.number().nullish(),
+        no_sponsor: zod
+          .boolean()
+          .nullish()
+          .describe(
+            "true = this posting's text refuses sponsorship. false = its text was read and does not refuse. null = NOBODY HAS READ IT YET, which is not a refusal and must never be rendered as one.",
+          ),
+      })
+      .describe(
+        "One open role. Carries two sponsorship facts that must not be merged: tier \/ total_h1b_certified \/ last_active_year are claims about the EMPLOYER, from certified DOL filings; no_sponsor is a claim about THIS POSTING'S own description. They can disagree for one company.",
+      )
+      .and(
+        zod.object({
+          location_read: zod
+            .enum(["us", "unknown"])
+            .describe(
+              "`elsewhere` never appears — those are absent. `unknown` means the location string could not be read and the row SHALL be marked, not assumed American.",
+            ),
+          names_target_season: zod
+            .boolean()
+            .describe(
+              "Whether the title names the season this list is for. Sorts first, and is never the condition for appearing: a posting naming no season is listed, after the ones that do. A property of the posting, never a score about the reader.",
+            ),
+        }),
+      )
+      .describe(
+        "One internship. It IS a JobPosting — same shape, so the component that renders the two sponsorship facts is imported rather than re-implemented — plus the two things this narrowing knows.",
+      ),
+  ),
+  newest_posted_at: zod
+    .string()
+    .nullable()
+    .describe(
+      'The date of the newest posting actually returned, or null when there is none. The page states it, because a block headed \"latest\" over a date it does not show is how a stopped feed reads as a running one.',
+    ),
+  board_note: zod
+    .string()
+    .describe(
+      "What this list cannot see, in words the page shows verbatim. Employers running their own careers sites are not among the boards behind it, and a reader who does not know that will read an absence as an answer.",
+    ),
+  preview: zod
+    .boolean()
+    .describe(
+      "Whether `postings` was cut. True for a caller with no session, so the page offers the way in because it was told to rather than by inferring it from a count comparison.",
+    ),
+});
+
+/**
  * Built from several /jobs upstream queries, merged and narrowed here. The upstream takes one title substring and cannot express (software AND early-career MINUS seniority), so the terms go out one at a time as a coarse net and the precise test runs on this server.
 Owner-only. Every other caller gets 404, never 403 — the same refusal the coach routes make, so the route's existence gives nothing away.
 Reading this list never advances the caller's marker. What is new stays new until POST /new-grad-list/ack, so a reload cannot spend the answer.
