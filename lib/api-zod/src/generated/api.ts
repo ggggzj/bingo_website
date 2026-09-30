@@ -478,6 +478,8 @@ export const GetStatsTotalsResponse = zod.object({
   total_followers: zod.number(),
   total_follows: zod.number(),
   referral_sources: zod.record(zod.string(), zod.number()),
+  feed_last_sync: zod.coerce.date().nullish(),
+  feed_hours_stale: zod.number().nullish(),
   referrals_answered: zod.number(),
 });
 

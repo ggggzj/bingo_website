@@ -1125,6 +1125,17 @@ components:
         referral_sources:
           type: object
           additionalProperties: { type: integer }
+        # When the job boards last synced, and how stale that makes the feed. Optional and
+        # nullable on purpose: upstream reports both as null together before the first sync
+        # ever runs, so requiring either would make a legitimate body fail validation.
+        # feed_hours_stale is whole hours, floored.
+        feed_last_sync:
+          type: string
+          format: date-time
+          nullable: true
+        feed_hours_stale:
+          type: integer
+          nullable: true
         referrals_answered: { type: integer }
     StatsDailyPoint:
       type: object
