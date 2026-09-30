@@ -1,7 +1,9 @@
 ---
 id: 030
 title: The dashboard says when the feed last moved — the owner's own page reports a stopped crawl
-status: open
+status: open — the owner's three decisions are answered (2026-09-30: one threshold red past 30
+  hours; a line above the tile row, not a sixth tile; nothing on a non-owner's screen). Ready for
+  `/pickup` with nothing left to ask.
 origin: Owner request 2026-09-29, at the end of a session that measured the public job feed and
   found it stopped since 2026-09-18. The request is for the half that belongs to **this** repo:
   the ingest is `../h1_checker`'s and its bug goes through that repo's bugfix door, but *nobody
@@ -87,13 +89,17 @@ rule's list by name. It goes through `/pickup` → proposal → `/implement` lik
 
 ## Decisions for the owner, not for whoever implements
 
-1. **What counts as stale.** The sync is daily by design (D-043: wakes hourly, syncs when a day
-   has passed), so a normal `feed_hours_stale` sits somewhere under ~24–30. One threshold, or two
-   (amber / red)? Pick the number here so the page and its test agree with something stated rather
-   than with each other.
-2. **A tile, or a line.** The tile row is five wide and carries counts, all of which mean "more is
-   better". Freshness is the opposite polarity, and the one number on that page that is an alarm
-   rather than a measurement. A sixth tile is cheapest; a line above the row is harder to miss.
+1. ~~**What counts as stale.**~~ **Answered 2026-09-30: one threshold, red past 30 hours.** The
+   sync is daily by design (D-043: wakes hourly, syncs when a day has passed), so a normal
+   `feed_hours_stale` sits under ~24. Thirty is one full cycle plus headroom. The owner chose one
+   level over amber/red for the reason this ticket exists: a second colour is a second thing to
+   remember the meaning of, and an amber that sits there long enough becomes the new grey — which
+   is exactly the eleven days. **30 is the number the page and its test both cite**; neither
+   derives it from the other.
+2. ~~**A tile, or a line.**~~ **Answered 2026-09-30: a line above the tile row.** The row is five
+   wide and carries counts, all of which mean "more is better". Freshness is the opposite polarity
+   and the only alarm on the page; a sixth tile would look identical to five measurements. Harder
+   to miss was the whole point.
 3. **Whether it says anything on a non-owner's screen.** Recommended **no**, and recorded so it is
    not reopened: `/jobs` and `028`'s home block have their own honesty requirement — `028`'s "what
    done looks like" already says the block must state the date of the newest row it shows and must
