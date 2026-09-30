@@ -4,8 +4,8 @@
 `pnpm --filter @workspace/api-server run test` before editing anything, and write both numbers
 here. A change that cannot say what it started from cannot claim it broke nothing.
 
-    landing:    ____ passed
-    api-server: ____ passed
+    landing:    62 passed  (12 files)            2026-09-30, worktree feed-freshness-line
+    api-server: 204 passed, 26 skipped (18 files)
 
 Three facts this plan rests on, verified 2026-09-30. Re-check them if this sits unimplemented for
 long, because two of them live in another repo:
@@ -21,7 +21,7 @@ long, because two of them live in another repo:
 
 ## 1. The contract, and the codegen that is not optional
 
-- [ ] 1.1 `lib/api-spec/openapi.yaml`: add `feed_last_sync` and `feed_hours_stale` to the
+- [x] 1.1 `lib/api-spec/openapi.yaml`: add `feed_last_sync` and `feed_hours_stale` to the
       `StatsTotals` schema's `properties`. **Both optional and both nullable** — they are
       `Optional[...]` upstream and null together before the first sync; adding either to `required`
       would make a legitimate upstream body fail validation. `feed_last_sync` is
@@ -29,7 +29,7 @@ long, because two of them live in another repo:
       `{ type: integer, nullable: true }`. **Run `pnpm --filter @workspace/api-spec run codegen` in
       this same task** — nothing else regenerates the frontend hooks, and a spec edit without it
       leaves the repo in a state where the types disagree with the contract.
-- [ ] 1.2 Confirm the generated output changed and was not hand-edited: `lib/api-client-react` and
+- [x] 1.2 Confirm the generated output changed and was not hand-edited: `lib/api-client-react` and
       `lib/api-zod` under `src/generated` show the two new members on the totals type, and
       `git diff` touches no other generated symbol. Both suites still pass at the baseline numbers
       — this group adds types and renders nothing, so a changed number here is a regression, not
