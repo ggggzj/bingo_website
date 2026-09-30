@@ -1,9 +1,19 @@
 ---
-id: 028
+id: 029
 title: Read Muse's export the way the folder reads Simplify's — and stop asking the inbox to be a source it cannot be
-status: picked-up — proposal written 2026-09-29, awaiting the owner's approval. One export
-  was merged by hand that day (JD archive 80 → 94, three applications recovered, five
-  duplicate rows created and deleted); the proposal is built on what that cost.
+status: built — delivered 2026-09-29. `import_muse.py`, the `norm_url` case fix with nine sample
+  tests, and the key-alias mechanism that lets a link-less row keep its id, status, note and trail
+  when it gains a link. Verified against the real export: 18 of 18 rows read as already present,
+  matching the merge done by hand the same day. Folding the retired `overrides.js` keys restored
+  the 18 hand-written rows the account importer had stopped seeing (it had dropped to 6).
+  **The `norm_url` fix cost four repairs** — that key lives in `applications.source_key`,
+  `data/ids.json`, `data/archive.js` and `data/overrides.js`. Read
+  `openspec/changes/2026-09-29-read-muses-export/1-fold-source-key-case.sql`, and in particular
+  why it excludes `|` keys, before touching that function again: the first version folded them
+  too and created 12 duplicates, one of them carrying a rejection note the owner had written.
+  Proposal history: one export was merged by hand that day (JD archive 80 → 94, three
+  applications recovered, five duplicate rows created and deleted); the proposal was built on
+  what that cost.
 change: openspec/changes/2026-09-29-read-muses-export/
 origin: Owner, 2026-09-29, in two steps that reversed each other.
   First — "是的", the inbox should replace Simplify as the source of applications.

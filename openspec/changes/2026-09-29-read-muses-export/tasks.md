@@ -16,28 +16,38 @@
 
 ## 2. Read the export
 
-- [ ] 2.1 `scripts/import_muse.py <导出.xlsx>` reads the seven columns with `openpyxl` (already
+- [x] 2.1 `scripts/import_muse.py <导出.xlsx>` reads the seven columns with `openpyxl` (already
       installed) and writes rows into `data/raw/manual_applications.csv` — the file
       `add_job.py` already owns and `import_simplify.py` already reads. No new pipeline.
-- [ ] 2.2 Provenance carries the Req number and the 备注 verbatim: *经她明确批准提交* is a fact
+- [x] 2.2 Provenance carries the Req number and the 备注 verbatim: *经她明确批准提交* is a fact
       about consent that exists nowhere else.
-- [ ] 2.3 Running it twice adds nothing the second time.
+- [x] 2.3 Running it twice adds nothing the second time.
 
 ## 3. Placing a row, and refusing to guess
 
-- [ ] 3.1 A Muse row whose key matches an existing row updates it and does not duplicate.
-- [ ] 3.2 A Muse row for a company that has **exactly one link-less row** adopts that row —
+- [x] 3.1 A Muse row whose key matches an existing row updates it and does not duplicate.
+- [x] 3.2 A Muse row for a company that has **exactly one link-less row** adopts that row —
       the row keeps its id, its status, its note and its trail, and gains the link and the real
       title. Proven on the pair that caused this: link-less `HPE · 职位名待补` plus Muse's HPE
       row ends as one row with a link.
-- [ ] 3.3 A Muse row that could belong to more than one existing row is **printed, not merged**,
+- [x] 3.3 A Muse row that could belong to more than one existing row is **printed, not merged**,
       with what it matched on and what it collided with. Proven on the open RELX case.
-- [ ] 3.4 A Muse row matching nothing is added, as today.
+- [x] 3.4 A Muse row matching nothing is added, as today.
 
 ## 4. Say what changed
 
-- [ ] 4.1 The folder's README gains the line that names three sources and what each answers:
+- [x] 4.1 The folder's README gains the line that names three sources and what each answers:
       Muse — what I applied to; the mailbox (`027`) — what happened to it; `add_job.py` — a link
       in hand right now.
-- [ ] 4.2 `.harness/backlogs/029` to built, and the `norm_url` fix recorded where the next
+- [x] 4.2 `.harness/backlogs/029` to built, and the `norm_url` fix recorded where the next
       person will meet it.
+
+## Known limit, written down rather than discovered later
+
+`same_company` compares word by word, so it does not know that RELX owns LexisNexis. The three
+link-less `Software Engineer 1` rows — RELX, LexisNexis Risk Solutions, LexisNexis Legal &
+Professional, all dated 09-22 — look like three companies to it, so Muse's RELX row adopts the
+RELX one. **That may be the wrong one**, and no rule in the data can tell: brand ownership is
+not in it. The adopted row carries its provenance, so it is visible and reversible.
+Pinned by `test_sibling_brands_are_not_recognised`, which asserts the current behaviour and
+explains why it is a choice rather than an oversight.
