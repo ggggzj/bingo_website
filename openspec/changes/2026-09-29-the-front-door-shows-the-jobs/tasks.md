@@ -78,16 +78,16 @@ before starting rather than trusting these two lines:
 
 ## 4. The sign-in becomes one component
 
-- [ ] 4.1 Create `artifacts/landing/src/components/auth/SignInPanel.tsx` by moving the right half of
+- [x] 4.1 Create `artifacts/landing/src/components/auth/SignInPanel.tsx` by moving the right half of
       `Login.tsx` into it: the Google control, the failure line, the `passwordCleared` toast, the
       `?password=1` form and the empty-client-id fallback. It takes where to go after a successful
       sign-in as a prop rather than hard-coding `/jobs`, because group 5 renders it on a page whose
       answer is "stay here".
-- [ ] 4.2 `Login.tsx` renders it and changes in no other way. **`Login.test.tsx` is not edited in
+- [x] 4.2 `Login.tsx` renders it and changes in no other way. **`Login.test.tsx` is not edited in
       this group** — its tests passing untouched is the whole evidence that the extraction was
       faithful, and a test edited in the same breath proves nothing. Note this file carries
       uncommitted changes from an earlier session; read it before moving anything.
-- [ ] 4.3 New `artifacts/landing/src/components/auth/SignInPanel.test.tsx` pins the three things a
+- [x] 4.3 New `artifacts/landing/src/components/auth/SignInPanel.test.tsx` pins the three things a
       copy loses: `?password=1` reaches the password form, an empty client id shows the form
       instead of a dead end, and a cleared password produces the notice.
 
