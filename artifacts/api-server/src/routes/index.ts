@@ -12,6 +12,7 @@ import { createApplicationsRouter } from "./applications";
 import { createAuthRouter } from "./auth";
 import { createGoogleVerifier } from "../lib/auth/google";
 import { createCoachRouter } from "./coach";
+import { createInternshipsRouter } from "./internships";
 import { createJobsRouter } from "./jobs";
 import { createNewGradRouter } from "./new-grad";
 import { createStatsRouter } from "./stats";
@@ -34,6 +35,10 @@ router.use("/stats", createStatsRouter(authStore, createUpstreamStats()));
 // Public and identity-free — no auth store, because it reads nothing about a user.
 router.use("/jobs", createJobsRouter(createUpstreamJobs()));
 router.use("/coach", createCoachRouter(authStore, coachStore, tokenStore));
+// Public, but the session changes the SIZE of the answer rather than the existence of
+// the route — the opposite of the 404 the coach, new-grad and applications routes give a
+// stranger. It takes the auth store for that one reason and writes nothing with it.
+router.use("/internships", createInternshipsRouter(authStore, createUpstreamJobs()));
 // Owner-only, and the same upstream the public page uses — asked several coarse
 // questions instead of one, because the filter it needs is not one substring.
 router.use(

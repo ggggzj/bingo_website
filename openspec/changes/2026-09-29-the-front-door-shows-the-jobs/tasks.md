@@ -53,18 +53,18 @@ before starting rather than trusting these two lines:
 
 ## 3. The route, wired, answering two sizes
 
-- [ ] 3.1 New `artifacts/api-server/src/routes/internships.ts`. Public and session-aware: it takes
+- [x] 3.1 New `artifacts/api-server/src/routes/internships.ts`. Public and session-aware: it takes
       an `AuthStore` and `UpstreamJobs`, fans `INTERN_TERMS` out to the upstream one term per
       request, merges and de-duplicates by `job_id`, drops `readLocation(...) === "elsewhere"`,
       drops anything `isSoftwareInternship` refuses, sorts season-first then newest-first, and
       returns the whole list with a session or the preview without one. Export `PREVIEW_ROWS` (8)
       and `PREVIEW_MAX_PER_EMPLOYER` (2) as constants the test imports. It writes nothing on either
       path.
-- [ ] 3.2 Wire it in `artifacts/api-server/src/routes/index.ts` beside the others, with a one-line
+- [x] 3.2 Wire it in `artifacts/api-server/src/routes/index.ts` beside the others, with a one-line
       comment saying what is unusual about it: **public, but the session changes the size of the
       answer rather than the existence of the route** — the opposite of the 404 the coach, new-grad
       and applications routes give a stranger.
-- [ ] 3.3 New `artifacts/api-server/src/routes/internships.test.ts`, the real route against a fake
+- [x] 3.3 New `artifacts/api-server/src/routes/internships.test.ts`, the real route against a fake
       upstream and the memory auth store, the way `jobs.test.ts` and `new-grad.test.ts` are:
       a stranger gets at most `PREVIEW_ROWS` rows and the **full** `total`; a session gets every
       row and the same `total`; a Sydney row is absent from both; an `International` title is
@@ -72,7 +72,7 @@ before starting rather than trusting these two lines:
       six matching rows contributes at most two to the preview and all six to the signed-in answer;
       `newest_posted_at` is the newest row actually returned; one term per intern term reaches the
       upstream, pinned by count; and **a test that asserts nothing was written on either path**.
-- [ ] 3.4 Same file: an upstream 502 answers 502 with the shared error shape and never leaks
+- [x] 3.4 Same file: an upstream 502 answers 502 with the shared error shape and never leaks
       `POSTINGS_TOKEN` into the body or the message — the rule `lib/jobs/upstream` already holds
       and the one that costs most if it regresses.
 
