@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { cleanup, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import Dashboard from "@/pages/Dashboard";
@@ -42,9 +42,13 @@ function statsRefused() {
   );
 }
 
-function statsServed() {
+/**
+ * `extra` carries the feed-freshness fields. They are deliberately absent from TOTALS:
+ * upstream sends them, but a body without them is legal, and the view must survive one.
+ */
+function statsServed(extra: Record<string, unknown> = {}) {
   server.use(
-    http.get("/api/stats", () => HttpResponse.json(TOTALS)),
+    http.get("/api/stats", () => HttpResponse.json({ ...TOTALS, ...extra })),
     http.get("/api/stats/daily", () =>
       HttpResponse.json({ days: 30, series: [] }),
     ),
@@ -74,5 +78,98 @@ describe("the growth view", () => {
     expect(await screen.findByText("Installs, all time")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
     expect(screen.queryByTestId("button-signout")).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * The feed stopped twice — 20 days in August, 12 in September — and both times nobody
+ * noticed, because this page said nothing about it. The hour numbers below are literals
+ * on purpose: the threshold lives in Dashboard.tsx and is deliberately NOT imported here.
+ * A test that reads 30 from the page can only ever agree with the page, and the number the
+ * owner chose would stop being checked by anything.
+ */
+describe("the growth view says when the job feed last moved", () => {
+  async function freshness(extra: Record<string, unknown>) {
+    signedIn(true);
+    statsServed(extra);
+    renderApp(<Dashboard />);
+    return screen.findByTestId("feed-freshness");
+  }
+
+  it("names the job feed, so it cannot be read as a claim about the other numbers", async () => {
+    const line = await freshness({
+      feed_last_sync: "2026-09-30T09:00:00Z",
+      feed_hours_stale: 2,
+    });
+
+    expect(line).toHaveTextContent(/job feed/i);
+    expect(line).toHaveTextContent(/2 hours/);
+    expect(line).toHaveAttribute("data-state", "fresh");
+    // "2 hours ago" is a duration; the ticket asked the view to say *when*. The exact
+    // moment hangs off the line rather than cluttering it.
+    expect(line.title).toMatch(/2026/);
+  });
+
+  it("marks a stopped feed as an alarm and says how stale", async () => {
+    // 288 hours is the twelve days the feed was actually frozen for.
+    const line = await freshness({
+      feed_last_sync: "2026-09-18T11:00:00Z",
+      feed_hours_stale: 288,
+    });
+
+    expect(line).toHaveAttribute("data-state", "stale");
+    expect(line).toHaveTextContent(/12 days/);
+  });
+
+  it("puts the line at thirty hours, not near it", async () => {
+    const under = await freshness({
+      feed_last_sync: "2026-09-29T06:00:00Z",
+      feed_hours_stale: 29,
+    });
+    expect(under).toHaveAttribute("data-state", "fresh");
+
+    cleanup();
+
+    const over = await freshness({
+      feed_last_sync: "2026-09-29T04:00:00Z",
+      feed_hours_stale: 31,
+    });
+    expect(over).toHaveAttribute("data-state", "stale");
+
+    cleanup();
+
+    // The boundary itself, because 30 is the number the owner picked and "past 30" has to
+    // mean past it. Pinning only 29 and 31 leaves the chosen value asserted by nothing.
+    const exactly = await freshness({
+      feed_last_sync: "2026-09-29T05:00:00Z",
+      feed_hours_stale: 30,
+    });
+    expect(exactly).toHaveAttribute("data-state", "fresh");
+  });
+
+  it("treats never-synced as its own state and never prints it as a number", async () => {
+    // Both fields are null together upstream when no sync has ever run. Rendering that
+    // as 0 would read as "just now" — the exact inverse of the truth.
+    const line = await freshness({ feed_last_sync: null, feed_hours_stale: null });
+
+    expect(line).toHaveAttribute("data-state", "never");
+    expect(line).toHaveTextContent(/never/i);
+    expect(line.textContent).not.toMatch(/\d/);
+  });
+
+  it("does not call an absent field a feed that never synced", async () => {
+    // "Upstream did not send this" and "no sync has ever run" are different facts, and
+    // only the second deserves red. An upstream older than h1_checker's D-043 omits both
+    // fields entirely; calling that a dead feed is a false alarm, and a line that is
+    // permanently red is how this page went back to saying nothing — which is the whole
+    // failure this feature exists about.
+    signedIn(true);
+    statsServed();
+    renderApp(<Dashboard />);
+
+    expect(await screen.findByText("Installs, all time")).toBeInTheDocument();
+    const line = screen.getByTestId("feed-freshness");
+    expect(line).toHaveAttribute("data-state", "unknown");
+    expect(line).not.toHaveTextContent(/never/i);
   });
 });

@@ -311,6 +311,8 @@ export interface StatsTotals {
   total_followers: number;
   total_follows: number;
   referral_sources: StatsTotalsReferralSources;
+  feed_last_sync?: string | null;
+  feed_hours_stale?: number | null;
   referrals_answered: number;
 }
 
