@@ -58,3 +58,33 @@ keep. They belong in the row's provenance and must survive the import.
 Decide. The rejection letter misfiled today — GM's AV HIL letter written onto the AV Launch row —
 happened because a human (Claude) picked one of two rows that a machine had not distinguished.
 The importer's failure mode is the same shape, so its answer to ambiguity is to print.
+
+## Correction, 2026-09-29 — "safe for the existing data" was wrong, and the bill came in four parts
+
+The proposal said folding the key's case was safe because "keys are compared to each other, never
+to anything stored elsewhere." **That sentence is false**, and doing it proved so within minutes.
+The key is stored in four places, and each one broke in a different way:
+
+| Where the key is stored | What went wrong |
+|---|---|
+| `applications.source_key` in the account | 51 rows changed; without migrating them the next push would have created 51 duplicates |
+| `data/ids.json` | maps key → the number in `jobs/<company>-<id>/`. Stale keys meant 39 applications were renumbered, pointing at new empty directories |
+| `data/archive.js` | key → saved JD body. **37 bodies were overwritten with null in the account** before the index was rebuilt |
+| `data/overrides.js` | same keying; retired as an input, still read by the account importer to seed |
+
+And the migration itself was wrong the first time: it lowercased **every** `source_key`, including
+the `"公司名|职位名"` keys that `norm_url` never touches. The folder kept producing the original
+case, the account had been folded, and the next import created a second copy of all twelve —
+including Zoom, which carries the owner's own rejection note. Undone by restoring each key's
+original case and deleting the twelve new rows, verified back to 111 rows, 28 statuses, 88 trail
+rows.
+
+Nothing was lost: every JD body was still on disk in `jobs/`, and rebuilding `ids.json` with the
+original numbers made `archive_jds.py` re-index all 94 with no re-fetch and no failures. But the
+recovery was only possible because the bodies are files rather than only rows, and because the
+trail made it obvious what had been written.
+
+**So the importer's migration is not one statement.** It is: fold the URL-shaped keys in
+`ids.json` keeping their ids, regenerate, rebuild the archive index, fold the account's
+URL-shaped keys, then push — in that order. Task 1.1 owns all of it, and the order is the part
+worth testing.
