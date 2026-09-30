@@ -1,18 +1,11 @@
-# 029 built, one commit not pushed, and one file I deliberately did not write
+# 029 built — what was left undone, and one file I deliberately did not write
 
 2026-09-29. `2026-09-29-read-muses-export` is delivered: all 11 tasks ticked, ticket 029 set to
-built, the folder's README naming its three sources. Three things a `/pickup` needs to know.
+built, the folder's README naming its three sources. Pushed as `3774474` — the session's network
+quota ran out during close-out, so the owner ran the push by hand. Two things a `/pickup` still
+needs, and a few smaller ones.
 
-## 1. `7e6a961` is committed locally and **not pushed**
-
-The session's network egress quota ran out mid-close-out, so `git push` was blocked by a hook.
-Nothing is wrong with the commit — it is two files, both mine, staged by explicit path:
-
-    git push origin main
-
-Check before anything else; if `git log origin/main..main` is empty, this note is stale.
-
-## 2. `replit.md` was **not** updated, on purpose
+## 1. `replit.md` was **not** updated, on purpose
 
 The inner loop (`replit.md` "User preferences") says to update it as each task group closes. I did
 not, because that file currently carries **another session's 56 uncommitted lines** — restored
@@ -25,7 +18,7 @@ them first; the paragraph to add after that is short: `import_muse.py` reads Mus
 to the URL key so an adopted row keeps its id, status, note and trail, and `push_to_account.py`
 applies that same table to the account before importing.
 
-## 3. Close-out gates not run
+## 2. Close-out gates not run
 
 `review-board` and `session-eval` were not run on this change's integration diff. The work was
 verified against production and the real export rather than reviewed — stated plainly so nobody
