@@ -41,7 +41,7 @@ Tests first, per `replit.md`. `Dashboard.test.tsx` already drives this page thro
 `http.get("/api/stats", ...)` returning a `TOTALS` fixture — extend that, do not build a second
 harness.
 
-- [ ] 2.1 Extend `artifacts/landing/src/pages/Dashboard.test.tsx` with four cases, each overriding
+- [x] 2.1 Extend `artifacts/landing/src/pages/Dashboard.test.tsx` with four cases, each overriding
       only the two new fields on the existing `TOTALS` fixture:
       **fresh** (2 hours — states when the feed last synced, and is not marked as an alarm);
       **stale** (288 hours — marked as an alarm, and says how stale);
@@ -51,7 +51,7 @@ harness.
       Write the hour numbers as literals here. **Do not import the threshold constant into the
       test**: if the test derives 30 from the page, the two can only ever agree with each other,
       and the number the owner chose stops being checked by anything.
-- [ ] 2.2 `artifacts/landing/src/pages/Dashboard.tsx`: render the statement as its own element
+- [x] 2.2 `artifacts/landing/src/pages/Dashboard.tsx`: render the statement as its own element
       **above** the `grid ... lg:grid-cols-5` tile row, not as a sixth tile. Declare
       `const FEED_STALE_AFTER_HOURS = 30;` beside the component — one place, cited in no other
       file. It names the job feed explicitly ("job feed", not "data" or "the dashboard"), states

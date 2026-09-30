@@ -46,6 +46,51 @@ const SERIES: ChartConfig = {
   new_registrations: { label: "New emails", color: "hsl(160 55% 34%)" },
 };
 
+/**
+ * The sync is daily by design (h1_checker D-043 wakes hourly and syncs when a day has
+ * passed), so a healthy value sits under about 24. Thirty is one full cycle plus headroom.
+ *
+ * One threshold, not a graded scale: a warning level left standing becomes the new normal,
+ * and that is exactly what happened — the feed froze on 2026-08-20 for twenty days and again
+ * on 2026-09-18 for twelve, and this page said nothing either time. The number lives here and
+ * nowhere else; Dashboard.test.tsx crosses it with its own literals rather than importing it.
+ */
+const FEED_STALE_AFTER_HOURS = 30;
+
+/** Whole hours into the largest unit that still reads honestly. 288 -> "12 days". */
+function staleness(hours: number) {
+  if (hours < 1) return "less than an hour ago";
+  if (hours < 48) return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} ${days === 1 ? "day" : "days"} ago`;
+}
+
+/**
+ * The one number on this page that is an alarm rather than a measurement, and the only one
+ * whose polarity is "less is better" — which is why it is a line above the tiles and not a
+ * sixth tile that would look identical to five counts.
+ */
+function FeedFreshness({ hours }: { hours: number | null | undefined }) {
+  // null and undefined are the same fact: no sync has ever been recorded. Coercing either
+  // to 0 would render as "just now", the exact inverse of the truth.
+  const never = hours === null || hours === undefined;
+  const state = never ? "never" : hours > FEED_STALE_AFTER_HOURS ? "stale" : "fresh";
+
+  return (
+    <div
+      data-testid="feed-freshness"
+      data-state={state}
+      className={`text-sm ${
+        state === "fresh" ? "text-muted-foreground" : "font-medium text-destructive"
+      }`}
+    >
+      {never
+        ? "Job feed has never synced"
+        : `Job feed last synced ${staleness(hours)}`}
+    </div>
+  );
+}
+
 function Tile({ value, label }: { value: number; label: string }) {
   return (
     <Card>
@@ -132,6 +177,8 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
+      <FeedFreshness hours={totals.data?.feed_hours_stale} />
+
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
           <Tile value={totals.data?.total_clients ?? 0} label="Installs, all time" />
           <Tile value={totals.data?.weekly_active ?? 0} label="Active this week" />
