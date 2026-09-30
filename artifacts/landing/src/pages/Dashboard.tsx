@@ -70,23 +70,49 @@ function staleness(hours: number) {
  * whose polarity is "less is better" — which is why it is a line above the tiles and not a
  * sixth tile that would look identical to five counts.
  */
-function FeedFreshness({ hours }: { hours: number | null | undefined }) {
-  // null and undefined are the same fact: no sync has ever been recorded. Coercing either
-  // to 0 would render as "just now", the exact inverse of the truth.
-  const never = hours === null || hours === undefined;
-  const state = never ? "never" : hours > FEED_STALE_AFTER_HOURS ? "stale" : "fresh";
+function FeedFreshness({
+  hours,
+  at,
+}: {
+  hours: number | null | undefined;
+  at: string | null | undefined;
+}) {
+  // Four states, and the difference between the middle two is the point. `null` is upstream
+  // saying no sync has ever run — an alarm. `undefined` is upstream not saying anything,
+  // which an older deploy does by omitting both fields; calling that a dead feed is a false
+  // alarm, and a line that is permanently red is how this page goes back to saying nothing.
+  // Neither may be coerced to 0, which would render as "just now" — the inverse of the truth.
+  // Narrowing rather than a lookup table: a table's four values are all evaluated, so the
+  // never/unknown branches would each run staleness() on a null and quietly produce
+  // "NaN days ago" before discarding it — invisible to the tests and to the typechecker,
+  // which is precisely the kind of thing a cast buys you.
+  let state: "unknown" | "never" | "stale" | "fresh";
+  let text: string;
+  if (hours === undefined) {
+    state = "unknown";
+    text = "Job feed freshness unavailable";
+  } else if (hours === null) {
+    state = "never";
+    text = "Job feed has never synced";
+  } else {
+    state = hours > FEED_STALE_AFTER_HOURS ? "stale" : "fresh";
+    text = `Job feed last synced ${staleness(hours)}`;
+  }
 
   return (
     <div
       data-testid="feed-freshness"
       data-state={state}
+      // The line carries a duration because that is what you read at a glance; the exact
+      // moment hangs off it rather than crowding it.
+      title={at ? new Date(at).toLocaleString() : undefined}
       className={`text-sm ${
-        state === "fresh" ? "text-muted-foreground" : "font-medium text-destructive"
+        state === "stale" || state === "never"
+          ? "font-medium text-destructive"
+          : "text-muted-foreground"
       }`}
     >
-      {never
-        ? "Job feed has never synced"
-        : `Job feed last synced ${staleness(hours)}`}
+      {text}
     </div>
   );
 }
@@ -177,7 +203,10 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <FeedFreshness hours={totals.data?.feed_hours_stale} />
+      <FeedFreshness
+        hours={totals.data?.feed_hours_stale}
+        at={totals.data?.feed_last_sync}
+      />
 
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
           <Tile value={totals.data?.total_clients ?? 0} label="Installs, all time" />

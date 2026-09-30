@@ -20,6 +20,13 @@ level is a second thing to remember, and a warning level left standing becomes t
 both fields as null together when no sync has ever run, and rendering that as `0` would read as
 "just now" — the inverse of the truth.
 
+**An absent field SHALL NOT be reported as a feed that never synced.** "Upstream did not send
+this" and "no sync has ever run" are different facts and only the second is an alarm. A response
+that omits both fields is legal — an upstream predating them does exactly that — so the absent
+case SHALL read as unavailable and SHALL NOT be styled as an alarm. A line that is permanently
+alarming is how this view returns to saying nothing, which is the failure the requirement exists
+to prevent.
+
 The view SHALL NOT compute freshness from the postings themselves. A posting's date is the
 employer's, so a sync that runs and stores nothing new would leave it unchanged while the sync time
 moves; those two quantities disagreeing is a diagnosis, not a substitute.
@@ -44,6 +51,10 @@ uniform 404 that these routes answer to everyone who is not the owner SHALL NOT 
 #### Scenario: Never having synced is not "just now"
 - **WHEN** the upstream reports no last sync at all
 - **THEN** the view says the feed has never synced, and shows no hour count
+
+#### Scenario: A silent upstream is not a dead feed
+- **WHEN** the response carries neither field
+- **THEN** the view says freshness is unavailable, does not say "never", and is not an alarm
 
 #### Scenario: A non-owner sees none of it
 - **WHEN** somebody who is not the owner reaches the Growth view
