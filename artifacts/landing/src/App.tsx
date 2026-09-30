@@ -1,4 +1,10 @@
-import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import {
+  Switch,
+  Route,
+  Redirect,
+  Router as WouterRouter,
+  useSearch,
+} from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +19,26 @@ import NotFound from "@/pages/not-found";
 const queryClient = new QueryClient();
 
 /**
+ * The way in is on `/` now, so `/login` is an address rather than a destination.
+ *
+ * It still renders the form for `?password=1` — the unlinked back door for the nine
+ * identities that hold passwords and for the day Google's own configuration is wrong.
+ * Everything else goes to `/`.
+ *
+ * **It reads the query and nothing else.** No session, so there is nothing to wait for
+ * and no window in which this can navigate on a half-known identity. That is the whole
+ * reason the redirect lives here rather than inside a component that also asks who you
+ * are: `Account.tsx` and `Shell.tsx` have to wait for `/auth/me` before they act, and a
+ * third place doing it slightly differently is how one of them gets it wrong.
+ */
+function LoginRoute() {
+  const search = useSearch();
+  const wantsForm = new URLSearchParams(search).get("password") === "1";
+
+  return wantsForm ? <Login /> : <Redirect to="/" replace />;
+}
+
+/**
  * `views` exists so the shell's own behaviour can be tested through real
  * routing without pulling two dashboards' worth of endpoints in with it.
  * Nothing in the app passes it; the shell's default registry is the answer.
@@ -20,8 +46,11 @@ const queryClient = new QueryClient();
 export function AppRoutes({ views }: { views?: DashboardView[] }) {
   return (
     <Switch>
+      {/* `/` does not redirect anybody. A signed-in visitor stays and the block
+          expands in place (owner, 2026-09-29) — sending them elsewhere is how nobody
+          ever sees the thing the page was rebuilt for. */}
       <Route path="/" component={Home} />
-      <Route path="/login" component={Login} />
+      <Route path="/login" component={LoginRoute} />
       <Route path="/account" component={Account} />
       {/* Public and read-only: no session is read and nothing is written, so there is
           nothing here to guard. */}

@@ -70,3 +70,38 @@ describe("the site header", () => {
     expect(screen.queryByTestId("link-mobile-coach")).not.toBeInTheDocument();
   });
 });
+
+describe("the section anchors, which are gone", () => {
+  /**
+   * They pointed into a home page that was one long document. `/` now opens on the jobs
+   * and the way in, so an anchor that jumps past both sends a visitor away from what they
+   * came for. Asserted on both renderings, because the sheet had its own copy of the list
+   * and deleting one of the two is the easy mistake.
+   */
+  const LABELS = ["Badges", "Where it works", "How it works", "The data"];
+
+  it("renders none of the four labels on a desktop bar", async () => {
+    signedOut();
+    renderApp(<SiteHeader />);
+    await screen.findByTestId("link-login");
+
+    for (const label of LABELS) {
+      expect(screen.queryByText(label), label).not.toBeInTheDocument();
+    }
+  });
+
+  it("renders none of them in the mobile sheet either", async () => {
+    signedOut();
+    renderApp(<SiteHeader />);
+    await screen.findByTestId("link-login");
+
+    await userEvent.click(screen.getByTestId("button-menu-toggle"));
+    expect(screen.getByTestId("menu-mobile")).toBeInTheDocument();
+
+    for (const label of LABELS) {
+      expect(screen.queryByText(label), label).not.toBeInTheDocument();
+    }
+    // The positive half: the door is still in the sheet, which is where it lives below `sm`.
+    expect(screen.getByTestId("link-mobile-login")).toBeInTheDocument();
+  });
+});

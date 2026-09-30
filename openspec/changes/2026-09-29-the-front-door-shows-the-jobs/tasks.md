@@ -119,20 +119,20 @@ before starting rather than trusting these two lines:
 
 ## 6. The header stops pointing at sections, and the two redirects
 
-- [ ] 6.1 Delete `SECTIONS` from `artifacts/landing/src/components/SiteHeader.tsx`, its desktop and
+- [x] 6.1 Delete `SECTIONS` from `artifacts/landing/src/components/SiteHeader.tsx`, its desktop and
       mobile rendering, and the comment above it about three items not fitting a 320px bar — it
       describes a bar that no longer has them. The conditional door stays. Extend
       `SiteHeader.test.tsx`: none of the four labels renders, desktop or mobile, and its existing
       tests keep passing.
-- [ ] 6.2 In `artifacts/landing/src/App.tsx`: `/login` sends everyone to `/` unless the query
+- [x] 6.2 In `artifacts/landing/src/App.tsx`: `/login` sends everyone to `/` unless the query
       carries `password=1`, which still renders `Login`. **`/` does not redirect anybody** — a
       signed-in visitor stays and the block expands (owner, 2026-09-29). Any redirect here waits
       for `/auth/me` to settle first, the way `Account.tsx:27` and `Shell.tsx:42` already do.
-- [ ] 6.3 New `artifacts/landing/src/App.test.tsx`: `/login` lands on `/`; `/login?password=1`
+- [x] 6.3 New `artifacts/landing/src/App.test.tsx`: `/login` lands on `/`; `/login?password=1`
       renders the form; a signed-in visitor at `/` **stays** at `/`; and one test that leaves
       `/auth/me` unresolved and asserts no navigation happened — without it this suite cannot fail
       the bug this group exists to prevent.
-- [ ] 6.4 Leave the four `navigate("/login")` callers alone (`Account.tsx:27` and `:77`,
+- [x] 6.4 Leave the four `navigate("/login")` callers alone (`Account.tsx:27` and `:77`,
       `Shell.tsx:45` and `:100`). They take one redirect hop and land right. Pointing them at `/`
       would save the hop and cost the single address that means "the way in".
 

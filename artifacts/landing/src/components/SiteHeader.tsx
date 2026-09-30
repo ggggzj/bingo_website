@@ -8,24 +8,18 @@ import { useAuth } from "@/hooks/use-auth";
 import { CHROME_STORE_URL } from "@/lib/links";
 
 /**
- * The home page is one long document, so the nav is anchors into it plus the two
- * things that leave: the store listing and one door into the account.
+ * The header is the store listing and one door into the account.
  *
  * That door is "Dashboard" for someone signed in and "Log in" for everyone
  * else, never both. It used to be "Log in" unconditionally, which invited a
  * signed-in visitor to sign in again; the coach link that sat beside it is gone
  * because there is no longer an allowlist to be on.
  *
- * The door is hidden below `sm` and appears in the hamburger sheet instead.
- * Three items plus the hamburger do not fit a 320px bar — the same reason the
- * store button shortens its label there.
+ * It used to carry four anchors into the home page as well. They went when the
+ * front page stopped being one long document to scroll: `/` now opens on the
+ * jobs and the way in, and an anchor that jumps past both is pointing at the
+ * part a visitor came for last.
  */
-const SECTIONS = [
-  { href: "#badges", label: "Badges" },
-  { href: "#where", label: "Where it works" },
-  { href: "#how", label: "How it works" },
-  { href: "#data", label: "The data" },
-];
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,18 +47,6 @@ export function SiteHeader() {
           BingoCareer
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7" aria-label="Sections">
-          {SECTIONS.map((section) => (
-            <a
-              key={section.href}
-              href={section.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              data-testid={`link-nav-${section.href.slice(1)}`}
-            >
-              {section.label}
-            </a>
-          ))}
-        </nav>
 
         <div className="flex items-center gap-2">
           <Link
@@ -108,18 +90,7 @@ export function SiteHeader() {
           className="md:hidden border-t border-border/60 bg-background px-6 py-4"
           data-testid="menu-mobile"
         >
-          <nav className="flex flex-col gap-1" aria-label="Sections">
-            {SECTIONS.map((section) => (
-              <a
-                key={section.href}
-                href={section.href}
-                onClick={() => setMenuOpen(false)}
-                className="py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                data-testid={`link-mobile-${section.href.slice(1)}`}
-              >
-                {section.label}
-              </a>
-            ))}
+          <nav className="flex flex-col gap-1" aria-label="Account">
             <Link
               href={door.href}
               onClick={() => setMenuOpen(false)}

@@ -106,13 +106,25 @@ describe("the dashboard shell", () => {
     expect(currentPath()).toBe("/dashboard/practice");
   });
 
-  it("sends a signed-out visitor to the login page", async () => {
+  it("sends a signed-out visitor to the way in, by way of /login", async () => {
+    /*
+     * Updated 2026-09-30, when `/` became the way in and `/login` became an address that
+     * forwards to it. The shell still navigates to `/login` and deliberately so
+     * (`the-front-door-shows-the-jobs` task 6.4): that is the one address meaning "the
+     * way in", and pointing four callers at `/` instead would save a hop and cost the
+     * name.
+     *
+     * Only the landing is asserted, because the hop is not observable: the shell
+     * navigates with `replace` and so does the forward, so each overwrites the last entry
+     * and `history` ends as `["/"]`. That the shell still aims at `/login` is held by
+     * `Shell.tsx` being untouched by this change, not by this test pretending to see it.
+     */
     signedOut();
     const { currentPath } = renderApp(<AppRoutes views={VIEWS} />, {
       path: "/dashboard/practice",
     });
 
-    await waitFor(() => expect(currentPath()).toBe("/login"));
+    await waitFor(() => expect(currentPath()).toBe("/"));
     expect(screen.queryByText("practice view")).not.toBeInTheDocument();
   });
 });
