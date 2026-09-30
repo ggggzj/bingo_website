@@ -1,3 +1,22 @@
+> **WITHDRAWN 2026-09-29, unimplemented, by the owner.**
+>
+> Not rejected on its merits and not superseded by a better version of itself: the
+> instruction it was built from was replaced. On 2026-09-29 the owner asked for the home page
+> to show sponsor postings (`.harness/backlogs/028`, reference `h1bvisajobs.com`), and this
+> proposal's central move — the entire right half of `/` is the Google button, and no posting
+> appears on the page — cannot coexist with that. Asked which should give, the owner said
+> 撤掉它.
+>
+> **Nothing here is wasted, and the next proposal must read it.** The six owner answers below,
+> all taken 2026-09-20, are still the owner's answers and still apply to whatever `/` becomes:
+> the right-fixed / left-scrolling layout, the 320px order, `/login` redirecting except
+> `?password=1`, a signed-in visitor going to `/jobs`, and the four deleted header anchors.
+> Re-asking them would be asking the owner to decide the same thing twice.
+>
+> What is no longer true: decision 1 ("one page, not two") survives only in the sense that `/`
+> is still the only front door; the right column is now a sign-in **beside** a job list rather
+> than instead of one, because the owner's 2026-09-29 answer was 先放一部分，其余登录后看.
+
 # Proposal — the-front-door-signs-you-in
 
 ## Why

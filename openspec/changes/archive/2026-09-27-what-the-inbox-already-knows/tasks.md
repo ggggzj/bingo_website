@@ -41,5 +41,5 @@ no group 1 — and group 1 is what the rest is built on.
 ## 3. Say what changed
 
 - [x] 3.1 The folder's README gains the daily line: what to run when you think something arrived.
-- [ ] 3.2 `.harness/backlogs/027` to built, with what 1.2 measured recorded on it — the next
+- [x] 3.2 `.harness/backlogs/027` to built, with what 1.2 measured recorded on it — the next
       person will otherwise re-derive it from the same mailbox.
