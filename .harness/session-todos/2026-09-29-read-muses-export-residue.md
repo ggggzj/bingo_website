@@ -78,3 +78,21 @@ them up. **This is now three owed entries. They are all one paste.**
 > two disagreeing is a diagnosis rather than a substitute.
 > The threshold constant lives in `Dashboard.tsx` alone; `Dashboard.test.tsx` crosses it with its
 > own literals at 29 and 31, because a test that imports the number can only agree with the page.
+
+## A fresh worktree runs the tests but not the typecheck — 2026-09-30
+
+`CLAUDE.md` says the workspace packages export `src`, not `dist`, so `pnpm install` alone is
+enough to run the tests. True, and it stops being true one command later: **`pnpm --filter
+@workspace/landing run typecheck` uses project references**, so in a worktree where
+`lib/*/dist` was never built it fails with about twenty `TS6305 — output file has not been
+built from source file`, naming files the change never touched. It reads exactly like "you
+broke the imports".
+
+    pnpm install --offline
+    pnpm -w run typecheck:libs     # tsc --build — this is the missing step
+    pnpm --filter @workspace/landing run typecheck
+
+It did not bite in the first worktree of a run only because `api-spec`'s `codegen` script ends
+with `pnpm -w run typecheck:libs`. Any worktree that does not happen to run codegen meets it.
+
+Belongs in `replit.md` next to the worktree notes; parked here because that file is still held.
