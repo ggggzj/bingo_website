@@ -195,7 +195,7 @@ export function SignInPanel({
   }
 
   return (
-    <div className="w-full max-w-sm">
+    <div className="w-full max-w-sm" data-testid="signin-panel">
       {heading !== null && (
         <h1 className="text-2xl font-bold text-foreground text-center mb-1">
           {heading}

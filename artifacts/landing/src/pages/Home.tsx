@@ -10,6 +10,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+import { useAuth } from "@/hooks/use-auth";
+import { SignInPanel } from "@/components/auth/SignInPanel";
+import { InternshipBlock } from "@/components/jobs/InternshipBlock";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CHROME_STORE_URL } from "@/lib/links";
@@ -125,6 +128,15 @@ function BadgeChip({
 }
 
 export default function Home() {
+  /*
+   * The way in is for somebody who has not used it. `isLoading` is read as well as
+   * `isSignedIn` so the panel does not flash onto a signed-in visitor's screen and then
+   * vanish — the same "wait for /auth/me to settle" rule `Account.tsx` and `Shell.tsx`
+   * already follow before they act on identity.
+   */
+  const { isLoading, isSignedIn } = useAuth();
+  const offerTheWayIn = !isLoading && !isSignedIn;
+
   return (
     <div className="min-h-[100dvh] bg-background selection:bg-primary/20 selection:text-primary overflow-x-hidden flex flex-col">
       <SiteHeader />
@@ -133,42 +145,73 @@ export default function Home() {
       <section className="relative pt-20 pb-16 md:pt-28 md:pb-24 px-6 max-w-7xl mx-auto w-full">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="relative z-10 max-w-3xl mx-auto text-center animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary font-medium text-sm mb-8">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Built for international students</span>
+        {/*
+          The front door. Three things, and their order changes with the width:
+
+          below `lg` one column — what this is, the way in, the extension link, the
+          internships, then the introduction. That order is the owner's, inherited from
+          2026-09-20, and it is why the left half is NOT `hidden lg:flex`: on a phone
+          that class is what turns the current login page into a button with no
+          explanation.
+
+          at `lg` two columns — the left scrolls and carries the introduction beneath the
+          internships; the right holds the way in and stays in view.
+        */}
+        <div className="relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+          {/* What this is. */}
+          <div className="lg:col-start-1 lg:row-start-1 flex flex-col items-start gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary font-medium text-sm">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Built for international students</span>
+            </div>
+
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-[1.1]">
+              Know who sponsors{" "}
+              <span className="text-primary">before you apply</span>
+            </h1>
+
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              BingoCareer is a Chrome extension that puts an H1B sponsorship badge on
+              every job card you scroll past — on LinkedIn, Indeed, Dice and
+              Glassdoor — from{" "}
+              <strong className="text-foreground font-semibold">
+                U.S. Department of Labor
+              </strong>{" "}
+              LCA filings.
+            </p>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1] mb-6">
-            Know who sponsors{" "}
-            <span className="text-primary">before you apply</span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10">
-            BingoCareer is a Chrome extension that puts an H1B sponsorship badge on
-            every job card you scroll past — on LinkedIn, Indeed, Dice and
-            Glassdoor — from{" "}
-            <strong className="text-foreground font-semibold">
-              U.S. Department of Labor
-            </strong>{" "}
-            LCA filings covering 72,135 employers.
-          </p>
-
-          <div className="flex flex-col items-center gap-4">
+          {/* The way in, and the extension link under it. Sticky at `lg` so it is still
+              there when the reader has scrolled the internships. */}
+          <div className="lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24 flex flex-col items-center gap-6">
+            {offerTheWayIn && (
+              <SignInPanel
+                heading={null}
+                /* Stay here and let the block expand. The owner's answer, 2026-09-29:
+                   redirecting a signed-in visitor away is how nobody ever sees it. */
+                destination={() => null}
+              />
+            )}
             <a
               href={CHROME_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 h-14 px-8 rounded-xl bg-primary text-primary-foreground border border-primary-border hover:opacity-95 font-semibold text-lg transition-opacity shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="inline-flex items-center justify-center gap-3 h-12 px-6 rounded-xl bg-primary text-primary-foreground border border-primary-border hover:opacity-95 font-semibold transition-opacity shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               data-testid="link-download-extension"
             >
-              <SiGooglechrome className="w-6 h-6 shrink-0" aria-hidden />
+              <SiGooglechrome className="w-5 h-5 shrink-0" aria-hidden />
               Add to Chrome — Free
             </a>
-            <p className="text-sm text-muted-foreground max-w-md">
+            <p className="text-sm text-muted-foreground max-w-sm text-center">
               LinkedIn works right away. Indeed, Dice and Glassdoor switch on from
               the extension popup whenever you want them.
             </p>
+          </div>
+
+          {/* The internships. Below the way in on a phone, beneath the heading on a
+              desktop, and above the introduction on both. */}
+          <div className="lg:col-start-1 lg:row-start-2 w-full">
+            <InternshipBlock />
           </div>
         </div>
 

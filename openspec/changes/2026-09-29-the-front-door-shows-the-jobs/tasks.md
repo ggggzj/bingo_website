@@ -93,19 +93,19 @@ before starting rather than trusting these two lines:
 
 ## 5. The front page
 
-- [ ] 5.1 Rewrite `artifacts/landing/src/pages/Home.tsx` as the front door. Above `lg`: two
+- [x] 5.1 Rewrite `artifacts/landing/src/pages/Home.tsx` as the front door. Above `lg`: two
       columns, the right one carrying `SignInPanel` and staying in view, the left one scrolling and
       carrying the internship block above the existing introduction. Below `lg`: one column,
       ordered what-this-is, Google control, extension link, the internship block, then the
       introduction. The left half must **not** inherit `hidden lg:flex` from `Login.tsx` — on a
       phone that class is what makes the current login page a button with no explanation.
-- [ ] 5.2 Same group, the block itself: rows rendered with the existing
+- [x] 5.2 Same group, the block itself: rows rendered with the existing
       `@/components/jobs/SponsorshipEvidence`, imported rather than re-implemented, so the
       employer's filings and the posting's own refusal stay two claims that never merge and
       `no_sponsor: null` keeps meaning nobody has read it. A row marked `unknown` says its location
       could not be read. The block states the date of its newest row and the board note, and no
       copy anywhere on the page says live, daily or updated.
-- [ ] 5.3 Extend `artifacts/landing/src/pages/Home.test.tsx`: postings render for a signed-out
+- [x] 5.3 Extend `artifacts/landing/src/pages/Home.test.tsx`: postings render for a signed-out
       visitor; the "N more, sign in" line names the number the response gave and is **absent** when
       the preview is the whole list; a signed-in visitor sees every row and no sign-in control; zero
       postings renders the board note and no empty frame; a failed load still renders the
@@ -113,7 +113,7 @@ before starting rather than trusting these two lines:
       320px the control and the extension link both precede the body of the introduction. **The two
       existing mailing-list tests must still pass** — `013` removed that section on 2026-09-15 and
       a rewrite is exactly how it comes back.
-- [ ] 5.4 Check every claim the moved copy makes against `../h1_checker` before it lands. The badge
+- [x] 5.4 Check every claim the moved copy makes against `../h1_checker` before it lands. The badge
       strings are the extension's own; `DATA_FACTS`' 72,135 is a database count and **stays away
       from the job rows**, because next to them it reads as "72,135 employers are hiring here".
 
