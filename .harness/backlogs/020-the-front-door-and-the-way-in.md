@@ -1,9 +1,15 @@
 ---
 id: 020
 title: The front door and the way in — the left half explains, the right half signs you in
-status: picked-up
-produced: openspec/changes/2026-09-20-the-front-door-signs-you-in/ — proposal drafted
-  2026-09-20, awaiting owner approval. Classified a bounded change: no server seam, no
+status: withdrawn — 2026-09-29, by the owner, unimplemented
+superseded-by: .harness/backlogs/028-the-front-door-shows-the-jobs.md — the owner asked on
+  2026-09-29 for sponsor postings on the home page and, asked which of the two should give, said
+  撤掉它. **This ticket's decisions are not withdrawn with it.** The six answers the owner gave on
+  2026-09-20 (right-fixed / left-scrolling, the 320px order, /login redirecting except
+  `?password=1`, a signed-in visitor going to /jobs, the four deleted header anchors) still stand
+  and 028's proposal inherits them rather than re-asking.
+produced: openspec/changes/archive/2026-09-20-the-front-door-signs-you-in/ — proposal drafted
+  2026-09-20, never approved, archived 2026-09-29 with a WITHDRAWN note at its head. Classified a bounded change: no server seam, no
   contract, no schema, and every decision this ticket raised was answered by the owner the
   same day. Two things the proposal carries that this ticket did not: `/login` has **four**
   callers rather than the two named below (two signed-out guards, two after a deliberate log

@@ -1,7 +1,8 @@
 ---
 id: 018
 title: The website's half of one account — read the surviving users table, and move 157 rows without losing one
-status: picked-up
+status: built — the site reads the surviving database since 2026-09-21, through the change
+  below. Left to take: the owner's own sign-in (its task 4.2), which is the end-to-end proof.
 change: openspec/changes/2026-09-20-move-onto-the-surviving-database/
   Written 2026-09-20 after the owner ran the queries this ticket needed and settled three
   decisions. Step 1 was already delivered by 010; step 2 is decided as "no change here".
@@ -417,3 +418,42 @@ So the long-lived account may end up able to sign in on the website and not in t
 until Google reaches the extension. That is not caused by this change; it is caused by the
 order the two surfaces are getting Google, and it should be said out loud rather than
 discovered at a popup.
+
+---
+
+# Done 2026-09-21 — the site runs on the surviving database
+
+`openspec/changes/2026-09-20-move-onto-the-surviving-database/` carried it, and its `tasks.md`
+holds the evidence per step. In one paragraph: `push` is gone from this repo and
+`drizzle.config.ts` refuses it (group 1); the seven tables exist on `Postgres` with foreign keys
+into *that* database's `users`, and the 150-row bank is there (group 2); the four rows moved
+through the written-down remap and were read back by email, then the owner's own AceLeetcode
+history was imported for `zguo7940@usc.edu` (group 3); the owner pointed `bingo_website`'s
+`DATABASE_URL` at `Postgres` and Railway redeployed at 17:47 PDT — the container came up clean,
+`/api/healthz` answers, and a login probe with a nonexistent address answers 401 rather than 500,
+which is `findUserByEmail` succeeding against the new database (4.1). `/login` now says that
+signing in here does not sign in the extension (4.4). `replit.md` says which database and how to
+roll back (5.1); the old database is untouched, and its deletion is
+`.harness/session-todos/2026-09-21-clean-up-the-old-database.md` (5.3).
+
+One correction to the 2026-09-20 note above, measured on the surviving side 2026-09-21:
+`zguo7940@usc.edu` (id 1) is the account **with** a password and `christineguo610@gmail.com`
+(id 3) the one **without** — the reverse of what that note says. The gmail account therefore
+signs into the website with Google only, and into the extension's popup not at all until
+Google reaches it.
+
+**And the long-term-account question above is answered.** Owner decision, 2026-09-21: the USC
+address stops working at the end of 2026 and does not sign in again; `christineguo610@gmail.com`
+is the account this product is built around. Consequence taken the same day: the AceLeetcode
+history imported under the USC row that morning was moved onto the gmail row
+(`5-move-the-owners-history-onto-gmail.sql` in the change; read back by email — 7 day rows,
+the `lc-0001` review with its event, the real config, the two tokens, all under gmail; nothing
+under USC). `OWNER_EMAIL` already names both addresses, so the gmail account sees the dashboards.
+
+**Still to take:** one sign-in — the gmail account, with Google, on the new database — and
+`/account`, `/dashboard/new-grad` and the practice page showing that history. It is the
+owner's action; nothing in a session can do it.
+
+What this ticket asked for beyond the move — the shared password rule, an address taken
+everywhere — is settled as "no change here" (state at pickup, above) or belongs to
+`../h1_checker/.harness/backlogs/015`, which ships separately.
