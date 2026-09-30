@@ -105,6 +105,9 @@ describe("the growth view says when the job feed last moved", () => {
     expect(line).toHaveTextContent(/job feed/i);
     expect(line).toHaveTextContent(/2 hours/);
     expect(line).toHaveAttribute("data-state", "fresh");
+    // "2 hours ago" is a duration; the ticket asked the view to say *when*. The exact
+    // moment hangs off the line rather than cluttering it.
+    expect(line.title).toMatch(/2026/);
   });
 
   it("marks a stopped feed as an alarm and says how stale", async () => {
@@ -132,6 +135,16 @@ describe("the growth view says when the job feed last moved", () => {
       feed_hours_stale: 31,
     });
     expect(over).toHaveAttribute("data-state", "stale");
+
+    cleanup();
+
+    // The boundary itself, because 30 is the number the owner picked and "past 30" has to
+    // mean past it. Pinning only 29 and 31 leaves the chosen value asserted by nothing.
+    const exactly = await freshness({
+      feed_last_sync: "2026-09-29T05:00:00Z",
+      feed_hours_stale: 30,
+    });
+    expect(exactly).toHaveAttribute("data-state", "fresh");
   });
 
   it("treats never-synced as its own state and never prints it as a number", async () => {
@@ -144,15 +157,19 @@ describe("the growth view says when the job feed last moved", () => {
     expect(line.textContent).not.toMatch(/\d/);
   });
 
-  it("survives a body that carries neither field", async () => {
+  it("does not call an absent field a feed that never synced", async () => {
+    // "Upstream did not send this" and "no sync has ever run" are different facts, and
+    // only the second deserves red. An upstream older than h1_checker's D-043 omits both
+    // fields entirely; calling that a dead feed is a false alarm, and a line that is
+    // permanently red is how this page went back to saying nothing — which is the whole
+    // failure this feature exists about.
     signedIn(true);
     statsServed();
     renderApp(<Dashboard />);
 
     expect(await screen.findByText("Installs, all time")).toBeInTheDocument();
-    expect(screen.getByTestId("feed-freshness")).toHaveAttribute(
-      "data-state",
-      "never",
-    );
+    const line = screen.getByTestId("feed-freshness");
+    expect(line).toHaveAttribute("data-state", "unknown");
+    expect(line).not.toHaveTextContent(/never/i);
   });
 });
