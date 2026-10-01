@@ -14,3 +14,6 @@
 - 2026-09-30T12:16:12-07:00 PASS 2026-09-30-the-dashboard-says-when-the-feed-last-moved · willison @ 5e2760b (opus-5)
 - 2026-09-30T12:16:12-07:00 MIXED 2026-09-30-the-dashboard-says-when-the-feed-last-moved · pocock @ 5e2760b (opus-5)
 - 2026-09-30T12:16:12-07:00 PASS 2026-09-30-the-dashboard-says-when-the-feed-last-moved · production @ 5e2760b (opus-5)
+- 2026-09-30T17:18:56-07:00 FAIL 2026-09-29-the-front-door-shows-the-jobs · correctness @ a519840 (opus-5)
+- 2026-09-30T17:18:56-07:00 FAIL 2026-09-29-the-front-door-shows-the-jobs · production @ a519840 (opus-5)
+- 2026-09-30T17:18:56-07:00 MIXED 2026-09-29-the-front-door-shows-the-jobs · test-quality @ a519840 (opus-5)
