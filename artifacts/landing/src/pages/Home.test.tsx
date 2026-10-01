@@ -1,4 +1,5 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import Home from "@/pages/Home";
@@ -199,6 +200,66 @@ describe("what the front page is allowed to show and say", () => {
       const before = text.slice(Math.max(0, match.index - 12), match.index);
       expect(before, `"live" used as a claim: ...${before}[live]`).toMatch(/\bnot\s+$/i);
     }
+  });
+
+  it("expands the block when somebody signs in on the page itself", async () => {
+    /*
+     * The headline behaviour of the owner's decision 4 — stay on `/` and let the block
+     * expand — and it was broken. `useForgetAuth` invalidated only the "who am I" key, so
+     * `me` refetched, the panel vanished, and the list went on showing the cached preview
+     * with "5 more. Sign in to see the rest." underneath it, to somebody who had just
+     * signed in. Nothing refetches a sibling query because another one changed.
+     *
+     * This drives the real transition rather than starting signed in, which is why the
+     * suite missed it: every other test here picks a side and stays on it.
+     */
+    let signedIn = false;
+    server.use(
+      http.get("/api/auth/me", () =>
+        signedIn
+          ? HttpResponse.json({ email: "someone@example.com", isOwner: false })
+          : HttpResponse.json({ error: "Not signed in" }, { status: 401 }),
+      ),
+      http.post("/api/auth/login", () => {
+        signedIn = true;
+        return HttpResponse.json({ email: "someone@example.com", isOwner: false });
+      }),
+      http.get("/api/internships", () =>
+        HttpResponse.json(
+          signedIn
+            ? {
+                total: 2,
+                postings: [POSTING, { ...POSTING, job_id: 2, title: "Software Developer Intern" }],
+                newest_posted_at: "2026-09-17",
+                board_note: BOARD_NOTE,
+                preview: false,
+              }
+            : {
+                total: 2,
+                postings: [POSTING],
+                newest_posted_at: "2026-09-17",
+                board_note: BOARD_NOTE,
+                preview: true,
+              },
+        ),
+      ),
+    );
+
+    renderApp(<Home />, { path: "/?password=1" });
+
+    expect(await screen.findByTestId("internships-more")).toHaveTextContent("1 more");
+
+    await userEvent.type(screen.getByTestId("input-email"), "someone@example.com");
+    await userEvent.type(screen.getByTestId("input-password"), "a-long-enough-password");
+    await userEvent.click(screen.getByTestId("button-submit"));
+
+    // The row that was behind the cut arrives without a reload...
+    expect(await screen.findByTestId("internship-2")).toBeInTheDocument();
+    // ...and nobody is invited to sign in twice.
+    await waitFor(() =>
+      expect(screen.queryByTestId("internships-more")).not.toBeInTheDocument(),
+    );
+    expect(screen.queryByTestId("signin-panel")).not.toBeInTheDocument();
   });
 
   it("keeps the 72,135 database count away from the job rows", async () => {

@@ -14,7 +14,7 @@
 import express, { type Express } from "express";
 import cookieParser from "cookie-parser";
 import request from "supertest";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { InMemoryAuthStore } from "../lib/auth/memory-store";
 import { hashPassword } from "../lib/auth/password";
@@ -25,7 +25,10 @@ import {
   PREVIEW_MAX_PER_EMPLOYER,
   PREVIEW_ROWS,
   createInternshipsRouter,
+  forgetCachedInternships,
 } from "./internships";
+
+beforeEach(() => forgetCachedInternships());
 
 const PASSWORD = "correct horse battery staple";
 const VISITOR = "student@example.com";
@@ -361,5 +364,54 @@ describe("when the upstream is unreachable", () => {
     expect(answer.body).toEqual({ error: "Could not reach the job feed" });
     expect(JSON.stringify(answer.body)).not.toContain(secret);
     expect(JSON.stringify(answer.body)).not.toMatch(/token/i);
+  });
+});
+
+describe("the upstream budget", () => {
+  /**
+   * The front page is the busiest address this site has, and every load used to reach the
+   * upstream synchronously. The upstream's own limit is `60/minute;1000/hour`
+   * (`../h1_checker/main.py`) keyed by **client IP** — and this server has one, so every
+   * visitor shares a single budget. Past it the upstream answers 429, this route turns
+   * that into 502, and the front page tells everybody the list could not be loaded.
+   *
+   * A short cache makes the upstream cost a function of time instead of traffic.
+   */
+  it("asks the upstream once however many visitors arrive inside the window", async () => {
+    const upstream = fakeUpstream(MANY);
+    const { app, store } = appWith(upstream);
+    const cookie = await signIn(app, store);
+
+    const first = await request(app).get("/internships");
+    await request(app).get("/internships");
+    await request(app).get("/internships").set("Cookie", cookie);
+    const last = await request(app).get("/internships");
+
+    expect(upstream.calls).toHaveLength(INTERN_TERMS.length);
+    // And the answers are still right — a cache that served stale shapes would be worse
+    // than the problem. The signed-in one is still whole, the anonymous ones still cut.
+    expect(first.body.postings).toHaveLength(PREVIEW_ROWS);
+    expect(last.body.postings).toHaveLength(PREVIEW_ROWS);
+    expect(first.body.total).toBe(MANY.length);
+  });
+
+  it("does not cache a failure", async () => {
+    let fail = true;
+    const calls: string[] = [];
+    const flaky: UpstreamJobs = async (path: string) => {
+      calls.push(path);
+      if (fail) throw new Error(`Job feed answered 502 for ${path}`);
+      return { total: 1, postings: [row(MANY[0]!)] };
+    };
+    const { app } = appWith(flaky);
+
+    expect((await request(app).get("/internships")).status).toBe(502);
+    fail = false;
+    // The next visitor must get a real answer rather than the cached disaster.
+    const recovered = await request(app).get("/internships");
+
+    expect(recovered.status).toBe(200);
+    expect(recovered.body.postings).toHaveLength(1);
+    expect(calls.length).toBeGreaterThan(1);
   });
 });

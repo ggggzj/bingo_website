@@ -62,6 +62,35 @@ const BOARD_NOTE =
 /** One page is plenty per term: the precise test here is the selective half. */
 const PER_TERM_LIMIT = 100;
 
+/**
+ * How long a gathered-and-narrowed list is reused before the upstream is asked again.
+ *
+ * This is a budget, not a performance tweak. `../h1_checker`'s `/api/postings` is limited
+ * to `60/minute;1000/hour` **keyed by client IP**, and this server has one IP — so without
+ * a cache every visitor to the busiest page on the site draws from a single shared
+ * allowance, and past it the upstream 429s, this route 502s, and the front page tells
+ * everybody the list could not be loaded. Sixty seconds makes the upstream cost a function
+ * of time rather than of traffic: at most 60 calls an hour no matter how many people
+ * arrive.
+ *
+ * Sixty seconds is also honest about the data. The feed is rebuilt by a daily sync; on
+ * 2026-09-30 its newest posting was twelve days old. Nobody is served a meaningfully
+ * staler list than they would have been without this.
+ */
+const CACHE_MS = 60_000;
+
+/**
+ * The narrowed list, shared by everyone. Safe to share precisely because it is identity-free:
+ * the session changes only how much of it is handed over, and that cut happens per request,
+ * below. Nothing derived from a session is ever stored here.
+ */
+let cached: { at: number; postings: UpstreamPosting[] } | null = null;
+
+/** Exported for the tests, which must not depend on wall-clock timing to be repeatable. */
+export function forgetCachedInternships(): void {
+  cached = null;
+}
+
 type UpstreamPosting = Record<string, unknown> & {
   job_id: number;
   employer_name: string;
@@ -154,7 +183,15 @@ export function createInternshipsRouter(
 
     let raw: UpstreamPosting[];
     try {
-      raw = await gather(upstream);
+      const fresh = cached !== null && Date.now() - cached.at < CACHE_MS;
+      if (fresh) {
+        raw = cached!.postings;
+      } else {
+        raw = await gather(upstream);
+        // Only a success is remembered. Caching a failure would turn one bad minute
+        // upstream into a bad minute for everyone who arrives during it.
+        cached = { at: Date.now(), postings: raw };
+      }
     } catch (err) {
       // The message is ours and says the path and the status; the token never reaches
       // a log or a body — the rule `lib/jobs/upstream.ts` already holds.

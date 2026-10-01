@@ -35,10 +35,22 @@ export function useAuth() {
 /**
  * Forget who we thought was signed in. Call after signing in, out, or up: the cookie
  * changed, so the cached answer to "who am I" is about the previous browser state.
+ *
+ * **Everything is invalidated, not just "who am I".** This used to invalidate that one
+ * key, which was right while signing in always navigated away — the next page mounted
+ * and asked its own questions. The front page broke that assumption on 2026-09-29 by
+ * keeping a signed-in visitor exactly where they are: `me` refetched, the sign-in panel
+ * vanished, and the internship list went on serving the cached preview with "N more,
+ * sign in to see the rest" underneath it, to somebody who had just signed in.
+ *
+ * The rule the narrow version actually wanted is this one: a response fetched as one
+ * identity says nothing about the next, so when the cookie changes, all of it is stale.
+ * That is cheap — these are small reads — and it is correct for every caller rather than
+ * for the one that happened to notice.
  */
 export function useForgetAuth(): () => Promise<void> {
   const queryClient = useQueryClient();
   return async () => {
-    await queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+    await queryClient.invalidateQueries();
   };
 }

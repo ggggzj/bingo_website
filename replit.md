@@ -392,6 +392,23 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   or `/account`, and `/` says stay put. `.harness/backlogs/023` is that disagreement and is
   not settled here.
 
+- **`/api/internships` caches its narrowed list for 60 seconds, and that is a budget rather
+  than a speed-up.** `../h1_checker`'s `/api/postings` allows `60/minute;1000/hour` keyed by
+  **client IP**, and this server has one — so without a cache every visitor to the busiest
+  page on the site draws from one shared allowance, and past it the upstream 429s, the route
+  502s, and the front page tells everybody the list could not load. The cache makes the
+  upstream cost a function of time, not traffic. Only successes are stored: caching a failure
+  turns one bad minute upstream into a bad minute for every arrival during it. What is cached
+  is identity-free — the session only decides how much of the list is handed over, and that
+  cut happens per request.
+
+- **Changing identity invalidates every query, not just "who am I".** `useForgetAuth` used to
+  invalidate one key, which was fine while signing in always navigated away and the next page
+  asked its own questions. The front page broke that assumption by keeping a signed-in visitor
+  where they are: `me` refetched, the panel vanished, and the job list went on serving the
+  cached preview with "N more, sign in to see the rest" underneath it to somebody who had just
+  signed in. A response fetched as one identity says nothing about the next.
+
 - **Known limit: the narrowing sees one upstream page per term.** `PER_TERM_LIMIT` is 100 and
   the feed held 194 intern-matching titles on 2026-09-30, so `total` means "matching among the
   rows we fetched", not "matching in the feed". `/new-grad-list` has the same limit and the
