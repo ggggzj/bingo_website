@@ -9,7 +9,7 @@
 
 ## 2. Fix
 
-- [ ] 2.1 `artifacts/api-server/src/lib/new-grad/location.ts`: split the US patterns into strong
+- [x] 2.1 `artifacts/api-server/src/lib/new-grad/location.ts`: split the US patterns into strong
       and weak (the bare state code); order strong US → foreign → weak US → unknown; add `sf`,
       `nyc` to the US city pattern; update the header comment's "US wins a tie" to say it is
       real US evidence that wins. Proof: 1.1 GREEN, 1.2 still green, the four pre-existing cases
