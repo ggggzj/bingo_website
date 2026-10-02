@@ -4,7 +4,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
-import { useLogIn, useRegister, useSignInWithGoogle } from "@workspace/api-client-react";
+import {
+  useLogIn,
+  useRegister,
+  useSignInWithGoogle,
+} from "@workspace/api-client-react";
 
 import { useForgetAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -162,8 +166,8 @@ export default function Login() {
         </h2>
         <p className="text-base text-muted-foreground max-w-md">
           BingoCareer reads certified H-1B filings from the U.S. Department of
-          Labor and puts an employer&apos;s record on the job itself — the number
-          of filings and the years, not a checkmark.
+          Labor and puts an employer&apos;s record on the job itself — the
+          number of filings and the years, not a checkmark.
         </p>
         <ul className="space-y-3 text-sm text-muted-foreground max-w-md">
           <li>• 72,135 employers with certified filing history</li>
@@ -171,8 +175,8 @@ export default function Login() {
           <li>• A job feed drawn only from employers that have filed</li>
         </ul>
         <p className="text-xs text-muted-foreground">
-          Filing history is evidence of past sponsorship, not a promise of future
-          sponsorship.{" "}
+          Filing history is evidence of past sponsorship, not a promise of
+          future sponsorship.{" "}
           <a
             href={CHROME_STORE_URL}
             className="underline underline-offset-4 hover:text-foreground"
@@ -216,7 +220,10 @@ export default function Login() {
           )}
 
           {showForm && (
-            <Tabs value={mode} onValueChange={(value) => switchTo(value as Mode)}>
+            <Tabs
+              value={mode}
+              onValueChange={(value) => switchTo(value as Mode)}
+            >
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="signin" data-testid="tab-signin">
                   Sign in
@@ -310,6 +317,22 @@ export default function Login() {
               ))}
             </Tabs>
           )}
+
+          {/* Cookies are per-origin. This site and the extension share one `users`
+              table (2026-09-21), and "one address on both surfaces" is easily heard
+              as "sign in once". It is not: the extension asks on its own, and this
+              line is here so nobody has to ask why. It is kept to what is true for
+              every account — a Google-born one has no password for the popup yet
+              (the change's proposal, non-goals), so it promises nothing about which
+              credential works there. Shown on both branches, because both are places
+              where somebody has just signed in. */}
+          <p
+            className="text-xs text-muted-foreground text-center mt-8"
+            data-testid="text-extension-signin"
+          >
+            Signing in here signs you in on this site only. The Chrome extension
+            has its own sign-in.
+          </p>
         </div>
       </section>
     </div>

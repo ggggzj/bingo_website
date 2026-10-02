@@ -44,12 +44,16 @@ dashboard that only the owner can see.
   **To change the production schema, connect and run the statement:**
 
   ```
-  railway connect Postgres-EBWW       # opens psql through the public proxy
+  railway connect Postgres            # the surviving database — see "Which database" below
   alter table users alter column password_hash drop not null;
   ```
 
-  That is how `password_hash` was made nullable in production on 2026-09-18, and how
-  `new_grad_seen` was created there on 2026-09-19:
+  `Postgres`, not `Postgres-EBWW`. They are two services in the same Railway project, one
+  letter apart in a menu, and since 2026-09-21 `Postgres-EBWW` is the *old* database that
+  nothing reads. The two statements below were run on it while it was still this site's, and
+  are kept as the record of how a production schema change is made here: that is how
+  `password_hash` was made nullable in production on 2026-09-18, and how `new_grad_seen` was
+  created there on 2026-09-19:
 
   ```sql
   create table new_grad_seen (
@@ -67,13 +71,51 @@ dashboard that only the owner can see.
   `.harness/session-todos/2026-09-18-drop-the-waitlist-table-in-production.md` for why that
   table is dropped by hand instead. `.harness/backlogs/007` exists because push does not say
   which database it is about to change.
+
+  **Two lines to delete from the next generated file, once.** `lib/db/src/schema/auth.ts`
+  stopped declaring `.defaultNow()` on `users.created_at` and `sessions.created_at` on
+  2026-09-22 (`fix-the-store-fills-created-at`: the surviving database has no such defaults,
+  and believing it did was the 500 on every sign-in after the cutover). The snapshot in
+  `lib/db/drizzle/meta/0000_snapshot.json` still records them, so the next `generate` — whenever
+  a coach table next changes — will also emit `ALTER TABLE "sessions" ALTER COLUMN "created_at"
+  DROP DEFAULT` and the `users` twin (plus `DROP NOT NULL`). They are h1_checker's tables:
+  delete those lines before applying the file. The snapshot has caught up after that.
+
+  **A scratch database for the contract tests.** `store.contract.test.ts` under `lib/coach`
+  and `lib/auth` run their drizzle store against a real Postgres when
+  `COACH_TEST_DATABASE_URL` names one, and are skipped otherwise. Prepare it by applying
+  `lib/db/drizzle/0000_young_peter_parker.sql` to an empty database (there is no `push` to do
+  it). The auth test then reshapes `users`/`sessions` to the surviving database's form — no
+  defaults on `created_at` — in its `beforeAll`, and leaves them that way; the coach test does
+  not mind. A Homebrew Postgres on any spare port is enough:
+  `initdb`, `pg_ctl start`, `createdb scratch`, apply the file, export the variable, run the
+  two files by path.
 - `pnpm --filter @workspace/api-server run set-owner-password` — create or change the owner's account (see below)
+- **Which database the site runs against, since 2026-09-21:** the Railway service `Postgres`
+  in project `h1b_checker` — h1_checker's database, the one that survived the merge decided in
+  `.harness/backlogs/018` and made by
+  `openspec/changes/2026-09-20-move-onto-the-surviving-database/`. `DATABASE_URL` is set on the
+  `bingo_website` service in the Railway panel; nothing in this repo names a host. Two
+  applications now write that database, and the ownership split above says who may change
+  which table.
+
+  **Rollback is one variable.** The old database, `Postgres-EBWW`, was not modified by the
+  move — rows were read from it and written to `Postgres`, nothing dropped or updated — so
+  pointing `DATABASE_URL` back at it and redeploying restores the site as it was, minus
+  whatever was written after the cutover. That path exists only while `Postgres-EBWW` exists;
+  deleting it is a separate decision, recorded in
+  `.harness/session-todos/2026-09-21-clean-up-the-old-database.md` with the conditions.
+
+  Sessions were deliberately not carried, so everyone signed in before the move signs in
+  again, once. Signing in here still does not sign in the extension — cookies are
+  per-origin — and `/login` now says so (`text-extension-signin`), because "one address on
+  both surfaces" is otherwise heard as "sign in once".
 
 ### Environment
 
 | Variable | Needed by | What it does |
 |---|---|---|
-| `DATABASE_URL` | api-server, db | Postgres connection string |
+| `DATABASE_URL` | api-server, db | Postgres connection string. In production it names the surviving database, Railway service `Postgres` — not `Postgres-EBWW` (see Run & Operate, "Which database"). |
 | `OWNER_EMAIL` | api-server | Which account may see the growth dashboard. Comma-separated, read case-insensitively. **Unset means nobody** — the dashboard is closed, not open. |
 | `STATS_API_BASE_URL` | api-server | Origin of the extension's API, e.g. `https://h1bchecker-production.up.railway.app` |
 | `STATS_TOKEN` | api-server | Must match `STATS_TOKEN` on that server. Server-side only; never sent to a browser. |
@@ -420,6 +462,16 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
 
 ## Gotchas
 
+- **`users` and `sessions` have no column defaults, and the store fills what it needs.** They
+  are h1_checker's DDL and its SQLAlchemy models set `created_at` from Python, so the database
+  carries nothing behind the column. `DrizzleAuthStore` sends `createdAt` on both inserts
+  (`createSession`, and the private `insert` behind both user-creation paths); the schema file
+  declares no default, so on `sessions` — NOT NULL — omitting it is a `tsc` error, proven by
+  removing it and watching `TS2769` (2026-09-22). The `now()` default that *is* on
+  `sessions.created_at` in production is the 2026-09-21 stopgap, run before this fix existed;
+  it is unused now and stays until h1_checker prefers otherwise
+  (`../h1_checker/.harness/backlogs/015`). Do not read its presence as "the database fills
+  it" — a fresh h1_checker deployment would not have it.
 - **`/login?password=1` is the email form, and nothing links to it.** The page carries one
   Google control by decision (2026-09-17). The form is how the owner gets in when Google is
   misconfigured, and how the identities that still hold passwords would sign in. It is **not
