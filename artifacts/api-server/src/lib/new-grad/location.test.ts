@@ -93,6 +93,24 @@ describe("readLocation", () => {
     }
   });
 
+  it("reads a US town that shares its name with a foreign city as US", () => {
+    // Once a bare state code stopped outweighing a foreign place, `Dublin, CA` lost to
+    // `dublin` — found by the close-out review, not the feed (none of these were in it).
+    for (const location of [
+      "Dublin, CA",
+      "Dublin, OH",
+      "Vancouver, WA",
+      "Athens, GA",
+      "Melbourne, FL",
+    ]) {
+      expect(readLocation(location), location).toBe("us");
+    }
+    // The foreign city itself is still foreign.
+    expect(readLocation("Dublin, Ireland")).toBe("elsewhere");
+    expect(readLocation("Melbourne, Australia")).toBe("elsewhere");
+    expect(readLocation("Vancouver, BC")).toBe("elsewhere");
+  });
+
   it("does not read a country out of a company or role name that contains one", () => {
     // `US` inside a word is not a country. This is the class of bug that put
     // Google Operations Center into a list as Google.
