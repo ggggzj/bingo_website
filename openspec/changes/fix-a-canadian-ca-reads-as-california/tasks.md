@@ -25,3 +25,13 @@
       the change's closing note. Result 2026-10-02, old reader at 084ae5c vs fixed: 6,000 rows, 78 moved — 54 `us` → `elsewhere`, 24 `unknown` → `us` (all `SF` / `NYC` lists), nothing else.
 - [x] 3.4 replit.md working loop; note in replit.md where the location reader's rule is
       described (one line: strong US wins a tie, a bare state code does not). Done: replit.md "Location is three states…" gains the rule.
+
+## 4. Review finding (close-out gate, owner: "先修", 2026-10-02)
+
+- [ ] 4.1 `location.ts` + `location.test.ts`: a US town that shares its name with a foreign city
+      (`Dublin, CA`, `Dublin, OH`, `Vancouver, WA`, `Athens, GA`, `Melbourne, FL`…) reads as US
+      again — before 2.1 it did, after 2.1 the foreign name beat the weak state code. A strong
+      pattern for "that town, then its own state"; RED test first ("reads a US town that shares
+      its name with a foreign city as US"), and `Dublin, Ireland` / `Melbourne, Australia` stay
+      elsewhere. Proof: the new test RED then GREEN, the full api-server suite and typecheck green,
+      and the 6,000-row comparison against 4f1b561 moves nothing (none of these towns are in it).

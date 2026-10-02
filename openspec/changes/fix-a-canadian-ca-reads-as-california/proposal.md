@@ -30,8 +30,10 @@ abroad, in four shapes:
 **Expected behavior**: each resolves to `elsewhere`.
 **Unchanged behavior** (guarded): a posting that names a real US place keeps reading as US even
 when it also names a foreign one (`London, UK; San Francisco, CA`, `US-CA-Dublin`,
-`New York, NY - Hybrid; Toronto, Ontario - Remote`, `Toronto, NY, SEA, SF`); every existing case
-in `location.test.ts`; an unreadable string never resolves to US.
+`New York, NY - Hybrid; Toronto, Ontario - Remote`, `Toronto, NY, SEA, SF`); a US town named like
+a foreign city, followed by its own state (`Dublin, CA`, `Vancouver, WA`) — added after the
+close-out review found 2.1 had flipped these to `elsewhere` (task 4.1); every existing case in
+`location.test.ts`; an unreadable string never resolves to US.
 
 ## What Changes
 
