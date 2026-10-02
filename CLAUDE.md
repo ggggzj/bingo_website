@@ -74,9 +74,10 @@ reported bug goes straight to the bugfix flow: reproduce, failing Vitest test, t
 failing test.
 
 ### 4. Implementation
-Only via `/implement <change-id>`. No opsx commands are installed in this repo, so the
-engine predicate resolves to the direct path: the tdd discipline per behavior, ticking
-the matching `tasks.md` item as each behavior lands. Close each task group with the
+Only via `/implement <change-id>`. The opsx commands are checked in under
+`.claude/commands/opsx/` (since `be058f3`), so the engine predicate resolves to the opsx
+path: each unit's task work runs through `opsx:apply`, ticking the matching `tasks.md`
+item as each behavior lands, test-first. Close each task group with the
 replit.md working loop before starting the next — ticking the box without the loop is
 not done. Work outside the checklist is forbidden; new discoveries go to
 session-proposed-todos.
