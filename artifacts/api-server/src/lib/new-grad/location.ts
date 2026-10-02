@@ -40,6 +40,10 @@ const US = [
   /\bsouth\s+(carolina|dakota)\b/,
   /\brhode\s+island\b/,
   /\bwest\s+virginia\b/,
+  // US towns named like a foreign city, followed by their own state. Strong, because the
+  // foreign list below would otherwise claim `Dublin, CA` the moment `, CA` stopped
+  // deciding on its own.
+  /\b(dublin\s*,\s*(ca|oh)|vancouver\s*,\s*wa|athens\s*,\s*(ga|oh)|melbourne\s*,\s*fl|manchester\s*,\s*(nh|ct)|london\s*,\s*(ky|oh)|paris\s*,\s*tx|valencia\s*,\s*ca|waterloo\s*,\s*ia|rome\s*,\s*(ga|ny)|lima\s*,\s*oh|warsaw\s*,\s*in)\b/,
   // Cities that appear in this feed and are not ambiguous with a foreign one. `sf` and
   // `nyc` keep `Toronto, NY, SEA, SF` American once `, NY` alone no longer can.
   /\b(sf|nyc|san\s+jose|san\s+francisco|los\s+angeles|silicon\s+valley|mountain\s+view|palo\s+alto|menlo\s+park|sunnyvale|santa\s+clara|san\s+mateo|foster\s+city|redwood\s+city|bellevue|redmond|kirkland|seattle|denver|boulder|austin|dallas|houston|atlanta|chicago|boston|pittsburgh|philadelphia|malvern|bentonville|ann\s+arbor|st\.?\s+louis)\b/,

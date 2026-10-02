@@ -28,10 +28,10 @@
 
 ## 4. Review finding (close-out gate, owner: "先修", 2026-10-02)
 
-- [ ] 4.1 `location.ts` + `location.test.ts`: a US town that shares its name with a foreign city
+- [x] 4.1 `location.ts` + `location.test.ts`: a US town that shares its name with a foreign city
       (`Dublin, CA`, `Dublin, OH`, `Vancouver, WA`, `Athens, GA`, `Melbourne, FL`…) reads as US
       again — before 2.1 it did, after 2.1 the foreign name beat the weak state code. A strong
       pattern for "that town, then its own state"; RED test first ("reads a US town that shares
       its name with a foreign city as US"), and `Dublin, Ireland` / `Melbourne, Australia` stay
       elsewhere. Proof: the new test RED then GREEN, the full api-server suite and typecheck green,
-      and the 6,000-row comparison against 4f1b561 moves nothing (none of these towns are in it).
+      and the 6,000-row comparison against 4f1b561 moves nothing (none of these towns are in it). Result: new test RED (`Dublin, CA: expected 'elsewhere' to be 'us'`) then GREEN; suite 231 passed; typecheck exit 0; 6,000 rows vs 4f1b561: 0 moved.
