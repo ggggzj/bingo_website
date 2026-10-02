@@ -20,8 +20,8 @@
 - [x] 3.1 `pnpm --filter @workspace/api-server test` — whole suite green, including
       `routes/internships.test.ts` and `routes/new-grad.test.ts` untouched. Result: 20 files passed, 2 skipped (DB contract tests, no scratch Postgres configured); 230 tests passed.
 - [x] 3.2 `pnpm run typecheck` clean. Result: exit 0, all four projects.
-- [ ] 3.3 Re-run the 6,000-row measurement against the fixed reader: exactly 54 rows
-      `us` → `elsewhere` and 26 `unknown` → `us`, nothing else moved. Record the numbers in
-      the change's closing note.
+- [x] 3.3 Re-run the 6,000-row measurement against the fixed reader: exactly 54 rows
+      `us` → `elsewhere` and 24 `unknown` → `us` (the proposal first said 26 — an addition slip over the same simulated rows, corrected there), nothing else moved. Record the numbers in
+      the change's closing note. Result 2026-10-02, old reader at 084ae5c vs fixed: 6,000 rows, 78 moved — 54 `us` → `elsewhere`, 24 `unknown` → `us` (all `SF` / `NYC` lists), nothing else.
 - [ ] 3.4 replit.md working loop; note in replit.md where the location reader's rule is
       described (one line: strong US wins a tie, a bare state code does not).

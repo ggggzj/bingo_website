@@ -45,7 +45,7 @@ in `location.test.ts`; an unreadable string never resolves to US.
   `Toronto, NY, SEA, SF` is US today only through `, NY`; once that code is weak, `toronto`
   would win. With the two abbreviations it stays US on strong evidence.
 - **Measured effect of the whole change on the same 6,000 rows:** 54 rows `us` → `elsewhere`
-  (exactly the four shapes above, nothing else); 26 rows `unknown` → `us`, all of them
+  (exactly the four shapes above, nothing else); 24 rows `unknown` → `us`, all of them
   `SF` / `NYC` lists (`SF, NYC`, `Remote - SF Bay Area`, `NYC, SF, Chi, Remote`…); no other row
   moves.
 - **Repro and guard.** `artifacts/api-server/src/lib/new-grad/location.test.ts`, two new cases:
