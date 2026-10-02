@@ -1,7 +1,7 @@
 ---
 type: index
 title: Eval ledger
-timestamp: 2026-10-02T14:21:31-07:00
+timestamp: 2026-10-02T14:56:27-07:00
 ---
 
 # Latest verdict per (target, dimension)
@@ -21,6 +21,6 @@ timestamp: 2026-10-02T14:21:31-07:00
 - ~ **2026-09-30-the-dashboard-says-when-the-feed-last-moved** · pocock → `mixed` @ `5e2760b` (opus-5)
 - ✓ **2026-09-30-the-dashboard-says-when-the-feed-last-moved** · production → `pass` @ `5e2760b` (opus-5)
 - ✓ **2026-09-30-the-dashboard-says-when-the-feed-last-moved** · willison → `pass` @ `5e2760b` (opus-5)
-- ~ **fix-a-canadian-ca-reads-as-california** · correctness → `mixed` @ `4f1b561` (claude-opus-5-5)
+- ✓ **fix-a-canadian-ca-reads-as-california** · correctness → `pass` @ `db5650c` (claude-opus-5-5)
 - ✓ **fix-a-canadian-ca-reads-as-california** · goal-fit → `pass` @ `4f1b561` (claude-opus-5-5)
-- ~ **fix-a-canadian-ca-reads-as-california** · test-quality → `mixed` @ `4f1b561` (claude-opus-5-5)
+- ✓ **fix-a-canadian-ca-reads-as-california** · test-quality → `pass` @ `db5650c` (claude-opus-5-5)
