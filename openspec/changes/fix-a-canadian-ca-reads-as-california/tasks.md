@@ -19,7 +19,7 @@
 
 - [x] 3.1 `pnpm --filter @workspace/api-server test` — whole suite green, including
       `routes/internships.test.ts` and `routes/new-grad.test.ts` untouched. Result: 20 files passed, 2 skipped (DB contract tests, no scratch Postgres configured); 230 tests passed.
-- [ ] 3.2 `pnpm run typecheck` clean.
+- [x] 3.2 `pnpm run typecheck` clean. Result: exit 0, all four projects.
 - [ ] 3.3 Re-run the 6,000-row measurement against the fixed reader: exactly 54 rows
       `us` → `elsewhere` and 26 `unknown` → `us`, nothing else moved. Record the numbers in
       the change's closing note.
