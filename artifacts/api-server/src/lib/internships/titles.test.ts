@@ -50,6 +50,10 @@ describe("isSoftwareInternship", () => {
       "Internal Audit Manager",
       "Software Engineer - Database Engine Internals",
       "Software Engineer, Internal Systems",
+      // From ticket 021's 2026-09-20 sample of `title=intern`, and named in the jobs-page
+      // spec's internships section; one has a software signal and still is not an intern.
+      "Director, US International Tax Planning",
+      "Principal Software Developer - Query Engine, Database Internals",
     ]) {
       expect(isSoftwareInternship(title), title).toBe(false);
     }

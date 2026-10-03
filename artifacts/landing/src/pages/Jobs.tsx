@@ -353,9 +353,6 @@ export default function Jobs() {
         </div>
       </div>
 
-      {/* A requirement, not copy. Saying what the feed does not cover is what keeps
-          the limit a stated scope rather than something a reader finds by searching
-          for a company and getting nothing back. */}
       {inInternships && internships.data ? (
         <div className="mt-4 flex flex-col gap-2">
           {/* Only when the preview actually cut something, from the server's own total. */}
@@ -370,6 +367,9 @@ export default function Jobs() {
         </div>
       ) : null}
 
+      {/* A requirement, not copy. Saying what the feed does not cover is what keeps
+          the limit a stated scope rather than something a reader finds by searching
+          for a company and getting nothing back. */}
       <footer className="mt-8 text-xs text-muted-foreground max-w-3xl">
         <p>
           This feed is drawn from the job boards of employers already known to sponsor,
