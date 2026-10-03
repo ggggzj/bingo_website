@@ -457,6 +457,17 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   same caveat. It has not bitten yet because the narrowing is far more selective than the
   fetch, but the day an employer posts 100 internships it will.
 
+- **`/jobs` shows internships as a second list, not as a picker preset.** The *Summer 2027
+  internships* section (`?section=summer-2027`) renders `/api/internships` as it arrives —
+  the front page's list, its count, its board note — with the filter row hidden. A preset
+  was the first shape and the owner removed it on 2026-09-20: the upstream's `ilike '%intern%'`
+  returned International and Internal roles, and filtering a fetched page in the browser
+  would have made the count describe what survived rather than what matched. The precise
+  test already runs server-side behind `/api/internships`, so reusing it was the whole fix;
+  `FilterRow.test.ts` still fails if an Internship preset comes back. The page now moves its
+  query string through wouter's `navigate`, not `window.history`, because `useSearch` reads
+  the router's location (`2026-10-02-the-summer-2027-section-on-jobs`).
+
 ## Product
 
 - A landing page for the **BingoCareer** Chrome extension: what the four badges
