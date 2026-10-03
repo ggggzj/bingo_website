@@ -15,6 +15,6 @@
 
 ## 2. Close
 
-- [ ] 2.1 `replit.md`: one entry — the section reuses `/api/internships` rather than a picker
+- [x] 2.1 `replit.md`: one entry — the section reuses `/api/internships` rather than a picker
       preset, and why (the count problem; 2026-09-20 removal). Full landing suite + typecheck
-      green; replit.md working loop.
+      green; replit.md working loop. Result: replit.md "`/jobs` shows internships as a second list, not as a picker preset" added; landing 93 passed, api-server 228 passed / 2 files skipped (DB contract tests), typecheck exit 0.
