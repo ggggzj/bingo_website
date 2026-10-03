@@ -21,9 +21,9 @@
 
 ## 3. Review findings (close-out gate, 2026-10-03)
 
-- [ ] 3.1 `pages/Jobs.tsx` + `api-server/src/lib/internships/titles.test.ts`: move the internships
+- [x] 3.1 `pages/Jobs.tsx` + `api-server/src/lib/internships/titles.test.ts`: move the internships
       footer block above the "A requirement, not copy" comment so that comment sits on the
       `<footer>` it describes again; add `Director, US International Tax Planning` and
       `Principal Software Developer - Query Engine, Database Internals` (the spec's named
       titles) to the excluded titles in `titles.test.ts`. Proof: `titles.test.ts` green with
-      the two titles in it; landing suite green; typecheck clean.
+      the two titles in it; landing suite green; typecheck clean. Result: titles.test.ts 10 passed (the two titles pin behavior already correct — green on arrival); landing 93 passed; typecheck exit 0.
