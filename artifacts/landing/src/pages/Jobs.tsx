@@ -1,7 +1,14 @@
 import { useMemo, useState } from "react";
-import { useSearch } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { ExternalLink, Loader2, MapPin } from "lucide-react";
-import { useGetJobs, type JobPosting } from "@workspace/api-client-react";
+import {
+  getGetInternshipsQueryKey,
+  getGetJobsQueryKey,
+  useGetInternships,
+  useGetJobs,
+  type GetJobsParams,
+  type JobPosting,
+} from "@workspace/api-client-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,9 +27,19 @@ import { SponsorshipEvidence } from "@/components/jobs/SponsorshipEvidence";
  *
  * Read-only and identity-free. Nothing here reads a session or writes anything, so
  * opening it twice returns the same page.
+ *
+ * **Two sections, two sources.** *All roles* is this page's feed and its filters. *Summer
+ * 2027 internships* is the front page's list (`/api/internships`), shown as it arrives:
+ * the precise intern test runs on the server, where the count is computed, so this page
+ * offers no filter over it — a filter here could only narrow rows already fetched, the
+ * shape the `jobs-page` spec forbids. That is also why it is a section and not a preset
+ * in the picker, which still has none (`FilterRow.tsx`).
  */
 
 const PAGE_SIZE = 20;
+
+/** The `section` value in the URL that selects the internships list. */
+export const INTERNSHIPS_SECTION = "summer-2027";
 
 function postedAgo(posted_at: string | null | undefined): string | null {
   if (!posted_at) return null;
@@ -149,19 +166,24 @@ export default function Jobs() {
   // page three of one search is meaningless in another.
   const [pages, setPages] = useState(1);
   const search = useSearch();
+  const [pathname, navigate] = useLocation();
+  const query = useMemo(() => new URLSearchParams(search), [search]);
+
+  // The section lives in the URL beside the selection, for the same reasons.
+  const inInternships = query.get("section") === INTERNSHIPS_SECTION;
 
   // The selected posting lives in the URL so a role can be linked to and shared, and
   // so the back button means what a reader expects.
   const selectedId = useMemo(() => {
-    const raw = new URLSearchParams(search).get("job");
+    const raw = query.get("job");
     const id = raw ? Number(raw) : NaN;
     return Number.isInteger(id) ? id : null;
-  }, [search]);
+  }, [query]);
 
   const { employer, title, location, remote_only, posted_within_days, include_refusals } =
     filters;
 
-  const { data, isLoading, isError } = useGetJobs({
+  const jobsParams: GetJobsParams = {
     ...(employer ? { employer } : {}),
     ...(title ? { title } : {}),
     ...(location ? { location } : {}),
@@ -169,11 +191,29 @@ export default function Jobs() {
     ...(posted_within_days ? { posted_within_days } : {}),
     ...(include_refusals ? { include_refusals: true } : {}),
     limit: PAGE_SIZE * pages,
+  };
+
+  // Each section asks only its own endpoint. The generated options type demands a key
+  // once any option is passed; taken from the generator so the two cannot drift.
+  const jobs = useGetJobs(jobsParams, {
+    query: { queryKey: getGetJobsQueryKey(jobsParams), enabled: !inInternships },
+  });
+  const internships = useGetInternships({
+    query: {
+      queryKey: getGetInternshipsQueryKey(),
+      enabled: inInternships,
+      // A 502 from a stopped feed is an ordinary answer, not a flake worth retrying.
+      retry: false,
+    },
   });
 
-  const shown: JobPosting[] = data?.postings ?? [];
-  const total = data?.total ?? 0;
+  const active = inInternships ? internships : jobs;
+  const isLoading = active.isLoading;
+  const isError = active.isError;
+  const shown: JobPosting[] = active.data?.postings ?? [];
+  const total = active.data?.total ?? 0;
   const hasMore = shown.length < total;
+  const noun = inInternships ? "internships" : "roles";
 
   const selected = shown.find((p) => p.job_id === selectedId) ?? null;
 
@@ -182,12 +222,27 @@ export default function Jobs() {
     setFilters(next);
   };
 
+  // Through the router, not `window.history`: `useSearch` reads the router's location,
+  // which is the browser's in the app and a memory one in tests. Either way the panes
+  // swap in place — wouter pushes a history entry, it does not reload.
+  const go = (next: URLSearchParams) => {
+    const qs = next.toString();
+    navigate(`${pathname}${qs ? `?${qs}` : ""}`);
+  };
+
   const select = (job_id: number) => {
     const next = new URLSearchParams(search);
     next.set("job", String(job_id));
-    // replaceState rather than a navigation: the detail pane swaps in place.
-    window.history.pushState({}, "", `${window.location.pathname}?${next}`);
-    window.dispatchEvent(new PopStateEvent("popstate"));
+    go(next);
+  };
+
+  const showSection = (internshipsSection: boolean) => {
+    const next = new URLSearchParams(search);
+    if (internshipsSection) next.set("section", INTERNSHIPS_SECTION);
+    else next.delete("section");
+    // A selection made in one list means nothing in the other.
+    next.delete("job");
+    go(next);
   };
 
   return (
@@ -200,27 +255,57 @@ export default function Jobs() {
         </p>
       </header>
 
-      <div className="mb-4">
-        <FilterRow
-          filters={filters}
-          onChange={changeFilters}
-          onReset={() => {
-            setPages(1);
-            setFilters({});
-          }}
-        />
+      <div role="tablist" aria-label="Sections" className="mb-4 flex gap-2">
+        {[
+          { label: "All roles", internshipsSection: false },
+          { label: "Summer 2027 internships", internshipsSection: true },
+        ].map(({ label, internshipsSection }) => (
+          <Button
+            key={label}
+            type="button"
+            role="tab"
+            aria-selected={inInternships === internshipsSection}
+            variant={inInternships === internshipsSection ? "default" : "outline"}
+            size="sm"
+            onClick={() => showSection(internshipsSection)}
+          >
+            {label}
+          </Button>
+        ))}
       </div>
+
+      {inInternships ? (
+        // The section's name is the list's, not a claim about each row: on 2026-10-02
+        // it held a Winter 2027 internship too. One line says so.
+        <p className="text-sm text-muted-foreground mb-4" data-testid="section-scope">
+          US software internships at employers that sponsor. Those naming Summer 2027
+          come first; the list is not limited to them.
+        </p>
+      ) : (
+        <div className="mb-4">
+          <FilterRow
+            filters={filters}
+            onChange={changeFilters}
+            onReset={() => {
+              setPages(1);
+              setFilters({});
+            }}
+          />
+        </div>
+      )}
 
       <div className="text-sm text-muted-foreground mb-3" data-testid="result-count">
         {isLoading
           ? "Loading…"
           : isError
-            ? "The job feed could not be reached."
+            ? inInternships
+              ? "The internships could not be loaded just now."
+              : "The job feed could not be reached."
             : hasMore
               ? // Say both numbers. A bare "8,607 roles" over a list of twenty is a
                 // count that describes something the reader cannot reach.
-                `Showing ${shown.length.toLocaleString()} of ${total.toLocaleString()} roles`
-              : `${total.toLocaleString()} roles`}
+                `Showing ${shown.length.toLocaleString()} of ${total.toLocaleString()} ${noun}`
+              : `${total.toLocaleString()} ${noun}`}
       </div>
 
       {/* Stacks below md; each pane scrolls on its own above it. */}
@@ -235,7 +320,7 @@ export default function Jobs() {
             </div>
           ) : shown.length === 0 ? (
             <div className="text-sm text-muted-foreground p-4">
-              No roles match these filters.
+              {inInternships ? "No internships matched right now." : "No roles match these filters."}
             </div>
           ) : (
             <>
@@ -247,7 +332,9 @@ export default function Jobs() {
                   onSelect={() => select(posting.job_id)}
                 />
               ))}
-              {hasMore ? (
+              {/* The internships list has no further page to ask for: a signed-out
+                  answer is a preview, and what it withheld is said below instead. */}
+              {hasMore && !inInternships ? (
                 <Button
                   type="button"
                   variant="outline"
@@ -265,6 +352,20 @@ export default function Jobs() {
           <DetailPane posting={selected} />
         </div>
       </div>
+
+      {inInternships && internships.data ? (
+        <div className="mt-4 flex flex-col gap-2">
+          {/* Only when the preview actually cut something, from the server's own total. */}
+          {internships.data.preview && total > shown.length ? (
+            <p className="text-sm text-muted-foreground" data-testid="internships-more">
+              {total - shown.length} more. Sign in to see the rest.
+            </p>
+          ) : null}
+          <p className="text-xs text-muted-foreground" data-testid="internships-board-note">
+            {internships.data.board_note}
+          </p>
+        </div>
+      ) : null}
 
       {/* A requirement, not copy. Saying what the feed does not cover is what keeps
           the limit a stated scope rather than something a reader finds by searching

@@ -17,3 +17,7 @@
 - 2026-09-30T17:18:56-07:00 FAIL 2026-09-29-the-front-door-shows-the-jobs · correctness @ a519840 (opus-5)
 - 2026-09-30T17:18:56-07:00 FAIL 2026-09-29-the-front-door-shows-the-jobs · production @ a519840 (opus-5)
 - 2026-09-30T17:18:56-07:00 MIXED 2026-09-29-the-front-door-shows-the-jobs · test-quality @ a519840 (opus-5)
+- 2026-10-03T09:09:51-07:00 PASS 2026-10-02-the-summer-2027-section-on-jobs · correctness @ 93e3ed3 (claude-opus-5-5)
+- 2026-10-03T09:09:51-07:00 MIXED 2026-10-02-the-summer-2027-section-on-jobs · test-quality @ 93e3ed3 (claude-opus-5-5)
+- 2026-10-03T09:09:51-07:00 MIXED 2026-10-02-the-summer-2027-section-on-jobs · doc-hygiene @ 93e3ed3 (claude-opus-5-5)
+- 2026-10-03T09:09:51-07:00 PASS 2026-10-02-the-summer-2027-section-on-jobs · goal-fit @ 93e3ed3 (claude-opus-5-5)

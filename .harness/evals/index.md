@@ -1,7 +1,7 @@
 ---
 type: index
 title: Eval ledger
-timestamp: 2026-09-30T17:18:56-07:00
+timestamp: 2026-10-03T09:09:51-07:00
 ---
 
 # Latest verdict per (target, dimension)
@@ -21,3 +21,7 @@ timestamp: 2026-09-30T17:18:56-07:00
 - ~ **2026-09-30-the-dashboard-says-when-the-feed-last-moved** · pocock → `mixed` @ `5e2760b` (opus-5)
 - ✓ **2026-09-30-the-dashboard-says-when-the-feed-last-moved** · production → `pass` @ `5e2760b` (opus-5)
 - ✓ **2026-09-30-the-dashboard-says-when-the-feed-last-moved** · willison → `pass` @ `5e2760b` (opus-5)
+- ✓ **2026-10-02-the-summer-2027-section-on-jobs** · correctness → `pass` @ `93e3ed3` (claude-opus-5-5)
+- ~ **2026-10-02-the-summer-2027-section-on-jobs** · doc-hygiene → `mixed` @ `93e3ed3` (claude-opus-5-5)
+- ✓ **2026-10-02-the-summer-2027-section-on-jobs** · goal-fit → `pass` @ `93e3ed3` (claude-opus-5-5)
+- ~ **2026-10-02-the-summer-2027-section-on-jobs** · test-quality → `mixed` @ `93e3ed3` (claude-opus-5-5)
