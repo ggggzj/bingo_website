@@ -1,7 +1,14 @@
 ---
 id: 021
 title: A session to read the feed, and a section for Summer 2027 — the login wall and the intern preset
-status: open
+status: picked-up
+produced: 2026-10-02, split in two at the owner's call — Part 1
+  openspec/changes/2026-10-02-jobs-asks-for-a-session/ (the wall: 401, ships before 014's
+  counter, owner-accepted), Part 2 openspec/changes/2026-10-02-the-summer-2027-section-on-jobs/
+  (reuses the front page's /api/internships — option 3 below, which 028 built in the meantime;
+  owner chose US software internships, the front page's definition). Both proposals await
+  approval. Grounding moved since 2026-09-20: 018 is built (one users table), 011 is built,
+  020 was withdrawn for 028, and the picker's Internship preset was removed (f6fc12f).
 origin: ROADMAP.md 第一步 5 (owner decision 2026-09-17) — "没登录的人打开 /jobs 会被送到首页";
   "/jobs 加一个「Summer 2027 实习」板块，就是一个预设好的筛选（标题匹配 intern，排除 "International"
   这种误匹配）". The roadmap states in the same item that this 反转了 9 月 10 号 "/jobs 公开" 的决定，
