@@ -17,3 +17,8 @@
 - 2026-09-30T17:18:56-07:00 FAIL 2026-09-29-the-front-door-shows-the-jobs · correctness @ a519840 (opus-5)
 - 2026-09-30T17:18:56-07:00 FAIL 2026-09-29-the-front-door-shows-the-jobs · production @ a519840 (opus-5)
 - 2026-09-30T17:18:56-07:00 MIXED 2026-09-29-the-front-door-shows-the-jobs · test-quality @ a519840 (opus-5)
+- 2026-10-02T14:21:31-07:00 MIXED fix-a-canadian-ca-reads-as-california · correctness @ 4f1b561 (claude-opus-5-5)
+- 2026-10-02T14:21:31-07:00 MIXED fix-a-canadian-ca-reads-as-california · test-quality @ 4f1b561 (claude-opus-5-5)
+- 2026-10-02T14:21:31-07:00 PASS fix-a-canadian-ca-reads-as-california · goal-fit @ 4f1b561 (claude-opus-5-5)
+- 2026-10-02T14:56:27-07:00 PASS fix-a-canadian-ca-reads-as-california · correctness @ db5650c (claude-opus-5-5)
+- 2026-10-02T14:56:27-07:00 PASS fix-a-canadian-ca-reads-as-california · test-quality @ db5650c (claude-opus-5-5)

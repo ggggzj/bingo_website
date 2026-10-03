@@ -369,6 +369,8 @@ cannot use the form. Afterwards, sign in at `/login` like anyone else.
   wrote. Reads-as-US is listed, plainly-elsewhere is dropped, and unreadable is listed
   **and marked** — the same 是/否/? the owner's own spreadsheet settled on. An
   unreadable string must never resolve to US; there is a test whose only job is that.
+  Real US evidence wins a tie with a foreign place; a bare state code (`, CA`) does not —
+  `Toronto, ON, CA` is Canada (`fix-a-canadian-ca-reads-as-california`, 2026-10-02).
 - **"New since you last looked" is a stored snapshot of rows, not a timestamp.** Two
   upstream facts force it: the browse route returns no first-seen field, and it returns
   **open postings only** — so a posting that closed is simply absent, and absence cannot

@@ -64,6 +64,53 @@ describe("readLocation", () => {
     }
   });
 
+  it("does not read a two-letter code as a US state when the place is plainly elsewhere", () => {
+    // Measured 2026-10-02 in the public feed: 54 of 6,000 rows read as US on a comma and
+    // two letters alone, and one of them reached the front page (`Toronto, ON, CA`).
+    // `CA` is Canada's country code, `DE` Germany's, `AR` Argentina's; `or` is a word.
+    for (const location of [
+      "Toronto, ON, CA",
+      "Canada - Remote (ON, AB, BC, or NS Only)",
+      "Berlin, DE",
+      "Hamburg, DE",
+      "Buenos Aires, AR",
+    ]) {
+      expect(readLocation(location), location).toBe("elsewhere");
+    }
+  });
+
+  it("still lets real US evidence win when a posting is open in two countries", () => {
+    // The regression guard for the case above: the owner's rule — 有美国地点记 是 — must
+    // survive a fix that makes a bare state code weaker. Every string here is from the feed.
+    for (const location of [
+      "London, UK; San Francisco, CA",
+      "US-CA-Dublin",
+      "Toronto, NY, SEA, SF",
+      "New York, NY - Hybrid; Toronto, Ontario - Remote",
+      "San Francisco, CA, New York, NY, Portland, OR, or Remote within Canada or United States",
+    ]) {
+      expect(readLocation(location), location).toBe("us");
+    }
+  });
+
+  it("reads a US town that shares its name with a foreign city as US", () => {
+    // Once a bare state code stopped outweighing a foreign place, `Dublin, CA` lost to
+    // `dublin` — found by the close-out review, not the feed (none of these were in it).
+    for (const location of [
+      "Dublin, CA",
+      "Dublin, OH",
+      "Vancouver, WA",
+      "Athens, GA",
+      "Melbourne, FL",
+    ]) {
+      expect(readLocation(location), location).toBe("us");
+    }
+    // The foreign city itself is still foreign.
+    expect(readLocation("Dublin, Ireland")).toBe("elsewhere");
+    expect(readLocation("Melbourne, Australia")).toBe("elsewhere");
+    expect(readLocation("Vancouver, BC")).toBe("elsewhere");
+  });
+
   it("does not read a country out of a company or role name that contains one", () => {
     // `US` inside a word is not a country. This is the class of bug that put
     // Google Operations Center into a list as Google.

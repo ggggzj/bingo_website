@@ -12,7 +12,11 @@
  * where neither of us knows.
  *
  * **US wins a tie**, matching their rule — 有美国地点记 是 — because a posting open in
- * London and New York is one the owner can take.
+ * London and New York is one the owner can take. But only *real* US evidence wins one: a
+ * bare comma-and-two-letters is a state code in `Berkeley, CA` and a country code in
+ * `Toronto, ON, CA` (`, DE` Germany, `, AR` Argentina, and `, or` is just a word). So that
+ * pattern counts only when the string names nowhere else — 54 of 6,000 feed rows read as
+ * American on it alone, measured 2026-10-02.
  *
  * Every pattern is anchored. `\bus\b` and not `us`, or `Campus Drive, Bengaluru` reads as
  * American; that is the same class of mistake as the board token that put Google
@@ -21,20 +25,28 @@
 
 export type LocationRead = "us" | "unknown" | "elsewhere";
 
+// A state abbreviation, only where a comma or slash makes it one — `, CA`, `/ NY`. Weak:
+// it loses to a foreign place named in the same string (see the header).
+const US_STATE_CODE =
+  /[,/]\s*(a[klrz]|c[aot]|de|fl|ga|hi|i[adln]|k[sy]|la|m[adeinost]|n[cdehjmvy]|o[hkr]|pa|ri|s[cd]|t[nx]|ut|v[at]|w[aivy])\b/;
+
 const US = [
   /\bunited\s+states\b/,
   /\bu\.?s\.?a\.?\b/,
   /\bus\b/,
-  // A state abbreviation, only where a comma or slash makes it one — `, CA`, `/ NY`.
-  /[,/]\s*(a[klrz]|c[aot]|de|fl|ga|hi|i[adln]|k[sy]|la|m[adeinost]|n[cdehjmvy]|o[hkr]|pa|ri|s[cd]|t[nx]|ut|v[at]|w[aivy])\b/,
   /\b(alabama|alaska|arizona|arkansas|california|colorado|connecticut|delaware|florida|georgia|hawaii|idaho|illinois|indiana|iowa|kansas|kentucky|louisiana|maine|maryland|massachusetts|michigan|minnesota|mississippi|missouri|montana|nebraska|nevada|ohio|oklahoma|oregon|pennsylvania|tennessee|texas|utah|vermont|virginia|washington|wisconsin|wyoming)\b/,
   /\bnew\s+(york|jersey|hampshire|mexico)\b/,
   /\bnorth\s+(carolina|dakota)\b/,
   /\bsouth\s+(carolina|dakota)\b/,
   /\brhode\s+island\b/,
   /\bwest\s+virginia\b/,
-  // Cities that appear in this feed and are not ambiguous with a foreign one.
-  /\b(san\s+jose|san\s+francisco|los\s+angeles|silicon\s+valley|mountain\s+view|palo\s+alto|menlo\s+park|sunnyvale|santa\s+clara|san\s+mateo|foster\s+city|redwood\s+city|bellevue|redmond|kirkland|seattle|denver|boulder|austin|dallas|houston|atlanta|chicago|boston|pittsburgh|philadelphia|malvern|bentonville|ann\s+arbor|st\.?\s+louis)\b/,
+  // US towns named like a foreign city, followed by their own state. Strong, because the
+  // foreign list below would otherwise claim `Dublin, CA` the moment `, CA` stopped
+  // deciding on its own.
+  /\b(dublin\s*,\s*(ca|oh)|vancouver\s*,\s*wa|athens\s*,\s*(ga|oh)|melbourne\s*,\s*fl|manchester\s*,\s*(nh|ct)|london\s*,\s*(ky|oh)|paris\s*,\s*tx|valencia\s*,\s*ca|waterloo\s*,\s*ia|rome\s*,\s*(ga|ny)|lima\s*,\s*oh|warsaw\s*,\s*in)\b/,
+  // Cities that appear in this feed and are not ambiguous with a foreign one. `sf` and
+  // `nyc` keep `Toronto, NY, SEA, SF` American once `, NY` alone no longer can.
+  /\b(sf|nyc|san\s+jose|san\s+francisco|los\s+angeles|silicon\s+valley|mountain\s+view|palo\s+alto|menlo\s+park|sunnyvale|santa\s+clara|san\s+mateo|foster\s+city|redwood\s+city|bellevue|redmond|kirkland|seattle|denver|boulder|austin|dallas|houston|atlanta|chicago|boston|pittsburgh|philadelphia|malvern|bentonville|ann\s+arbor|st\.?\s+louis)\b/,
 ];
 
 const ELSEWHERE = [
@@ -51,6 +63,7 @@ export function readLocation(location: string | null | undefined): LocationRead 
   // can take. Their spreadsheet's rule, adopted rather than re-derived.
   if (US.some((p) => p.test(text))) return "us";
   if (ELSEWHERE.some((p) => p.test(text))) return "elsewhere";
+  if (US_STATE_CODE.test(text)) return "us";
 
   // `2 Locations`, `Multiple Locations`, `Remote`, a bare city nobody listed. Not a
   // failure to be fixed by guessing — the caller marks these and the reader decides.
