@@ -10,8 +10,8 @@
       `pages/Jobs.test.tsx` with MSW — the section lists what `/api/internships` returned and
       shows its `total`; the filter row is absent; selecting a row opens the detail pane; with
       no `section` parameter the page renders and requests `/api/jobs` exactly as before. Result: 5 passed (RED first: 4 failed, the all-roles guard green); landing suite 93 passed; typecheck exit 0. Kept in `Jobs.tsx` (288 → 389 lines; under the 800 a split would need). `select` now navigates through the router like the switch does — `useSearch` reads the router's location, so `window.history` writes never reached it under test.
-- [ ] 1.2 Guard, unchanged file: `FilterRow.test.ts` still green, including the line that fails
-      if an Internship preset returns. Proof: suite output.
+- [x] 1.2 Guard, unchanged file: `FilterRow.test.ts` still green, including the line that fails
+      if an Internship preset returns. Proof: suite output. Result: 2 passed — "offers no option whose search returns roles of another kind", "offers no internship option at all, until the feed can express one"; `components/jobs/` unchanged since 158a4f0.
 
 ## 2. Close
 
