@@ -18,3 +18,12 @@
 - [x] 2.1 `replit.md`: one entry — the section reuses `/api/internships` rather than a picker
       preset, and why (the count problem; 2026-09-20 removal). Full landing suite + typecheck
       green; replit.md working loop. Result: replit.md "`/jobs` shows internships as a second list, not as a picker preset" added; landing 93 passed, api-server 228 passed / 2 files skipped (DB contract tests), typecheck exit 0.
+
+## 3. Review findings (close-out gate, 2026-10-03)
+
+- [ ] 3.1 `pages/Jobs.tsx` + `api-server/src/lib/internships/titles.test.ts`: move the internships
+      footer block above the "A requirement, not copy" comment so that comment sits on the
+      `<footer>` it describes again; add `Director, US International Tax Planning` and
+      `Principal Software Developer - Query Engine, Database Internals` (the spec's named
+      titles) to the excluded titles in `titles.test.ts`. Proof: `titles.test.ts` green with
+      the two titles in it; landing suite green; typecheck clean.
